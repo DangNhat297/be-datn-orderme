@@ -30,7 +30,6 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    
     /**
      * sendSuccess
      *
@@ -54,9 +53,9 @@ class Controller extends BaseController
      * @param  mixed $message
      * @return JsonResponse
      */
-    public function createSuccess($data, $message): JsonResponse
+    public function createSuccess($data): JsonResponse
     {
-        return $this->sendSuccess($data, 201, $message);
+        return $this->sendSuccess($data, 201);
     }
     
     /**
@@ -66,9 +65,9 @@ class Controller extends BaseController
      * @param  mixed $message
      * @return JsonResponse
      */
-    public function updateSuccess($data, $message): JsonResponse
+    public function updateSuccess($data): JsonResponse
     {
-        return $this->sendSuccess($data, 201, $message);
+        return $this->sendSuccess($data, 201);
     }
     
     /**

@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 /*
@@ -16,6 +16,10 @@ use App\Http\Controllers\Api\ProductController;
 
 Route::group(['middleware' => 'api'], function ($routes) {
     Route::get('/dishes', [ProductController::class, 'index']);
+});
+
+Route::prefix('admin')->group(function(){
+    Route::apiResource('category', CategoryController::class);
 });
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
