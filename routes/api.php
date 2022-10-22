@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Admin\DishesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,6 +21,8 @@ Route::group(['middleware' => 'api'], function ($routes) {
 
 Route::prefix('admin')->group(function(){
     Route::apiResource('category', CategoryController::class);
+    Route::apiResource('dishes', DishesController::class);
+    Route::post('dishes/{id}', [DishesController::class,'update']);
 });
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

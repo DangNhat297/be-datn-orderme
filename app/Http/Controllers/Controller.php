@@ -45,7 +45,7 @@ class Controller extends BaseController
             'message' => $message
         ], $code);
     }
-    
+
     /**
      * createSuccess
      *
@@ -57,7 +57,13 @@ class Controller extends BaseController
     {
         return $this->sendSuccess($data, 201);
     }
-    
+
+    public function createErrors($data): JsonResponse
+    {
+        return response()->json(
+            ['messages'=>$data],401
+        );
+    }
     /**
      * updateSuccess
      *
@@ -69,7 +75,7 @@ class Controller extends BaseController
     {
         return $this->sendSuccess($data, 201);
     }
-    
+
     /**
      * deleteSuccess
      *
