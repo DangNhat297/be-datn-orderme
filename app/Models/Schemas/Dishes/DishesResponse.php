@@ -72,4 +72,19 @@ class DishesResponse{
      * @var integer
      */
     public $category_id;
+
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $created_at;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $updated_at;
 }

@@ -24,4 +24,20 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
+
+    public function scopeFindByName($query, $request)
+    {
+        if ($name = $request->search) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+        return $query;
+    }
+
+    public function scopeFindByStatus($query, $request)
+    {
+        if ($status = $request->status) {
+            $query->where('status', $status);
+        }
+        return $query;
+    }
 }

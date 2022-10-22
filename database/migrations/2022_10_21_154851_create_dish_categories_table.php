@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('slug');
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('parent_id');
+            $table->tinyInteger('is_deleted')->default(0);
             $table->timestamps();
         });
     }
