@@ -14,10 +14,20 @@ class CategoryController extends Controller
     public function __construct(protected Category $categoryModel)
     {
     }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
+     * @OA\Get(
+     *      path="/admin/category",
+     *      operationId="getCategories",
+     *      tags={"Category"},
+     *      summary="Get list of category",
+     *      description="Returns list of category",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryResponse")
+     *       ),
+     *     )
      */
     public function index(Request $request): JsonResponse
     {
@@ -30,11 +40,24 @@ class CategoryController extends Controller
         return $this->sendSuccess($data);
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return JsonResponse
+     * @OA\Post(
+     *      path="/admin/category",
+     *      operationId="createCategory",
+     *      tags={"Category"},
+     *      summary="Create new category",
+     *      description="Returns category data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryCreate")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryResponse")
+     *       ),
+     * )
      */
     public function store(CategoryRequest $request): JsonResponse
     {
@@ -48,10 +71,27 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return JsonResponse
+     * @OA\Get(
+     *      path="/admin/category/{id}",
+     *      operationId="getCategoryById",
+     *      tags={"Category"},
+     *      summary="Get category information",
+     *      description="Returns category data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryResponse")
+     *       ),
+     * )
      */
     public function show(int $id): JsonResponse
     {
@@ -64,11 +104,31 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return JsonResponse
+     * @OA\Put(
+     *      path="/admin/category/{id}",
+     *      operationId="updateCategory",
+     *      tags={"Category"},
+     *      summary="Update existing category",
+     *      description="Returns updated category data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoryResponse")
+     *       )
+     * )
      */
     public function update(CategoryUpdateRequest $request, $id): JsonResponse
     {
@@ -83,10 +143,27 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return JsonResponse
+     * @OA\Delete(
+     *      path="/admin/category/{id}",
+     *      operationId="deleteCategory",
+     *      tags={"Category"},
+     *      summary="Delete existing category",
+     *      description="Deletes a record and returns no content",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Category id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *       @OA\Response(
+     *          response=204,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       )
+     * )
      */
     public function destroy($id): JsonResponse
     {
