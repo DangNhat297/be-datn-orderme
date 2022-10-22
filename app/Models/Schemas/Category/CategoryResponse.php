@@ -1,8 +1,22 @@
 <?php
 
-namespace App\Models\Schemas\Dishes;
-
-class DishesCreate{
+namespace App\Models\Schemas\Category;
+/**
+ * @OA\Schema
+ *     schema="CategoryResponse",
+ *     type="object",
+ *     title="CategoryResponse",
+ *     description="Category model"
+ * )
+ */
+class CategoryResponse
+{
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    private $id;
 
     /**
      * @OA\Property()
@@ -23,40 +37,26 @@ class DishesCreate{
      *
      * @var integer
      */
-    public $price;
-
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    public $description;
-
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    public $content;
-
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    public $image;
+    public $status;
 
     /**
      * @OA\Property()
      *
      * @var integer
      */
-    public $quantity;
+    public $parent_id;
 
     /**
      * @OA\Property()
      *
-     * @var integer
+     * @var string
      */
-    public $category_id;
+    public $created_at;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $updated_at;
 }
