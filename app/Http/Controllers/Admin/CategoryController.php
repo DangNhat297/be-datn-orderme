@@ -35,12 +35,17 @@ class CategoryController extends Controller
             ->newQuery()
             ->where('is_deleted', 0)
             ->where('parent_id', 0)
+            ->findByName($request)
+            ->findByStatus($request)
             ->paginate(PAGE_SIZE_DEFAULT);
+
+        $data->getCollection()->transform(function ($value) {
+            $value->makeHidden(['created_at', 'updated_at']);
+            return $value;
+        });
 
         return $this->sendSuccess($data);
     }
-
-
     /**
      * @OA\Post(
      *      path="/admin/category",
@@ -64,8 +69,8 @@ class CategoryController extends Controller
         $data = $request->only('name', 'slug', 'parent_id', 'status');
 
         $item = $this->categoryModel
-                    ->newQuery()
-                    ->create($data);
+            ->newQuery()
+            ->create($data);
 
         return $this->createSuccess($item);
     }
@@ -96,9 +101,9 @@ class CategoryController extends Controller
     public function show(int $id): JsonResponse
     {
         $item = $this->categoryModel
-                    ->newQuery()
-                    ->with('children')
-                    ->findOrFail($id);
+            ->newQuery()
+            ->with('children')
+            ->findOrFail($id);
 
         return $this->sendSuccess($item);
     }
