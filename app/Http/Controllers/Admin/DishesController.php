@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DishesRequest;
+use App\Http\Requests\DishesUpdateRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Dishes;
@@ -10,8 +12,10 @@ use Illuminate\Support\Facades\Validator;
 
 class DishesController extends Controller
 {
-    public function __construct(protected Dishes $dishes)
+    protected $dishes;
+    public function __construct( Dishes $dishes)
     {
+        $this->dishes=$dishes;
     }
 
 /**
@@ -48,20 +52,9 @@ function create()
  * @return \Illuminate\Http\Response
  */
 public
-function store(Request $request)
+function store(DishesRequest $request)
 {
-    $Validator = Validator::make($request->all(), [
-        'name' => 'required',
-        'slug' => 'required',
-        'price' => 'required',
-        'quantity' => 'required',
-        'category_id' => 'required',
-        'image' => 'required|mimes:jpeg,png,jpg,gif',
-    ]);
 
-    if ($Validator->fails()) {
-       return $this->createErrors($Validator->errors());
-    }
     $item = $this->dishes->fill($request->all());
     if ($request->hasFile('image')) {
         $file = $request->image;
@@ -107,21 +100,8 @@ function edit($id)
  * @param int $id
  * @return \Illuminate\Http\Response
  */
-public function update(Request $request, $id)
+public function update(DishesUpdateRequest $request, $id)
 {
-
-    $Validator = Validator::make($request->all(), [
-        'name' => 'required',
-        'slug' => 'required',
-        'price' => 'required',
-        'quantity' => 'required',
-        'category_id' => 'required',
-        'image' => 'required|mimes:jpeg,png,jpg,gif',
-    ]);
-
-    if ($Validator->fails()) {
-    return $this->createErrors($Validator->errors());
-    }
 
     $item = $this->dishes->findOrFail($id);
     $item ->fill($request->except(['image']));
