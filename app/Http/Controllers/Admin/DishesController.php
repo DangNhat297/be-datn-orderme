@@ -5,143 +5,187 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DishesRequest;
 use App\Http\Requests\DishesUpdateRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Models\Dishes;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 class DishesController extends Controller
 {
     protected $dishes;
-    public function __construct( Dishes $dishes)
+
+    public function __construct(Dishes $dishes)
     {
-        $this->dishes=$dishes;
+        $this->dishes = $dishes;
     }
 
-/**
- * Display a listing of the resource.
- *
- * @return \Illuminate\Http\Response
- */
-public
-function index()
-{
-    $data = $this->dishes
-        ->newQuery()
-        ->orderBy('id', 'DESC')
-        ->paginate(PAGE_SIZE_DEFAULT);
+    /**
+     * @OA\Get(
+     *      path="/admin/dishes",
+     *      operationId="getDishes",
+     *      tags={"Dishes"},
+     *      summary="Get list of dishes",
+     *      description="Returns list of dishes",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/DishesResponse")
+     *       ),
+     *     )
+     */
+    public function index(): JsonResponse
+    {
+        $data = $this->dishes
+            ->newQuery()
+            ->orderBy('id', 'DESC')
+            ->paginate(PAGE_SIZE_DEFAULT);
 
-    return $this->sendSuccess($data);
-}
-
-/**
- * Show the form for creating a new resource.
- *
- * @return \Illuminate\Http\Response
- */
-public
-function create()
-{
-    //
-}
-
-/**
- * Store a newly created resource in storage.
- *
- * @param \Illuminate\Http\Request $request
- * @return \Illuminate\Http\Response
- */
-public
-function store(DishesRequest $request)
-{
-
-    $item = $this->dishes->fill($request->all());
-    if ($request->hasFile('image')) {
-        $file = $request->image;
-        $item->image =   uploadFile($file,'images/dishes/');;
+        return $this->sendSuccess($data);
     }
 
-    $item->save();
-    return $this->createSuccess($item);
+    /**
+     * @OA\Post(
+     *      path="/admin/dishes",
+     *      operationId="createDishes",
+     *      tags={"Dishes"},
+     *      summary="Create new dishes",
+     *      description="Returns dishes data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/DishesCreate")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/DishesResponse")
+     *       ),
+     * )
+     */
+    public function store(DishesRequest $request)
+    {
 
-}
+        $item = $this->dishes->fill($request->all());
+        if ($request->hasFile('image')) {
+            $file = $request->image;
+            $item->image = uploadFile($file, 'images/dishes/');
+        }
 
-/**
- * Display the specified resource.
- *
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-public
-function show($id)
-{
-    $item = $this->dishes
-        ->newQuery()
-        ->findOrFail($id);
-    return $this->sendSuccess($item);
-}
+        $item->save();
+        return $this->createSuccess($item);
 
-/**
- * Show the form for editing the specified resource.
- *
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-public
-function edit($id)
-{
-    //
-}
+    }
 
-/**
- * Update the specified resource in storage.
- *
- * @param \Illuminate\Http\Request $request
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-public function update(DishesUpdateRequest $request, $id)
-{
+    /**
+     * @OA\Get(
+     *      path="/admin/dishes/{id}",
+     *      operationId="getDishesById",
+     *      tags={"Dishes"},
+     *      summary="Get dishes information",
+     *      description="Returns dishes data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Dishes id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/DishesResponse")
+     *       ),
+     * )
+     */
+    public function show($id): JsonResponse
+    {
+        $item = $this->dishes
+            ->newQuery()
+            ->findOrFail($id);
+        return $this->sendSuccess($item);
+    }
 
-    $item = $this->dishes->findOrFail($id);
-    $item ->fill($request->except(['image']));
+    /**
+     * @OA\Put(
+     *      path="/admin/dishes/{id}",
+     *      operationId="updateDishes",
+     *      tags={"Dishes"},
+     *      summary="Update existing dishes",
+     *      description="Returns updated dishes data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Dishes id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/DishesUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/DishesResponse")
+     *       )
+     * )
+     */
+    public function update(DishesUpdateRequest $request, $id): JsonResponse
+    {
 
-    if ($request->image) {
-        $file = $request->image;
-        $fileCurrent = public_path() .'/'. $item->image;
+        $item = $this->dishes->findOrFail($id);
+        $item->fill($request->except(['image']));
+
+        if ($request->image) {
+            $file = $request->image;
+            $fileCurrent = public_path() . '/' . $item->image;
+            if (file_exists($item->image)) {
+                unlink($fileCurrent);
+            }
+            $item->image = uploadFile($file, 'images/dishes/');
+        } else {
+            $item->image = $item->image;
+        }
+        $item->save();
+
+        return $this->sendSuccess($item);
+    }
+
+    /**
+     * @OA\Delete(
+     *      path="/admin/dishes/{id}",
+     *      operationId="deleteDishes",
+     *      tags={"Dishes"},
+     *      summary="Delete existing dishes",
+     *      description="Deletes a record and returns no content",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Dishes id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *       @OA\Response(
+     *          response=204,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       )
+     * )
+     */
+    public function destroy($id): JsonResponse
+    {
+        $item = $this->dishes
+            ->newQuery()
+            ->findOrFail($id);
+        $fileCurrent = public_path() . '/' . $item->image;
         if (file_exists($item->image)) {
             unlink($fileCurrent);
         }
-        $item->image = uploadFile($file,'images/dishes/');;
-    }else{
-        $item->image= $item->image ;
+        $item->delete();
+
+        return $this->deleteSuccess();
     }
-    $item->save();
-
-    return $this->sendSuccess($item);
-}
-
-/**
- * Remove the specified resource from storage.
- *
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-public function destroy($id)
-{
-    $item = $this->dishes
-        ->newQuery()
-        ->findOrFail($id);
-    $fileCurrent = public_path() .'/'. $item->image;
-    if (file_exists($item->image)) {
-        unlink($fileCurrent);
-    }
-    $item->delete();
-
-    return $this->deleteSuccess();
-}
-
-
-
-
 }
