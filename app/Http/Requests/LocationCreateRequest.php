@@ -24,7 +24,7 @@ class LocationCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'address' => 'required|unique:locations',
+            'address' => 'required|unique:locations,address',
             'distance' => 'required|numeric',
         ];
     }

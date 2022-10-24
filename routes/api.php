@@ -1,12 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductController;
-
 use App\Http\Controllers\Admin\DishesController;
-
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Api\ProductController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,14 +18,12 @@ use App\Http\Controllers\Admin\LocationController;
 */
 
 Route::group(['middleware' => 'api'], function ($routes) {
-    Route::get('/dishes', [ProductController::class, 'index']);
 });
 
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->group(function () {
     Route::apiResource('category', CategoryController::class);
 
     Route::apiResource('dishes', DishesController::class);
-    Route::post('dishes/{id}', [DishesController::class,'update']);
 
     Route::apiResource('location', LocationController::class);
 

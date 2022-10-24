@@ -24,7 +24,7 @@ class LocationUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'address' => 'required|unique:locations,address,'.$this->locationModel,
+            'address' => 'required|unique:locations,address,' . $this->location,
             'distance' => 'required|numeric',
         ];
     }

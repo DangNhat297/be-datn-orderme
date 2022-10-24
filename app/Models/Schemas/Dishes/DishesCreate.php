@@ -4,13 +4,13 @@ namespace App\Models\Schemas\Dishes;
 
 /**
  * @OA\Schema
- *     schema="DishesResponse",
+ *     schema="DishesCreate",
  *     type="object",
- *     title="DishesResponse",
+ *     title="DishesCreate",
  *     description="Dishes model"
  * )
  */
-class DishesResponse
+class DishesCreate
 {
     /**
      * @OA\Property()
@@ -18,64 +18,53 @@ class DishesResponse
      * @var string
      */
     public $name;
+
     /**
      * @OA\Property()
      *
      * @var string
      */
     public $slug;
+
     /**
      * @OA\Property()
      *
      * @var number
      */
     public $price;
+
     /**
      * @OA\Property()
      *
      * @var string
      */
     public $description;
+
     /**
      * @OA\Property()
      *
      * @var string
      */
     public $content;
+
     /**
      * @OA\Property()
      *
-     * @var string
+     * @var object
      */
     public $image;
+
     /**
      * @OA\Property()
      *
      * @var integer
      */
     public $quantity;
+
     /**
      * @OA\Property()
      *
      * @var integer
      */
     public $category_id;
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    public $created_at;
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    public $updated_at;
-    /**
-     * @OA\Property()
-     *
-     * @var integer
-     */
-    private $id;
 }
