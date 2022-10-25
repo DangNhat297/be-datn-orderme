@@ -483,6 +483,38 @@
                     }
                 }
             }
+        },
+        "/file/upload": {
+            "post": {
+                "tags": [
+                    "Upload"
+                ],
+                "summary": "Upload file",
+                "description": "Returns a path file",
+                "operationId": "uploadFile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileUploadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FileResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -639,6 +671,22 @@
                     },
                     "category_id": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "FileResponse": {
+                "properties": {
+                    "path": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "FileUploadRequest": {
+                "properties": {
+                    "file": {
+                        "type": "object"
                     }
                 },
                 "type": "object"
