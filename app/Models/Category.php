@@ -16,14 +16,9 @@ class Category extends Model
         'name',
         'slug',
         'status',
-        'parent_id',
+        'image',
         'is_deleted'
     ];
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_id', 'id');
-    }
 
     public function scopeFindByName($query, $request)
     {

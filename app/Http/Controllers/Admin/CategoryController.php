@@ -34,7 +34,6 @@ class CategoryController extends Controller
         $data = $this->categoryModel
             ->newQuery()
             ->where('is_deleted', 0)
-            ->where('parent_id', 0)
             ->findByName($request)
             ->findByStatus($request)
             ->paginate(PAGE_SIZE_DEFAULT);
@@ -66,7 +65,11 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request): JsonResponse
     {
-        $data = $request->only('name', 'slug', 'parent_id', 'status');
+        $data = $request->only([
+            'name',
+            'slug',
+            'status'
+        ]);
 
         $item = $this->categoryModel
             ->newQuery()
@@ -137,7 +140,11 @@ class CategoryController extends Controller
      */
     public function update(CategoryUpdateRequest $request, $id): JsonResponse
     {
-        $data = $request->only(['name', 'slug', 'parent_id', 'status']);
+        $data = $request->only([
+            'name',
+            'slug',
+            'status'
+        ]);
         $item = $this->categoryModel
             ->newQuery()
             ->findOrFail($id);

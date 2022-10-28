@@ -27,13 +27,14 @@ class CategoryUpdateRequest extends FormRequest
         return [
             'name' => 'required',
             'slug'  => 'required|unique:dish_categories,slug,' . $this->category,
-            'parent_id' => [
-                'required',
-                'integer',
-                Rule::when($this->parent_id != 0, function () {
-                    return Rule::exists('dish_categories', 'id')->where('parent_id', 0);
-                })
-            ]
+            'image' => 'nullable|image'
+            // 'parent_id' => [
+            //     'required',
+            //     'integer',
+            //     Rule::when($this->parent_id != 0, function () {
+            //         return Rule::exists('dish_categories', 'id')->where('parent_id', 0);
+            //     })
+            // ]
         ];
     }
 }
