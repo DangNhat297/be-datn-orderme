@@ -58,12 +58,7 @@ class Controller extends BaseController
         return $this->sendSuccess($data, 201);
     }
 
-    public function createErrors($data): JsonResponse
-    {
-        return response()->json(
-            ['messages'=>$data],401
-        );
-    }
+
     /**
      * updateSuccess
      *
@@ -83,6 +78,6 @@ class Controller extends BaseController
      */
     public function deleteSuccess(): JsonResponse
     {
-        return response()->json(null, 204);
+        return response()->json(204);
     }
 }

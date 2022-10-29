@@ -4,8 +4,13 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\File\UploadFileController;
-use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Client\CartController;
+
+
+
+
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,3 +36,8 @@ Route::prefix('file')->group(function () {
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
+
+    Route::prefix('client')->group(function () {
+        Route::apiResource('cart', CartController::class);
+
+    });

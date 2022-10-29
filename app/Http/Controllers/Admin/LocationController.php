@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LocationCreateRequest;
 use App\Http\Requests\LocationUpdateRequest;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+
 
 class LocationController extends Controller
 {

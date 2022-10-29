@@ -17,6 +17,18 @@ class DishesController extends Controller
         $this->dishes = $dishes;
     }
 
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+
     /**
      * @OA\Get(
      *      path="/admin/dishes",
@@ -39,6 +51,7 @@ class DishesController extends Controller
             ->paginate(PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
+
     }
 
     /**

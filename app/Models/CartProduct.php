@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class CartProduct extends Model
+{
+    protected $table='cart_product';
+    use HasFactory;
+    protected $fillable=['cart_id','dish_id','quantity'];
+
+    function cart(){
+        return $this->belongsTo(Cart::class);
+    }
+
+    function dish(){
+        return $this->belongsTo(Dishes::class);
+    }
+
+    function addNewCartDetail($data){
+        $cart=CartProduct::create($data);
+       return $cart;
+    }
+
+    function updateCartDetail($data,$dish_id){
+        $cart=CartProduct::where('dish_id',$dish_id)->first()->update($data);
+        return $cart;
+    }
+}
