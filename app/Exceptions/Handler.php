@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +49,34 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return $this->convertValidationExceptionToResponse($e, $request);
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json(['error' => 'Data not found.']);
+        }
+
+        if ($request->is('api/*')) {
+            if($e instanceof AuthenticationException){
+                return response()->json([
+                    'message' => 'Mã token không đúng',
+                    'result' => false
+                ], 401);
+            }
+
+            return response()->json([
+                'message' => 'Có lỗi hệ thống. Message: ' . $e->getMessage() . '. File: ' . $e->getFile() . '. Line: ' . $e->getLine() ,
+                'result' => false
+            ], 200);
+        }
+
+
+        return parent::render($request, $e);
     }
 }
