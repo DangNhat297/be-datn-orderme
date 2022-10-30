@@ -78,6 +78,6 @@ class Controller extends BaseController
      */
     public function deleteSuccess(): JsonResponse
     {
-        return response()->json(204);
+        return response()->json([],204);
     }
 }

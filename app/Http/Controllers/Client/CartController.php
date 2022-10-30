@@ -24,7 +24,7 @@
         {
             $data = $this->cart
                 ->newQuery()
-                ->where('user_id',$id)
+                ->where('user_id', $id)
                 ->with(['cartDetail'])
                 ->orderBy('created_at', 'DESC')
                 ->get();
@@ -37,12 +37,15 @@
             $cart = $this->cart->where('user_id', $request->user_id)->first();
 
             if ($cart != null) {
-                $cartDetail = $this->cartProduct->where('dish_id', $request->dish_id)->first();
+                $cartDetail = $this->cartProduct->where('dish_id', $request->dish_id)
+                    ->where('cart_id', $cart->id)
+                    ->first();
+
                 if (!$cartDetail) {
                     $data = [
                         'dish_id' => (int)$request->dish_id,
                         'cart_id' => (int)$cart->id,
-                        'quantity' =>(int) $request->quantity
+                        'quantity' => (int)$request->quantity
                     ];
                     $cartDetail = $this->cartProduct->addNewCartDetail($data);
 
@@ -71,7 +74,9 @@
         }
 
 
-//        update quantity
+//    update quantity
+//   postman use raw ,
+//  form-Data : use POST add overwrite _method PUT
 
         public function update(Request $request, $id): JsonResponse
         {
@@ -83,13 +88,31 @@
             return $this->updateSuccess($item);
         }
 
-//        update delete
+//         delete
 
         public function destroy($id): JsonResponse
         {
             $data = $this->cartProduct->newQuery()
                 ->findOrFail($id)
                 ->delete();
+            return $this->deleteSuccess();
+        }
+
+
+
+//    delete the selection [1,2,3]
+//    use  raw
+//    {
+//    "dataSelection":[9,11]
+//    }
+
+// use ajax  new FormData() ,input checkbox dataSelection[] ok ,
+//  use postman formData ['1','2','3'] error ,
+// use postman raw  ok
+        function Delete_Cart_By_Selection(Request $request):JsonResponse
+        {
+            $data = $request->dataSelection;
+            $this->cartProduct->newQuery()->whereIn('id', $data)->delete();
             return $this->deleteSuccess();
         }
 

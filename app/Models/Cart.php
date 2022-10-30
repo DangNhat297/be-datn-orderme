@@ -15,6 +15,6 @@ class Cart extends Model
     }
 
     function addNewCart($data){
-        return CartProduct::create($data);
+        return Cart::create($data);
     }
 }

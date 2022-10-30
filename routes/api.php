@@ -10,7 +10,7 @@
     use Illuminate\Support\Facades\Route;
 
 
- 
+
 Route::group(['middleware' => 'api'], function ($routes) {
 });
 
@@ -29,7 +29,7 @@ Route::prefix('file')->group(function () {
 
     Route::prefix('client')->group(function () {
         Route::apiResource('cart', CartController::class);
-
+        Route::post('cart/deleteSelection', [CartController::class,'Delete_Cart_By_Selection']);
     });
 
 
