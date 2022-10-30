@@ -14,15 +14,7 @@
     },
     "servers": [
         {
-
-            "url": null,
-
-
-            "url": null,
-
-
-            "url": "http://my-default-host.com",
-
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -492,20 +484,123 @@
                 }
             }
         },
-        "/file/upload": {
-            "post": {
+        "/client/cart/{id}": {
+            "get": {
                 "tags": [
-                    "Upload"
+                    "Cart"
                 ],
-                "summary": "Upload file",
-                "description": "Returns a path file",
-                "operationId": "uploadFile",
+                "summary": "Get list of Cart",
+                "description": "Returns list of Cart",
+                "operationId": "getCartByUserId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Update existing cart",
+                "description": "Returns updated cart data",
+                "operationId": "updateCart",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Cart id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/FileUploadRequest"
+                                "$ref": "#/components/schemas/CartUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Delete existing cart",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteCart",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Cart id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/cart": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add products to cart",
+                "description": "Returns cart data",
+                "operationId": "addToCart",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CartCreate"
                             }
                         }
                     }
@@ -516,8 +611,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/FileResponse"
+                                    "$ref": "#/components/schemas/CartResponse"
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/cart/deleteMultiple": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Delete existing cart",
+                "description": "Delete multiple record and returns no content",
+                "operationId": "deleteCartMultiple",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "Cart id",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "cartIds": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
                             }
                         }
                     }
@@ -527,6 +661,74 @@
     },
     "components": {
         "schemas": {
+            "CartCreate": {
+                "properties": {
+                    "dish_id": {
+                        "type": "integer"
+                    },
+                    "cart_id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CartDetailResponse": {
+                "properties": {
+                    "dish_id": {
+                        "type": "integer"
+                    },
+                    "cart_id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "dish": {
+                        "$ref": "#/components/schemas/DishesResponse"
+                    },
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CartResponse": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "cart_detail": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CartDetailResponse"
+                        }
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CartUpdate": {
+                "properties": {
+                    "quantity": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
             "CategoryCreate": {
                 "properties": {
                     "name": {

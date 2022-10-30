@@ -1,14 +1,12 @@
 <?php
 
 
-    use App\Http\Controllers\Admin\CategoryController;
-    use App\Http\Controllers\Admin\DishesController;
-    use App\Http\Controllers\Admin\LocationController;
-    use App\Http\Controllers\File\UploadFileController;
-    use App\Http\Controllers\Client\CartController;
-
-    use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DishesController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\File\UploadFileController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::group(['middleware' => 'api'], function ($routes) {
@@ -27,13 +25,13 @@ Route::prefix('file')->group(function () {
 //    return $request->user();
 //});
 
-    Route::prefix('client')->group(function () {
-        Route::apiResource('cart', CartController::class);
-        Route::post('cart/deleteSelection', [CartController::class,'Delete_Cart_By_Selection']);
-    });
+Route::prefix('client')->group(function () {
+    Route::apiResource('cart', CartController::class);
+    Route::post('cart/deleteMultiple', [CartController::class, 'Delete_Cart_By_Selection']);
+});
 
 
-    Route::fallback(function () {
-        return response()->json([
-            'message' => 'Page Not Found'], 404);
-    });
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Page Not Found'], 404);
+});
