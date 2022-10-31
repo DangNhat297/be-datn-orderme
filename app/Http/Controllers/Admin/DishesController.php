@@ -76,10 +76,11 @@ class DishesController extends Controller
     {
 
         $item = $this->dishes->fill($request->all());
-        if ($request->hasFile('image')) {
-            $file = $request->image;
-            $item->image = uploadFile($file, 'images/dishes/');
-        }
+        $item->image="https://imgs.search.brave.com/M3uodhHUDZJcM4Fnl2sXDQ2UfMbPCLn-upkK4ZPbpkI/rs:fit:711:225:1/g:ce/aHR0cHM6Ly90c2U0/Lm1tLmJpbmcubmV0/L3RoP2lkPU9JUC5F/SGxQLU1rQnM0OHhx/T2FTaVZJdUZnSGFF/OCZwaWQ9QXBp";
+//        if ($request->hasFile('image')) {
+//            $file = $request->image;
+//            $item->image = uploadFile($file, 'images/dishes/');
+//        }
 
         $item->save();
         return $this->createSuccess($item);
@@ -148,7 +149,7 @@ class DishesController extends Controller
     {
 
         $item = $this->dishes->findOrFail($id);
-        $item->fill($request->except(['image']));
+        $item->fill($request->except('image'));
 
         if ($request->image) {
             $file = $request->image;
