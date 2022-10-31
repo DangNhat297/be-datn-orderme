@@ -143,7 +143,7 @@ class CartController extends Controller
     {
         $item = $this->cartProduct->newQuery()->findOrFail($id);
         $item->update([
-            'quantity' => (int)$item->quantity += (int)$request->quantity
+            'quantity' => $request->quantity
         ]);
 
         return $this->updateSuccess($item);
