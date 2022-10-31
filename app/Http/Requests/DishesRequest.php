@@ -31,7 +31,7 @@ class DishesRequest extends FormRequest
             'price' => 'required|integer',
             'quantity' => 'required|integer',
             'category_id' => 'required',
-            'image' => 'required|mimes:jpeg,png,jpg,gif',
+//            'image' => 'image',
         ];
     }
 
