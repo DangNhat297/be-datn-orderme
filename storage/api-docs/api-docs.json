@@ -174,14 +174,14 @@
                 }
             }
         },
-        "/admin/dishes": {
+        "/admin/dish": {
             "get": {
                 "tags": [
-                    "Dishes"
+                    "Dish"
                 ],
                 "summary": "Get list of dishes",
-                "description": "Returns list of dishes",
-                "operationId": "getDishes",
+                "description": "Returns list of dish",
+                "operationId": "getDish",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -197,11 +197,11 @@
             },
             "post": {
                 "tags": [
-                    "Dishes"
+                    "Dish"
                 ],
-                "summary": "Create new dishes",
+                "summary": "Create new dish",
                 "description": "Returns dishes data",
-                "operationId": "createDishes",
+                "operationId": "createDish",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -226,19 +226,19 @@
                 }
             }
         },
-        "/admin/dishes/{id}": {
+        "/admin/dish/{id}": {
             "get": {
                 "tags": [
-                    "Dishes"
+                    "Dish"
                 ],
                 "summary": "Get dishes information",
                 "description": "Returns dishes data",
-                "operationId": "getDishesById",
+                "operationId": "getDishById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Dishes id",
+                        "description": "Dish id",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -260,11 +260,11 @@
             },
             "put": {
                 "tags": [
-                    "Dishes"
+                    "Dish"
                 ],
-                "summary": "Update existing dishes",
+                "summary": "Update existing dish",
                 "description": "Returns updated dishes data",
-                "operationId": "updateDishes",
+                "operationId": "updateDish",
                 "parameters": [
                     {
                         "name": "id",
@@ -301,16 +301,16 @@
             },
             "delete": {
                 "tags": [
-                    "Dishes"
+                    "Dish"
                 ],
-                "summary": "Delete existing dishes",
+                "summary": "Delete existing dish",
                 "description": "Deletes a record and returns no content",
-                "operationId": "deleteDishes",
+                "operationId": "deleteDish",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Dishes id",
+                        "description": "Dish id",
                         "required": true,
                         "schema": {
                             "type": "integer"
