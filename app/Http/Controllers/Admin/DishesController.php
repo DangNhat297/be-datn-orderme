@@ -163,7 +163,7 @@ class DishesController extends Controller
         }
         $item->save();
 
-        return $this->sendSuccess($item);
+        return $this->updateSuccess($item);
     }
 
     /**

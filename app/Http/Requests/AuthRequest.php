@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class DishesRequest extends FormRequest
+class AuthRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,17 +26,18 @@ class DishesRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'slug' => 'required|unique:dishes,slug',
-            'price' => 'required|integer',
-            'quantity' => 'required|integer',
-            'category_id' => 'required',
-//            'image' => 'image',
+           'phone'=>'required|numeric|min:11',
         ];
     }
 
 
-        protected  function failedValidation(Validator $validator)
+    public function  messages()
+    {
+        return [];
+    }
+
+
+    protected  function failedValidation(Validator $validator)
     {
         $json = [
             'result' => false,
@@ -45,5 +46,4 @@ class DishesRequest extends FormRequest
         $response = response( $json );
         throw new ValidationException($validator, $response);
     }
-
 }
