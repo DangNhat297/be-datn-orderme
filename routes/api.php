@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\client\AuthController;
 use App\Http\Controllers\Client\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,11 +31,11 @@ Route::prefix('client')->group(function () {
     Route::apiResource('cart', CartController::class);
     Route::post('cart/deleteMultiple', [CartController::class, 'Delete_Cart_By_Selection']);
 
-//    Route::group(['prefix' => 'auth'], function() {
-//        Route::post('login', [AuthController::class,'login']);
-//        Route::get('profile/{id}', [AuthController::class,'profile']);
-//        Route::put('update/{id}', [AuthController::class,'update']);
-//    });
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('login', [AuthController::class, 'login']);
+        Route::get('profile/{id}', [AuthController::class, 'profile']);
+        Route::put('update/{id}', [AuthController::class, 'update']);
+    });
 });
 
 
