@@ -27,11 +27,11 @@ class DishesUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'slug' => 'required|unique:dishes,slug,'.$this->dishes,
+            'slug' => 'required|unique:dishes,slug,' . $this->dish,
             'price' => 'required|integer',
             'quantity' => 'required|integer',
             'category_id' => 'required',
-//            'image' => 'image',
+            'image' => 'nullable|image',
         ];
     }
 

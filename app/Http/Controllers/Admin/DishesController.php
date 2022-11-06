@@ -31,11 +31,11 @@ class DishesController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/admin/dishes",
-     *      operationId="getDishes",
-     *      tags={"Dishes"},
+     *      path="/admin/dish",
+     *      operationId="getDish",
+     *      tags={"Dish"},
      *      summary="Get list of dishes",
-     *      description="Returns list of dishes",
+     *      description="Returns list of dish",
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -56,10 +56,10 @@ class DishesController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/admin/dishes",
-     *      operationId="createDishes",
-     *      tags={"Dishes"},
-     *      summary="Create new dishes",
+     *      path="/admin/dish",
+     *      operationId="createDish",
+     *      tags={"Dish"},
+     *      summary="Create new dish",
      *      description="Returns dishes data",
      *      @OA\RequestBody(
      *          required=true,
@@ -89,14 +89,14 @@ class DishesController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/admin/dishes/{id}",
-     *      operationId="getDishesById",
-     *      tags={"Dishes"},
+     *      path="/admin/dish/{id}",
+     *      operationId="getDishById",
+     *      tags={"Dish"},
      *      summary="Get dishes information",
      *      description="Returns dishes data",
      *      @OA\Parameter(
      *          name="id",
-     *          description="Dishes id",
+     *          description="Dish id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -120,10 +120,10 @@ class DishesController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/admin/dishes/{id}",
-     *      operationId="updateDishes",
-     *      tags={"Dishes"},
-     *      summary="Update existing dishes",
+     *      path="/admin/dish/{id}",
+     *      operationId="updateDish",
+     *      tags={"Dish"},
+     *      summary="Update existing dish",
      *      description="Returns updated dishes data",
      *      @OA\Parameter(
      *          name="id",
@@ -163,19 +163,19 @@ class DishesController extends Controller
         }
         $item->save();
 
-        return $this->sendSuccess($item);
+        return $this->updateSuccess($item);
     }
 
     /**
      * @OA\Delete(
-     *      path="/admin/dishes/{id}",
-     *      operationId="deleteDishes",
-     *      tags={"Dishes"},
-     *      summary="Delete existing dishes",
+     *      path="/admin/dish/{id}",
+     *      operationId="deleteDish",
+     *      tags={"Dish"},
+     *      summary="Delete existing dish",
      *      description="Deletes a record and returns no content",
      *      @OA\Parameter(
      *          name="id",
-     *          description="Dishes id",
+     *          description="Dish id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(

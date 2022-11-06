@@ -71,7 +71,7 @@ class CartController extends Controller
      *       ),
      * )
      */
-    public function store(Request $request)
+    public function store(Request $request):JsonResponse
     {
         $cart = $this->cart->where('user_id', $request->user_id)->first();
 
@@ -90,9 +90,12 @@ class CartController extends Controller
 
             } else {
                 $data = [
+                    'dish_id' => (int)$cartDetail->dish_id,
+                    'cart_id' => (int)$cart->id,
                     'quantity' => (int)$cartDetail->quantity += (int)$request->quantity
                 ];
-                $cartDetail = $this->cartProduct->updateCartDetail($data, $cartDetail->dish_id);
+                $cartDetail = $this->cartProduct->updateCartDetail($data);
+
 
             }
 
@@ -209,10 +212,12 @@ class CartController extends Controller
      *       )
      * )
      */
-    function Delete_Cart_By_Selection(Request $request): JsonResponse
+    function Delete_Cart_By_Selection(Request $request):JsonResponse
     {
-        $data = $request->cartIds;
-        $this->cartProduct->newQuery()->whereIn('id', $data)->delete();
+        $data =$request->cartIds;
+        foreach ($data as $cart){
+            $this->cartProduct->newQuery()->findOrFail($cart)->delete();
+        }
         return $this->deleteSuccess();
     }
 

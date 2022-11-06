@@ -24,8 +24,10 @@ class CartProduct extends Model
        return $cart;
     }
 
-    function updateCartDetail($data,$dish_id){
-        $cart=CartProduct::where('dish_id',$dish_id)->first()->update($data);
+    function updateCartDetail($data){
+        $cart=CartProduct::where('dish_id',$data['dish_id'])
+            ->where('cart_id',$data['cart_id'])->first();
+        $cart->update($data);
         return $cart;
     }
 }
