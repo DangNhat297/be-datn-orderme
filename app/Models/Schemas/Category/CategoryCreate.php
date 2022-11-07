@@ -6,7 +6,7 @@ namespace App\Models\Schemas\Category;
  *     schema="CategoryCreate",
  *     type="object",
  *     title="CategoryCreate",
- *     description="Category model"
+ *     description="Category model",
  * )
  */
 class CategoryCreate
@@ -25,12 +25,12 @@ class CategoryCreate
      */
     public $slug;
 
-    /**
-     * @OA\Property()
-     *
-     * @var integer
-     */
-    public $parent_id;
+//    /**
+//     * @OA\Property()
+//     *
+//     * @var integer
+//     */
+//    public $parent_id;
 
     /**
      * @OA\Property()

@@ -16,6 +16,22 @@ class AuthController extends Controller
         $this->user = $user;
     }
 
+    /**
+     * @OA\Post(
+     *      path="/client/auth/login",
+     *      operationId="authLoginUser",
+     *      tags={"User"},
+     *      summary="Login into system",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/UserLogin")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *       ),
+     * )
+     */
     public function login(AuthRequest $request)
     {
         $user = $this->user->newQuery()->where('phone', $request->phone)->first();
@@ -40,6 +56,7 @@ class AuthController extends Controller
         return $this->updateSuccess($user);
 
     }
+
 
     public function profile($id)
     {

@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "https://order-me-api.herokuapp.com/api/v1",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -484,6 +484,30 @@
                 }
             }
         },
+        "/client/auth/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login into system",
+                "operationId": "authLoginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
         "/client/cart/{id}": {
             "get": {
                 "tags": [
@@ -629,20 +653,15 @@
                 "operationId": "deleteCartMultiple",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "cartIds[]",
                         "in": "query",
                         "description": "Cart id",
                         "required": true,
                         "schema": {
-                            "properties": {
-                                "cartIds": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "integer"
-                                    }
-                                }
-                            },
-                            "type": "object"
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
                         }
                     }
                 ],
@@ -737,9 +756,6 @@
                     "slug": {
                         "type": "string"
                     },
-                    "parent_id": {
-                        "type": "integer"
-                    },
                     "status": {
                         "type": "integer"
                     }
@@ -748,9 +764,6 @@
             },
             "CategoryResponse": {
                 "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
                     "name": {
                         "type": "string"
                     },
@@ -760,14 +773,14 @@
                     "status": {
                         "type": "integer"
                     },
-                    "parent_id": {
-                        "type": "integer"
-                    },
                     "created_at": {
                         "type": "string"
                     },
                     "updated_at": {
                         "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -779,9 +792,6 @@
                     },
                     "slug": {
                         "type": "string"
-                    },
-                    "parent_id": {
-                        "type": "integer"
                     },
                     "status": {
                         "type": "integer"
@@ -938,6 +948,14 @@
                         "type": "string"
                     },
                     "distance": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "UserLogin": {
+                "properties": {
+                    "phone": {
                         "type": "number"
                     }
                 },

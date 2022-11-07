@@ -71,7 +71,7 @@ class CartController extends Controller
      *       ),
      * )
      */
-    public function store(Request $request):JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $cart = $this->cart->where('user_id', $request->user_id)->first();
 
@@ -192,18 +192,11 @@ class CartController extends Controller
      *      summary="Delete existing cart",
      *      description="Delete multiple record and returns no content",
      *      @OA\Parameter(
-     *          name="id",
+     *          name="cartIds[]",
      *          description="Cart id",
      *          required=true,
      *          in="query",
-     *          @OA\Schema(
-     *              type="object",
-     *             @OA\Property(
-     *                 property="cartIds",
-     *                 type="array",
-     *                 @OA\Items(type="integer")
-     *              )
-     *          )
+     *          @OA\Schema(type="array", @OA\Items(type="number")),
      *      ),
      *       @OA\Response(
      *          response=204,
@@ -212,10 +205,10 @@ class CartController extends Controller
      *       )
      * )
      */
-    function Delete_Cart_By_Selection(Request $request):JsonResponse
+    function Delete_Cart_By_Selection(Request $request): JsonResponse
     {
-        $data =$request->cartIds;
-        foreach ($data as $cart){
+        $data = $request->cartIds;
+        foreach ($data as $cart) {
             $this->cartProduct->newQuery()->findOrFail($cart)->delete();
         }
         return $this->deleteSuccess();
