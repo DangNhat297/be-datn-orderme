@@ -25,12 +25,12 @@ class CategoryUpdate
      */
     public $slug;
 
-    /**
-     * @OA\Property()
-     *
-     * @var integer
-     */
-    public $parent_id;
+//    /**
+//     * @OA\Property()
+//     *
+//     * @var integer
+//     */
+//    public $parent_id;
 
     /**
      * @OA\Property()
