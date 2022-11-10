@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class AuthRequest extends FormRequest
+class AuthUpdate extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,14 +26,8 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-           'phone'=>'required|unique:users|numeric|min:11',
+            'phone'=>'required|min:11|numeric|unique:users,phone,'.$this->id,
         ];
-    }
-
-
-    public function  messages()
-    {
-        return [];
     }
 
 

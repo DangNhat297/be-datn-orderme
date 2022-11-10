@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Client;
 
+ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
@@ -61,7 +61,17 @@ class AuthController extends Controller
     public function profile($id)
     {
 //            $id=auth()->user()->id;
+
+            $user=$this->user->newQuery()->findOrFail($id);
+            $user->fill($request->except('password'));
+            if(!empty($request->password_old)){
+                if(Hash::check($request->password_old,$user->password)){
+                    $user->password=Hash::make($request->password);
+                }
+            }
+
         $user = $this->user->newQuery()->findOrFail($id);
+
 
         return $this->sendSuccess($user);
 

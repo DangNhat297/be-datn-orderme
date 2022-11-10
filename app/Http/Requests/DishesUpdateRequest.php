@@ -27,11 +27,11 @@ class DishesUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'slug' => 'required|unique:dishes,slug,' . $this->dish,
+            'slug' => 'unique:dishes,slug,' . $this->dish,
             'price' => 'required|integer',
             'quantity' => 'required|integer',
             'category_id' => 'required',
-            'image' => 'nullable|image',
+            'image' => 'nullable',
         ];
     }
 
@@ -39,7 +39,7 @@ class DishesUpdateRequest extends FormRequest
     {
         $json = [
             'result' => false,
-            'message' => $validator->errors()
+            'message' => $validator->errors()->all()
         ];
         $response = response( $json );
         throw new ValidationException($validator, $response);

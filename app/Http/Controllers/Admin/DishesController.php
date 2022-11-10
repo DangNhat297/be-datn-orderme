@@ -32,9 +32,9 @@ class DishesController extends Controller
     /**
      * @OA\Get(
      *      path="/admin/dish",
-     *      operationId="getDish",
+     *      operationId="getDishes",
      *      tags={"Dish"},
-     *      summary="Get list of dishes",
+     *      summary="Get list of dish",
      *      description="Returns list of dish",
      *      @OA\Response(
      *          response=200,
@@ -60,7 +60,7 @@ class DishesController extends Controller
      *      operationId="createDish",
      *      tags={"Dish"},
      *      summary="Create new dish",
-     *      description="Returns dishes data",
+     *      description="Returns dish data",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/DishesCreate")
@@ -76,7 +76,9 @@ class DishesController extends Controller
     {
 
         $item = $this->dishes->fill($request->all());
-        $item->image="https://imgs.search.brave.com/M3uodhHUDZJcM4Fnl2sXDQ2UfMbPCLn-upkK4ZPbpkI/rs:fit:711:225:1/g:ce/aHR0cHM6Ly90c2U0/Lm1tLmJpbmcubmV0/L3RoP2lkPU9JUC5F/SGxQLU1rQnM0OHhx/T2FTaVZJdUZnSGFF/OCZwaWQ9QXBp";
+        $imageFake = fakeImage();
+        $item->image = $request->image ?? $imageFake;
+        $item->slug = $request->slug ?? makeSlug($request->name);
 //        if ($request->hasFile('image')) {
 //            $file = $request->image;
 //            $item->image = uploadFile($file, 'images/dishes/');
@@ -92,8 +94,8 @@ class DishesController extends Controller
      *      path="/admin/dish/{id}",
      *      operationId="getDishById",
      *      tags={"Dish"},
-     *      summary="Get dishes information",
-     *      description="Returns dishes data",
+     *      summary="Get dish information",
+     *      description="Returns dish data",
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",
@@ -124,10 +126,10 @@ class DishesController extends Controller
      *      operationId="updateDish",
      *      tags={"Dish"},
      *      summary="Update existing dish",
-     *      description="Returns updated dishes data",
+     *      description="Returns updated dish data",
      *      @OA\Parameter(
      *          name="id",
-     *          description="Dishes id",
+     *          description="Dish id",
      *          required=true,
      *          in="path",
      *          @OA\Schema(
@@ -152,12 +154,14 @@ class DishesController extends Controller
         $item->fill($request->except('image'));
 
         if ($request->image) {
-            $file = $request->image;
-            $fileCurrent = public_path() . '/' . $item->image;
-            if (file_exists($item->image)) {
-                unlink($fileCurrent);
-            }
-            $item->image = uploadFile($file, 'images/dishes/');
+//            $file = $request->image;
+//            $fileCurrent = public_path() . '/' . $item->image;
+//            if (file_exists($item->image)) {
+//                unlink($fileCurrent);
+//            }
+            //                uploadFile($file, 'images/dishes/');
+            $imageFake = fakeImage();
+            $item->image = $request->image ?? $imageFake;
         } else {
             $item->image = $item->image;
         }
@@ -194,10 +198,10 @@ class DishesController extends Controller
         $item = $this->dishes
             ->newQuery()
             ->findOrFail($id);
-        $fileCurrent = public_path() . '/' . $item->image;
-        if (file_exists($item->image)) {
-            unlink($fileCurrent);
-        }
+//        $fileCurrent = public_path() . '/' . $item->image;
+//        if (file_exists($item->image)) {
+//            unlink($fileCurrent);
+//        }
         $item->delete();
 
         return $this->deleteSuccess();

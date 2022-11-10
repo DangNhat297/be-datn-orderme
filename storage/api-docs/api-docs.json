@@ -179,9 +179,9 @@
                 "tags": [
                     "Dish"
                 ],
-                "summary": "Get list of dishes",
+                "summary": "Get list of dish",
                 "description": "Returns list of dish",
-                "operationId": "getDish",
+                "operationId": "getDishes",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -200,7 +200,7 @@
                     "Dish"
                 ],
                 "summary": "Create new dish",
-                "description": "Returns dishes data",
+                "description": "Returns dish data",
                 "operationId": "createDish",
                 "requestBody": {
                     "required": true,
@@ -231,8 +231,8 @@
                 "tags": [
                     "Dish"
                 ],
-                "summary": "Get dishes information",
-                "description": "Returns dishes data",
+                "summary": "Get dish information",
+                "description": "Returns dish data",
                 "operationId": "getDishById",
                 "parameters": [
                     {
@@ -263,13 +263,13 @@
                     "Dish"
                 ],
                 "summary": "Update existing dish",
-                "description": "Returns updated dishes data",
+                "description": "Returns updated dish data",
                 "operationId": "updateDish",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Dishes id",
+                        "description": "Dish id",
                         "required": true,
                         "schema": {
                             "type": "integer"
