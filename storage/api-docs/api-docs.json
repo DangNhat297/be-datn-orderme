@@ -676,6 +676,58 @@
                     }
                 }
             }
+        },
+        "/hero-wedding/message": {
+            "get": {
+                "tags": [
+                    "Hero Wedding Message"
+                ],
+                "summary": "Get list of Message",
+                "description": "Returns list of Message",
+                "operationId": "heroGetMessages",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Hero Wedding Message"
+                ],
+                "summary": "Create new message",
+                "description": "Returns message data",
+                "operationId": "heroAddMessage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -907,6 +959,65 @@
                 "properties": {
                     "file": {
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "MessageCreate": {
+                "title": "MessageCreate",
+                "description": "Message request body data",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Hero"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "0987654321"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Thank you for being here!"
+                    },
+                    "confirm": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "side": {
+                        "type": "string",
+                        "example": "NT"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "MessageResponse": {
+                "title": "MessageResponse",
+                "description": "Message response data",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "confirm": {
+                        "type": "integer"
+                    },
+                    "side": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
