@@ -1,20 +1,31 @@
 <?php
 
 namespace App\Models\Schemas\User;
+
 /**
- * @OA\Schema
- *     schema="UserLogin",
- *     type="object",
- *     title="UserLogin",
- *     description="User model"
+ * @OA\Schema(
+ *      schema="UserLogin",
+ *      title="User Login Request",
+ *      description="User Login request body data",
+ *      type="object",
+ *      required={"name"},
  * )
+ *
  */
 class UserLogin
 {
     /**
      * @OA\Property()
      *
-     * @var number
+     * @var string
      */
     public $phone;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $password;
+
 }

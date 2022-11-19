@@ -26,18 +26,19 @@ class AuthUpdate extends FormRequest
     public function rules()
     {
         return [
-            'phone'=>'required|min:11|numeric|unique:users,phone,'.$this->id,
+            'phone' => 'required|min:11|numeric|unique:users,phone,' . $this->id,
+            'password' => 'required|min:6',
         ];
     }
 
 
-    protected  function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
         $json = [
             'result' => false,
             'message' => $validator->errors()->all()
         ];
-        $response = response( $json );
+        $response = response($json);
         throw new ValidationException($validator, $response);
     }
 }

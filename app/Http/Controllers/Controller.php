@@ -26,16 +26,42 @@ use Illuminate\Routing\Controller as BaseController;
  *      url=L5_SWAGGER_CONST_HOST,
  *      description="Order Me API"
  * )
+ * @OA\SecurityScheme(
+ *      type="http",
+ *      description="Login with email and password to get the authentication token",
+ *      name="Token based Based",
+ *      in="header",
+ *      scheme="bearer",
+ *      bearerFormat="JWT",
+ *      securityScheme="tokenJWT",
+ *)
+ * @OA\Tag(
+ *     name="User Authenticate",
+ *     description="Đăng nhập trước nhé <3"
+ * )
  */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    /**
+     * createSuccess
+     *
+     * @param mixed $data
+     * @param mixed $message
+     * @return JsonResponse
+     */
+    public function createSuccess($data): JsonResponse
+    {
+        return $this->sendSuccess($data, 201);
+    }
+
     /**
      * sendSuccess
      *
-     * @param  mixed $data
-     * @param  mixed $code
-     * @param  mixed $message
+     * @param mixed $data
+     * @param mixed $code
+     * @param mixed $message
      * @return JsonResponse
      */
     public function sendSuccess($data, $code = 200, $message = 'Successfully'): JsonResponse
@@ -47,23 +73,10 @@ class Controller extends BaseController
     }
 
     /**
-     * createSuccess
-     *
-     * @param  mixed $data
-     * @param  mixed $message
-     * @return JsonResponse
-     */
-    public function createSuccess($data): JsonResponse
-    {
-        return $this->sendSuccess($data, 201);
-    }
-
-
-    /**
      * updateSuccess
      *
-     * @param  mixed $data
-     * @param  mixed $message
+     * @param mixed $data
+     * @param mixed $message
      * @return JsonResponse
      */
     public function updateSuccess($data): JsonResponse
@@ -78,6 +91,6 @@ class Controller extends BaseController
      */
     public function deleteSuccess(): JsonResponse
     {
-        return response()->json([],204);
+        return response()->json([], 204);
     }
 }
