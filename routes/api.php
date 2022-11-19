@@ -10,6 +10,7 @@ use App\Http\Controllers\HeroWeddingMessageController;
 use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\CategoryController as CategoryClient;
 use App\Http\Controllers\Client\LocationController as LocationClient;
+use App\Http\Controllers\Admin\SettingController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,16 +43,19 @@ Route::group(['middleware' => 'auth.jwt'], function ($routes) {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
+
     // admin
     Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
         // category
         Route::apiResource('category', CategoryController::class);
-
         // dish
         Route::apiResource('dish', DishesController::class);
 
         // location
         Route::apiResource('location', LocationController::class);
+
+        Route::apiResource('setting', SettingController::class);
+
     });
 });
 

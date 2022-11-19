@@ -62,11 +62,10 @@ class DishController extends Controller
      *       ),
      * )
      */
-    public function show($id,$slug): JsonResponse
+    public function show($id): JsonResponse
     {
         $item = $this->dishes
             ->newQuery()
-            ->where('slug',$slug)
             ->findOrFail($id);
         $item->makeHidden('status','created_at', 'updated_at')->toArray();
         return $this->sendSuccess($item);
