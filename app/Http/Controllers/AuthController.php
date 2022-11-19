@@ -120,7 +120,7 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Get(
      *     path="/me",
      *     tags={"User Authenticate"},
      *     summary="Get user",
