@@ -638,7 +638,7 @@
             }
         },
         "/me": {
-            "post": {
+            "get": {
                 "tags": [
                     "User Authenticate"
                 ],
