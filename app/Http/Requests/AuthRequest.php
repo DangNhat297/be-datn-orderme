@@ -26,24 +26,27 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-           'phone'=>'required|unique:users|numeric|min:11',
+            'name' => 'required',
+            'phone' => 'required|unique:users|numeric|min:11',
+            'password' => 'required|confirmed|min:6',
+            'password_confirmation' => 'required_with:password|same:password|min:6'
         ];
     }
 
 
-    public function  messages()
+    public function messages()
     {
         return [];
     }
 
 
-    protected  function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
         $json = [
             'result' => false,
             'message' => $validator->errors()->all()
         ];
-        $response = response( $json );
+        $response = response($json);
         throw new ValidationException($validator, $response);
     }
 }

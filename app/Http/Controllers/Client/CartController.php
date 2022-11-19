@@ -26,6 +26,7 @@ class CartController extends Controller
      *      tags={"Cart"},
      *      summary="Get list of Cart",
      *      description="Returns list of Cart",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="User id",
@@ -60,6 +61,7 @@ class CartController extends Controller
      *      tags={"Cart"},
      *      summary="Add products to cart",
      *      description="Returns cart data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/CartCreate")
@@ -122,6 +124,7 @@ class CartController extends Controller
      *      tags={"Cart"},
      *      summary="Update existing cart",
      *      description="Returns updated cart data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Cart id",
@@ -159,6 +162,7 @@ class CartController extends Controller
      *      tags={"Cart"},
      *      summary="Delete existing cart",
      *      description="Deletes a record and returns no content",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Cart id",
@@ -191,6 +195,7 @@ class CartController extends Controller
      *      tags={"Cart"},
      *      summary="Delete existing cart",
      *      description="Delete multiple record and returns no content",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="cartIds[]",
      *          description="Cart id",

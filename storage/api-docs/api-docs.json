@@ -38,7 +38,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -68,7 +73,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/admin/category/{id}": {
@@ -101,7 +111,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -142,7 +157,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -171,7 +191,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/admin/dish": {
@@ -193,7 +218,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -223,7 +253,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/admin/dish/{id}": {
@@ -256,7 +291,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -297,7 +337,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -326,7 +371,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/admin/location": {
@@ -348,7 +398,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -378,7 +433,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/admin/location/{id}": {
@@ -411,7 +471,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -452,7 +517,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -481,16 +551,66 @@
                             }
                         }
                     }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "User Authenticate"
+                ],
+                "summary": "Create new",
+                "description": "Returns user data",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegister"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User register success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Error Internal server"
+                    }
                 }
             }
         },
-        "/client/auth/login": {
+        "/login": {
             "post": {
                 "tags": [
-                    "User"
+                    "User Authenticate"
                 ],
-                "summary": "Login into system",
-                "operationId": "authLoginUser",
+                "summary": "User Login",
+                "description": "Login into system",
+                "operationId": "authLogin",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -502,10 +622,103 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Successful operation"
+                    "200": {
+                        "description": "Login success"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
+            }
+        },
+        "/me": {
+            "post": {
+                "tags": [
+                    "User Authenticate"
+                ],
+                "summary": "Get user",
+                "description": "Returns a single user.",
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "return a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "User Authenticate"
+                ],
+                "summary": "Logout",
+                "description": "logout",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "logout success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/client/cart/{id}": {
@@ -538,7 +751,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -579,7 +797,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -608,7 +831,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/client/cart": {
@@ -640,7 +868,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/client/cart/deleteMultiple": {
@@ -674,7 +907,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "tokenJWT": []
+                    }
+                ]
             }
         },
         "/hero-wedding/message": {
@@ -1065,13 +1303,96 @@
                 "type": "object"
             },
             "UserLogin": {
+                "title": "User Login Request",
+                "description": "User Login request body data",
+                "required": [
+                    "name"
+                ],
                 "properties": {
                     "phone": {
-                        "type": "number"
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserRegister": {
+                "title": "User register request",
+                "description": "User register request body data",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserRegister"
+                }
+            },
+            "UserResponse": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "password": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "tokenJWT": {
+                "type": "http",
+                "description": "Login with email and password to get the authentication token",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "User Authenticate",
+            "description": "Đăng nhập trước nhé <3"
+        }
+    ]
 }

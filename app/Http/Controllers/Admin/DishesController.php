@@ -7,6 +7,7 @@ use App\Http\Requests\DishesRequest;
 use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class DishesController extends Controller
 {
@@ -21,7 +22,7 @@ class DishesController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -36,6 +37,7 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Get list of dish",
      *      description="Returns list of dish",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -61,6 +63,7 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Create new dish",
      *      description="Returns dish data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/DishesCreate")
@@ -96,6 +99,7 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Get dish information",
      *      description="Returns dish data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",
@@ -127,6 +131,7 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Update existing dish",
      *      description="Returns updated dish data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",
@@ -177,6 +182,7 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Delete existing dish",
      *      description="Deletes a record and returns no content",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",

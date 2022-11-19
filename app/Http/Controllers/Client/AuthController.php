@@ -1,7 +1,8 @@
 <?php
 
 
- namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers\Client;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
@@ -16,22 +17,6 @@ class AuthController extends Controller
         $this->user = $user;
     }
 
-    /**
-     * @OA\Post(
-     *      path="/client/auth/login",
-     *      operationId="authLoginUser",
-     *      tags={"User"},
-     *      summary="Login into system",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/UserLogin")
-     *      ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful operation",
-     *       ),
-     * )
-     */
     public function login(AuthRequest $request)
     {
         $user = $this->user->newQuery()->where('phone', $request->phone)->first();
@@ -62,13 +47,13 @@ class AuthController extends Controller
     {
 //            $id=auth()->user()->id;
 
-            $user=$this->user->newQuery()->findOrFail($id);
-            $user->fill($request->except('password'));
-            if(!empty($request->password_old)){
-                if(Hash::check($request->password_old,$user->password)){
-                    $user->password=Hash::make($request->password);
-                }
+        $user = $this->user->newQuery()->findOrFail($id);
+        $user->fill($request->except('password'));
+        if (!empty($request->password_old)) {
+            if (Hash::check($request->password_old, $user->password)) {
+                $user->password = Hash::make($request->password);
             }
+        }
 
         $user = $this->user->newQuery()->findOrFail($id);
 

@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LocationCreateRequest;
 use App\Http\Requests\LocationUpdateRequest;
 use App\Models\Location;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 
@@ -22,6 +22,7 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Get list of locltion",
      *      description="Returns list of location",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -29,7 +30,7 @@ class LocationController extends Controller
      *       ),
      *     )
      */
-    public function index():JsonResponse
+    public function index(): JsonResponse
     {
         $data = $this->locationModel
             ->newQuery()
@@ -45,6 +46,7 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Create new location",
      *      description="Returns location data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/LocationCreate")
@@ -74,6 +76,7 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Get location information",
      *      description="Returns location data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Location id",
@@ -106,6 +109,7 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Update existing location",
      *      description="Returns updated location data",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Location id",
@@ -145,6 +149,7 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Delete existing location",
      *      description="Deletes a record and returns no content",
+     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Location id",
@@ -163,7 +168,7 @@ class LocationController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-       $this->locationModel
+        $this->locationModel
             ->newQuery()
             ->findOrFail($id)->delete();
 
