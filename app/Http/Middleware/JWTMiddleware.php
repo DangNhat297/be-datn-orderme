@@ -34,5 +34,6 @@ class JWTMiddleware extends BaseMiddleware
                 'message' => 'Unauthorized'
             ], 401);
         }
+
     }
 }

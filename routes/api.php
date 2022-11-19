@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\HeroWeddingMessageController;
+use App\Http\Controllers\Client\DishController;
+use App\Http\Controllers\Client\CategoryController as CategoryClient;
+use App\Http\Controllers\Client\LocationController as LocationClient;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,6 +22,17 @@ Route::prefix('client')->group(function () {
     // cart
     Route::apiResource('cart', CartController::class);
     Route::post('cart/deleteMultiple', [CartController::class, 'Delete_Cart_By_Selection']);
+
+
+    Route::apiResource('category', CategoryClient::class)->only('index');
+
+    // dish
+    Route::apiResource('dish', DishController::class);
+    Route::get('dish/by-category/{id}', [DishController::class,'by_category']);
+
+    // location
+    Route::apiResource('location', LocationClient::class);
+
 });
 
 

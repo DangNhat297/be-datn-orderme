@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000/api/v1",
+            "url": "http://my-default-host.com",
             "description": "Order Me API"
         }
     ],
@@ -913,6 +913,171 @@
                         "tokenJWT": []
                     }
                 ]
+            }
+        },
+        "/client/category": {
+            "get": {
+                "tags": [
+                    "CategoryClient"
+                ],
+                "summary": "Get list of category",
+                "description": "Returns list of category",
+                "operationId": "getClientCategories",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/dish": {
+            "get": {
+                "tags": [
+                    "DishClient"
+                ],
+                "summary": "Get list of dish",
+                "description": "Returns list of dish",
+                "operationId": "getClientDishes",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DishesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/dish/{id}": {
+            "get": {
+                "tags": [
+                    "DishClient"
+                ],
+                "summary": "Get dish information",
+                "description": "Returns dish data",
+                "operationId": "getClientDishById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Dish id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DishesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/dish/by-category/{id}": {
+            "get": {
+                "tags": [
+                    "DishClient"
+                ],
+                "summary": "Get dish information",
+                "description": "Returns dish data",
+                "operationId": "getClientDishByCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Category id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DishesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/location": {
+            "get": {
+                "tags": [
+                    "LocationClient"
+                ],
+                "summary": "Get list of locltion",
+                "description": "Returns list of location",
+                "operationId": "getClientLocations",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/location/{id}": {
+            "get": {
+                "tags": [
+                    "LocationClient"
+                ],
+                "summary": "Get location information",
+                "description": "Returns location data",
+                "operationId": "getClientLocationById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Location id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/hero-wedding/message": {
