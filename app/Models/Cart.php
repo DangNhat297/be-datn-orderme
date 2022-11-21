@@ -3,18 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Cart extends Model
+class Cart extends BaseModel
 {
     use HasFactory;
-    protected $fillable=['user_id'];
+    protected $fillable = ['user_id'];
 
-    function cartDetail(){
+    function cart_items()
+    {
         return $this->hasMany(CartProduct::class)->with('dish');
     }
 
-    function addNewCart($data){
+    function dishes()
+    {
+        return $this->belongsToMany(Dishes::class, 'cart_product', 'cart_id', 'dish_id')
+                        ->withPivot('quantity');
+    }
+
+    function addNewCart($data)
+    {
         return Cart::create($data);
     }
 }
