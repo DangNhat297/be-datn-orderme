@@ -46,4 +46,32 @@ class BaseModel extends Model
 
         return $query;
     }
+
+
+    public function scopeFindByCategory(Builder $query, Request $request): Builder
+    {
+        if ($category = $request->category) {
+            $cate=Category::query()->where('slug',$category)->first();
+            return $query->where('category_id', $cate->id);
+        }
+
+        return $query;
+    }
+
+
+    public function scopeFindBySlug(Builder $query, Request $request): Builder
+    {
+        if ($slug = $request->slug) {
+            return $query->where('slug', $slug);
+        }
+
+        return $query;
+    }
+
+    public function scopeFindSort(Builder $query, Request $request): Builder
+    {
+        if ($sort= $request->sort ) {
+            return $query->orderBy("$sort",$request->orderBy??'asc');
+        }
+    }
 }

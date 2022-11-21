@@ -33,10 +33,11 @@ class DishController extends Controller
     {
         $data = $this->dishes
             ->newQuery()
-            ->orderBy('id', 'DESC')
+            ->findbyName($request)
             ->findbyCategory($request)
+            ->findSort($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
-        $data->makeHidden('status', 'created_at', 'updated_at')->toArray();
+        $data->makeHidden('status', 'created_at', 'updated_at');
         return $this->sendSuccess($data);
     }
 

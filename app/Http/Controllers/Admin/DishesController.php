@@ -8,6 +8,7 @@ use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Request;
 
 class DishesController extends Controller
 {
@@ -45,11 +46,13 @@ class DishesController extends Controller
      *       ),
      *     )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $data = $this->dishes
             ->newQuery()
             ->orderBy('id', 'DESC')
+            ->findByName($request)
+            ->findByCategory($request)
             ->paginate(PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
