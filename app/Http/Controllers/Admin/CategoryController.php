@@ -32,14 +32,14 @@ class CategoryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $limit = $request->limit ?? PAGE_SIZE_DEFAULT;
+        $pageSize = $request->page_size ?: PAGE_SIZE_DEFAULT;
 
         $data = $this->categoryModel
             ->newQuery()
             ->where('is_deleted', 0)
             ->findByName($request)
             ->findByStatus($request)
-            ->paginate($limit);
+            ->paginate($pageSize);
 
         $data->getCollection()->transform(function ($value) {
             $value->makeHidden(['created_at', 'updated_at']);

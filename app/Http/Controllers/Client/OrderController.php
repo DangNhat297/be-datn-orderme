@@ -97,7 +97,7 @@ class OrderController extends Controller
         }
 
         $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
-
+        
         $dishes = $this->dish
             ->newQuery()
             ->findMany($dishIDs);

@@ -59,11 +59,11 @@ class Handler extends ExceptionHandler
             return $this->convertValidationExceptionToResponse($e, $request);
         }
 
-        if ($e instanceof ModelNotFoundException ) {
+        if ($e instanceof ModelNotFoundException) {
             return response()->json([
-                'result'=>false,
+                'result' => false,
                 'message' => 'Data not found.'
-            ],404);
+            ], 404);
         }
 
         if ($request->is('api/*')) {

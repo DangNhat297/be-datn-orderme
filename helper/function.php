@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 if (!function_exists('uploadFile')) {
@@ -70,4 +71,14 @@ if (!function_exists('generate_order_code')) {
     {
         return uniqid('o');
     }
+}
+
+function convert_date(string $date, $format = 'Y-m-d H:i:s')
+{
+    return Carbon::parse(strtotime($date))->format($format);
+}
+
+function convert_end_date(string $date, $format = 'Y-m-d H:i:s')
+{
+    return Carbon::parse(strtotime($date))->endOfDay()->format($format);
 }
