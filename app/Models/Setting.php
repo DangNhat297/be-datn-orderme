@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Setting extends Model
+class Setting extends BaseModel
 {
-    protected $fillable=['phone','logo','email','address','name'];
+    protected $fillable = [
+        'phone',
+        'logo',
+        'email',
+        'address',
+        'name'
+    ];
     use HasFactory;
 }
