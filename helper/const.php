@@ -1,3 +1,15 @@
 <?php
 
 const PAGE_SIZE_DEFAULT = 5;
+
+const ORDER_CANCEL = 0;
+
+const ORDER_PENDING = 1;
+
+const ORDER_COOKING = 2;
+
+const ORDER_WAIT_FOR_SHIPPING = 3;
+
+const ORDER_SHIPPING = 4;
+
+const ORDER_COMPLETE = 5;
