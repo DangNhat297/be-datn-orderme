@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://my-default-host.com",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -1690,7 +1690,7 @@
             "tokenJWT": {
                 "type": "http",
                 "description": "Login with email and password to get the authentication token",
-                "name": "Token based Based",
+                "name": "Authorization",
                 "in": "header",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"

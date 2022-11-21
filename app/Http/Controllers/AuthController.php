@@ -98,15 +98,17 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $user = $this->user->newQuery()->where('phone', $request->phone)->first();
-
-        if ($user) {
+        $user = $this->user
+            ->newQuery()
+            ->where('phone', $request->phone)
+            ->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Phone number or password incorrect !'
+            ], 500);
+        } else {
             $token = JWTAuth::fromUser($user);
             return $this->respondWithToken($token);
-        } else {
-            return response()->json([
-                'message' => 'User not Found'
-            ], 500);
         }
     }
 
@@ -115,6 +117,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
+            'expires_in' => 3600
 //            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }

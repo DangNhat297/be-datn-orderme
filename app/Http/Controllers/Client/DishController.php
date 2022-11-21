@@ -34,8 +34,9 @@ class DishController extends Controller
         $data = $this->dishes
             ->newQuery()
             ->orderBy('id', 'DESC')
-            ->paginate($request->limit??PAGE_SIZE_DEFAULT);
-        $data->makeHidden('status','created_at', 'updated_at')->toArray();
+            ->findbyCategory($request)
+            ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
+        $data->makeHidden('status', 'created_at', 'updated_at')->toArray();
         return $this->sendSuccess($data);
     }
 
@@ -67,7 +68,7 @@ class DishController extends Controller
         $item = $this->dishes
             ->newQuery()
             ->findOrFail($id);
-        $item->makeHidden('status','created_at', 'updated_at')->toArray();
+        $item->makeHidden('status', 'created_at', 'updated_at')->toArray();
         return $this->sendSuccess($item);
     }
 
@@ -95,14 +96,14 @@ class DishController extends Controller
      * )
      */
 
-    public function by_category(Request $request,$id): JsonResponse
+    public function by_category(Request $request, $id): JsonResponse
     {
         $item = $this->dishes
             ->newQuery()
-            ->where('category_id',$id)
-            ->paginate($request->limit??PAGE_SIZE_DEFAULT);
+            ->where('category_id', $id)
+            ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
-        $item->makeHidden('status','created_at', 'updated_at')->toArray();
+        $item->makeHidden('status', 'created_at', 'updated_at')->toArray();
         return $this->sendSuccess($item);
     }
 
