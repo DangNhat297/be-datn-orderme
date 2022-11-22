@@ -22,6 +22,63 @@ class DishController extends Controller
      *      tags={"DishClient"},
      *      summary="Get list of dish",
      *      description="Returns list of dish",
+     *      @OA\Parameter(
+     *          name="category",
+     *          description="category slug",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *        @OA\Parameter(
+     *          name="search",
+     *          description="dish name",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="limit size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="start_price",
+     *          description=" start price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="number"),
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_price",
+     *          description=" end price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="number"),
+     *      ),
+     *      @OA\Parameter(
+     *          name="sort",
+     *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="string"),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -33,11 +90,15 @@ class DishController extends Controller
     {
         $data = $this->dishes
             ->newQuery()
-            ->findbyName($request)
             ->findbyCategory($request)
+            ->findbyName($request)
             ->findSort($request)
+            ->findByPriceRange($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
-        $data->makeHidden('status', 'created_at', 'updated_at');
+        $data->getCollection()->transform(function ($value) {
+            $value->makeHidden(['created_at', 'updated_at','status']);
+            return $value;
+        });
         return $this->sendSuccess($data);
     }
 

@@ -8,7 +8,8 @@ use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+
 
 class DishesController extends Controller
 {
@@ -39,6 +40,63 @@ class DishesController extends Controller
      *      summary="Get list of dish",
      *      description="Returns list of dish",
      *      security={{ "tokenJWT": {} }},
+     *      @OA\Parameter(
+     *          name="category",
+     *          description="category slug",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *        @OA\Parameter(
+     *          name="search",
+     *          description="dish name",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="limit size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="start_price",
+     *          description=" start price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="number"),
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_price",
+     *          description=" end price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="number"),
+     *      ),
+     *      @OA\Parameter(
+     *          name="sort",
+     *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="string"),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -50,10 +108,11 @@ class DishesController extends Controller
     {
         $data = $this->dishes
             ->newQuery()
-            ->orderBy('id', 'DESC')
-            ->findByName($request)
-            ->findByCategory($request)
-            ->paginate(PAGE_SIZE_DEFAULT);
+            ->findbyCategory($request)
+            ->findbyName($request)
+            ->findSort($request)
+            ->findByPriceRange($request)
+            ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
 

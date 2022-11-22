@@ -70,8 +70,31 @@ class BaseModel extends Model
 
     public function scopeFindSort(Builder $query, Request $request): Builder
     {
-        if ($sort= $request->sort ) {
-            return $query->orderBy("$sort",$request->orderBy??'asc');
+        $desc='-';
+        $asc='+';
+        if (isset($request->sort)) {
+            $sort=$request->sort;
+            if (strlen(strstr($sort, $desc)) > 0) {
+                $sort= str_replace($desc, '', $request->sort);
+                return $query->orderBy("$sort",'desc');
+            } else {
+                $sort= str_replace($asc, '', $request->sort);
+                return $query->orderBy("$sort",'asc');
+            }
+
         }
+        return $query;
     }
+
+
+
+
+    public function scopeFindByPriceRange(Builder $query, Request $request): Builder
+    {
+        if (!$request->start_price && !$request->end_price) return $query;
+            $priceStart = $request->start_price;
+            $priceEnd = $request->end_price;
+             return $query->whereBetween('price', [$priceStart, $priceEnd]);
+    }
+
 }
