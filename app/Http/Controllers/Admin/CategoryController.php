@@ -112,7 +112,6 @@ class CategoryController extends Controller
     {
         $item = $this->categoryModel
             ->newQuery()
-            ->with('children')
             ->findOrFail($id);
 
         return $this->sendSuccess($item);

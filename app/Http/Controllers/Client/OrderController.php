@@ -58,43 +58,9 @@ class OrderController extends Controller
         $data = $request->only([
             'phone',
             'note',
-            'location_id'
+            'location_id',
+            'total'
         ]);
-
-        if (auth()->check()) {
-            $cart = $this->cart
-                ->newQuery()
-                ->where('user_id', auth()->id)
-                ->first();
-
-            $data['total'] = $cart->dishes->reduce(function ($sum, $currentVal) {
-                return $sum += $currentVal->price;
-            }, 0);
-
-            $dishes = $cart->dishes->map(function ($dish) {
-                $dish->quantity = $dish->pivot->quantity;
-
-                return $dish->only([
-                    'id',
-                    'price',
-                    'quantity'
-                ]);
-            })->keyBy('id');
-
-            $res = DB::transaction(function () use ($data, $dishes, $cart) {
-                $order = $this->order
-                    ->newQuery()
-                    ->create($data);
-
-                $order->dishes()->attach($dishes);
-
-                $cart->delete();
-
-                return $order;
-            });
-
-            return $res;
-        }
 
         $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
         
@@ -108,9 +74,9 @@ class OrderController extends Controller
             return $dish;
         })->keyBy('dish_id');
 
-        $data['total'] = $dishOfOrder->reduce(function ($sum, $currentVal) {
-            return $sum += $currentVal['price'];
-        }, 0);
+        // $data['total'] = $dishOfOrder->reduce(function ($sum, $currentVal) {
+        //     return $sum += $currentVal['price'];
+        // }, 0);
 
         $res = DB::transaction(function () use ($data, $dishOfOrder) {
             $order = $this->order
