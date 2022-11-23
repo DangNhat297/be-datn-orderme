@@ -69,7 +69,9 @@ if (!function_exists('vn_to_str')) {
 if (!function_exists('generate_order_code')) {
     function generate_order_code()
     {
-        return uniqid('o');
+        $str_random = uniqid();
+        $code = strtoupper(substr($str_random, 6, 6));
+        return 'o' . $code;
     }
 }
 
