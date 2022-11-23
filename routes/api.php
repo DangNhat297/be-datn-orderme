@@ -4,14 +4,14 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\HeroWeddingMessageController;
-use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\CategoryController as CategoryClient;
+use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\LocationController as LocationClient;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\HeroWeddingMessageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,13 +30,14 @@ Route::prefix('client')->group(function () {
 
     // dish
     Route::apiResource('dish', DishController::class);
-    Route::get('dish/by-category/{id}', [DishController::class,'by_category']);
+    Route::get('dish/by-category/{id}', [DishController::class, 'by_category']);
 
     // location
     Route::apiResource('location', LocationClient::class);
 
     // order
     Route::apiResource('order', OrderController::class)->except(['destroy']);
+    Route::get('orderList/{phone}', [OrderController::class, 'index']);
 });
 
 

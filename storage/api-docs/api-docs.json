@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": " http://localhost:8000/api/v1/",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -622,6 +622,93 @@
                         "tokenJWT": []
                     }
                 ]
+            }
+        },
+        "/admin/order": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get list of order",
+                "description": "Returns list of order",
+                "operationId": "getOrders",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "category slug",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "dish name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_price",
+                        "in": "query",
+                        "description": " start price",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "end_price",
+                        "in": "query",
+                        "description": " end price",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DishesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/admin/setting": {
@@ -1285,6 +1372,145 @@
                 }
             }
         },
+        "/client/orderList/{phone}": {
+            "get": {
+                "tags": [
+                    "Order Client"
+                ],
+                "summary": "Get order list",
+                "description": "Returns order data",
+                "operationId": "getOrderListClient",
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "path",
+                        "description": "user phone",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/order": {
+            "post": {
+                "tags": [
+                    "Order Client"
+                ],
+                "summary": "Create new order",
+                "description": "Returns order data",
+                "operationId": "createOrderClient",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/order/{id}": {
+            "get": {
+                "tags": [
+                    "Order Client"
+                ],
+                "summary": "Get order detail information",
+                "description": "Returns order data",
+                "operationId": "getOrderByIdClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderDetailResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Order Client"
+                ],
+                "summary": "Update existing Order",
+                "description": "Returns updated location data",
+                "operationId": "updateOrderClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/hero-wedding/message": {
             "get": {
                 "tags": [
@@ -1668,6 +1894,169 @@
                     },
                     "distance": {
                         "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "LogResponse": {
+                "title": "Log Data",
+                "description": "Log model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "change_by": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderCreate": {
+                "title": "Order Request",
+                "description": "Order model",
+                "properties": {
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "location_id": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "dishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderDetailRequest"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDetailRequest": {
+                "title": "Order Detail Request",
+                "description": "Order model",
+                "properties": {
+                    "dish_id": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDetailResponse": {
+                "title": "Order Detail Response",
+                "description": "Order model",
+                "properties": {
+                    "dishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderDishItem"
+                        }
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDishItem": {
+                "title": "Order Dish Item",
+                "description": "Order model",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderResponse": {
+                "title": "Order Request",
+                "description": "Order model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/LocationResponse"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "logs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LogResponse"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderUpdate": {
+                "title": "Order Request",
+                "description": "Order model",
+                "properties": {
+                    "status": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"

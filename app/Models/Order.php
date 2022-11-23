@@ -25,11 +25,11 @@ class Order extends BaseModel
     {
         static::creating(function (Order $order) {
             $order->status = 1;
-            $order->user_id = auth()->id;
+            $order->user_id = auth()->id ?? null;
             $order->code = generate_order_code();
         });
     }
-    
+
     /**
      * logs
      *
@@ -39,7 +39,7 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderLog::class);
     }
-    
+
     /**
      * location
      *
@@ -49,7 +49,7 @@ class Order extends BaseModel
     {
         return $this->belongsTo(Location::class);
     }
-    
+
     /**
      * dishes
      *
