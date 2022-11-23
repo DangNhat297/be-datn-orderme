@@ -14,8 +14,7 @@ class OrderController extends Controller
     public function __construct(
         protected Order  $order,
         protected Dishes $dish,
-    )
-    {
+    ) {
     }
 
     /**
@@ -135,6 +134,11 @@ class OrderController extends Controller
                 ->create($data);
 
             $order->dishes()->attach($dishOfOrder);
+
+            $order->logs()->create([
+                'status' => 1,
+                'change_by' => auth()->id ?? null
+            ]);
 
             return $order;
         });
