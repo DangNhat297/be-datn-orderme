@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -110,16 +111,12 @@ class AuthController extends Controller
 //            $token = JWTAuth::fromUser($user);
 //            return $this->respondWithToken($token);
 
-            // Delete old tokens
             $user->tokens()->delete();
-
-            // Create new tokens
             $token = $user->createToken('token')->plainTextToken;
 
-            // Create Cookie
             $cookie = Cookie::create(env('AUTH_COOKIE_NAME'))
                 ->withValue($token)
-                ->withExpires(strtotime("+1 hour"))
+                ->withExpires(strtotime("+6 months"))
                 ->withSecure(true)
                 ->withHttpOnly(true)
                 ->withDomain(env('SESSION_DOMAIN'))
@@ -130,8 +127,6 @@ class AuthController extends Controller
                 'token' => $token,
             ];
 
-
-            // Return user, token and set refresh cookie
             return response($response, 201)->cookie($cookie);
         }
     }
@@ -195,11 +190,12 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        auth()->logout();
-
-        return [
+        $res = new Response();
+        $res->headers->clearCookie(env('AUTH_COOKIE_NAME'));
+        $res->send();
+        return response()->json([
             'message' => 'Logged out'
-        ];
+        ], 202);
     }
 
     protected function respondWithToken($token)
