@@ -109,15 +109,20 @@ class AuthController extends Controller
         } else {
 //            $token = JWTAuth::fromUser($user);
 //            return $this->respondWithToken($token);
+
+            // Delete old tokens
             $user->tokens()->delete();
+
+            // Create new tokens
             $token = $user->createToken('token')->plainTextToken;
 
+            // Create Cookie
             $cookie = Cookie::create(env('AUTH_COOKIE_NAME'))
                 ->withValue($token)
                 ->withExpires(strtotime("+1 hour"))
                 ->withSecure(true)
                 ->withHttpOnly(true)
-                ->withDomain(env('DOMAIN'))
+                ->withDomain(env('SESSION_DOMAIN'))
                 ->withSameSite("none");
 
             $response = [
@@ -125,6 +130,8 @@ class AuthController extends Controller
                 'token' => $token,
             ];
 
+
+            // Return user, token and set refresh cookie
             return response($response, 201)->cookie($cookie);
         }
     }
@@ -189,6 +196,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         auth()->logout();
+
         return [
             'message' => 'Logged out'
         ];

@@ -85,6 +85,7 @@ class Controller extends BaseController
         return response()->json([], 204);
     }
 }
+//
 //* @OA\SecurityScheme(
 // *      type="http",
 // *      description="Login with email and password to get the authentication token",
