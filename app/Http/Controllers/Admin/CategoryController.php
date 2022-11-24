@@ -22,7 +22,6 @@ class CategoryController extends Controller
      *      tags={"Category"},
      *      summary="Get list of category",
      *      description="Returns list of category",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -56,7 +55,6 @@ class CategoryController extends Controller
      *      tags={"Category"},
      *      summary="Create new category",
      *      description="Returns category data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/CategoryCreate")
@@ -91,7 +89,6 @@ class CategoryController extends Controller
      *      tags={"Category"},
      *      summary="Get category information",
      *      description="Returns category data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Category id",
@@ -124,7 +121,6 @@ class CategoryController extends Controller
      *      tags={"Category"},
      *      summary="Delete existing category",
      *      description="Deletes a record and returns no content",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Category id",
@@ -159,7 +155,6 @@ class CategoryController extends Controller
      *      tags={"Category"},
      *      summary="Update existing category",
      *      description="Returns updated category data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Category id",

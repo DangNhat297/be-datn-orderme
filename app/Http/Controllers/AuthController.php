@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use JWTAuth;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class AuthController extends Controller
 {
@@ -107,19 +107,26 @@ class AuthController extends Controller
                 'message' => 'Phone number or password incorrect !'
             ], 500);
         } else {
-            $token = JWTAuth::fromUser($user);
-            return $this->respondWithToken($token);
-        }
-    }
+//            $token = JWTAuth::fromUser($user);
+//            return $this->respondWithToken($token);
+            $user->tokens()->delete();
+            $token = $user->createToken('token')->plainTextToken;
 
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => 3600
-//            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ]);
+            $cookie = Cookie::create(env('AUTH_COOKIE_NAME'))
+                ->withValue($token)
+                ->withExpires(strtotime("+1 hour"))
+                ->withSecure(true)
+                ->withHttpOnly(true)
+                ->withDomain(env('DOMAIN'))
+                ->withSameSite("none");
+
+            $response = [
+                'user' => $user,
+                'token' => $token,
+            ];
+
+            return response($response, 201)->cookie($cookie);
+        }
     }
 
     /**
@@ -129,7 +136,6 @@ class AuthController extends Controller
      *     summary="Get user",
      *     operationId="getProfile",
      *     description="Returns a single user.",
-     *     security={{ "tokenJWT": {} }},
      *     @OA\Response(
      *         response=200,
      *         description="return a user",
@@ -151,7 +157,7 @@ class AuthController extends Controller
      */
     public function profile(): JsonResponse
     {
-        return $this->sendSuccess(auth('api')->user());
+        return $this->sendSuccess(auth()->user());
     }
 
     /**
@@ -161,7 +167,6 @@ class AuthController extends Controller
      *     summary="Logout",
      *     operationId="authLogout",
      *     description="logout",
-     *     security={{ "tokenJWT": {} }},
      *     @OA\Response(
      *         response=200,
      *         description="logout success",
@@ -184,9 +189,18 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         auth()->logout();
-
         return [
             'message' => 'Logged out'
         ];
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => 3600
+//            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ]);
     }
 }
