@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 class LocationUpdateRequest extends FormRequest
 {
@@ -28,4 +30,15 @@ class LocationUpdateRequest extends FormRequest
             'distance' => 'required|numeric',
         ];
     }
+
+    protected  function failedValidation(Validator $validator)
+    {
+        $json = [
+            'result' => false,
+            'message' => $validator->errors()->all()
+        ];
+        $response = response( $json );
+        throw new ValidationException($validator, $response);
+    }
+
 }

@@ -22,6 +22,24 @@ class CategoryController extends Controller
      *      tags={"CategoryClient"},
      *      summary="Get list of category",
      *      description="Returns list of category",
+     *      @OA\Parameter(
+     *          name="search",
+     *          description="Category name",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="status",
+     *          description="Category status",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",

@@ -9,6 +9,7 @@ use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 
 class DishesController extends Controller
@@ -139,14 +140,8 @@ class DishesController extends Controller
     {
 
         $item = $this->dishes->fill($request->all());
-        $imageFake = fakeImage();
-        $item->image = $request->image ?? $imageFake;
-        $item->slug = $request->slug ?? makeSlug($request->name);
-//        if ($request->hasFile('image')) {
-//            $file = $request->image;
-//            $item->image = uploadFile($file, 'images/dishes/');
-//        }
-
+        $item->image = $request->image ?? fakeImage();
+        $item->slug = $request->slug ?? Str::slug($request->name, '-');
         $item->save();
         return $this->createSuccess($item);
 

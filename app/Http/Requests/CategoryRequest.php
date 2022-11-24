@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CategoryRequest extends FormRequest
 {
@@ -32,9 +34,19 @@ class CategoryRequest extends FormRequest
             //     'required',
             //     'integer',
             //     Rule::when($this->parent_id != 0, function () {
-            //         return Rule::exists('dish_categories', 'id')->where('parent_id', 0); 
+            //         return Rule::exists('dish_categories', 'id')->where('parent_id', 0);
             //     })
             // ]
         ];
+    }
+
+    protected  function failedValidation(Validator $validator)
+    {
+        $json = [
+            'result' => false,
+            'message' => $validator->errors()->all()
+        ];
+        $response = response( $json );
+        throw new ValidationException($validator, $response);
     }
 }

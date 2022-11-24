@@ -97,4 +97,15 @@ class BaseModel extends Model
              return $query->whereBetween('price', [$priceStart, $priceEnd]);
     }
 
+
+    function scopeFindByLocation(Builder $query, Request $request){
+        if($search=$request->search){
+            return $query->where('address', 'like', '%' . $search . '%')
+                ->orWhere('distance','like', '%' . $search . '%');
+        }
+        return $query;
+    }
+
+
+
 }

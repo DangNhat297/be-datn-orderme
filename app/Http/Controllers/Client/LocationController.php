@@ -21,6 +21,42 @@ class LocationController extends Controller
      *      tags={"LocationClient"},
      *      summary="Get list of locltion",
      *      description="Returns list of location",
+     *      @OA\Parameter(
+     *          name="search",
+     *          description="address or distance location",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="sort",
+     *          description="sort by query +id=>asc , -id =>desc",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="limit page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -32,8 +68,13 @@ class LocationController extends Controller
     {
         $data = $this->locationModel
             ->newQuery()
+            ->findByLocation($request)
+            ->findSort($request)
             ->paginate($request->limit??PAGE_SIZE_DEFAULT);
-        $data ->makeHidden(['created_at', 'updated_at'])->toArray();
+        $data->getCollection()->transform(function ($value) {
+            $value->makeHidden(['created_at', 'updated_at']);
+            return $value;
+        });
         return $this->sendSuccess($data);
     }
 

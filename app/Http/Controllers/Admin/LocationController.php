@@ -7,6 +7,7 @@ use App\Http\Requests\LocationCreateRequest;
 use App\Http\Requests\LocationUpdateRequest;
 use App\Models\Location;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 
 class LocationController extends Controller
@@ -22,6 +23,42 @@ class LocationController extends Controller
      *      tags={"Location"},
      *      summary="Get list of locltion",
      *      description="Returns list of location",
+     *      @OA\Parameter(
+     *          name="search",
+     *          description="address or distance location",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="sort",
+     *          description="sort by query +id=>asc , -id =>desc",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="limit page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -29,11 +66,13 @@ class LocationController extends Controller
      *       ),
      *     )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $data = $this->locationModel
             ->newQuery()
-            ->paginate(PAGE_SIZE_DEFAULT);
+            ->findByLocation($request)
+            ->findSort($request)
+            ->paginate($request->limit??PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
     }

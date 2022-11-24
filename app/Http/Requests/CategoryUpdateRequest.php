@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CategoryUpdateRequest extends FormRequest
 {
@@ -36,5 +38,15 @@ class CategoryUpdateRequest extends FormRequest
             //     })
             // ]
         ];
+    }
+
+    protected  function failedValidation(Validator $validator)
+    {
+        $json = [
+            'result' => false,
+            'message' => $validator->errors()->all()
+        ];
+        $response = response( $json );
+        throw new ValidationException($validator, $response);
     }
 }
