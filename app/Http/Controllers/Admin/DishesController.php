@@ -7,8 +7,8 @@ use App\Http\Requests\DishesRequest;
 use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 
 class DishesController extends Controller
@@ -39,7 +39,6 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Get list of dish",
      *      description="Returns list of dish",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="category",
      *          description="category slug",
@@ -125,7 +124,6 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Create new dish",
      *      description="Returns dish data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/DishesCreate")
@@ -161,7 +159,6 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Get dish information",
      *      description="Returns dish data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",
@@ -193,7 +190,6 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Update existing dish",
      *      description="Returns updated dish data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",
@@ -244,7 +240,6 @@ class DishesController extends Controller
      *      tags={"Dish"},
      *      summary="Delete existing dish",
      *      description="Deletes a record and returns no content",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Dish id",

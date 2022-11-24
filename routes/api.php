@@ -41,14 +41,14 @@ Route::prefix('client')->group(function () {
 });
 
 
-Route::group(['middleware' => 'auth.jwt'], function ($routes) {
+Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
-    // user
+// account
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
 
-    // admin
+// admin
     Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
         // category
         Route::apiResource('category', CategoryController::class);

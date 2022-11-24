@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+
 class SettingController extends Controller
 {
-   protected $settingModel;
+    protected $settingModel;
+
     function __construct(Setting $settingModel)
     {
-        $this->settingModel=$settingModel;
+        $this->settingModel = $settingModel;
     }
 
     /**
@@ -21,7 +23,6 @@ class SettingController extends Controller
      *      tags={"Setting"},
      *      summary="Get list of setting",
      *      description="Returns list of setting",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -29,9 +30,9 @@ class SettingController extends Controller
      *       ),
      *     )
      */
-    public function index():JsonResponse
+    public function index(): JsonResponse
     {
-        $setting= $this->settingModel->query()->first();
+        $setting = $this->settingModel->query()->first();
         return $this->sendSuccess($setting);
     }
 
@@ -43,7 +44,6 @@ class SettingController extends Controller
      *      tags={"Setting"},
      *      summary="Update existing Setting",
      *      description="Returns updated Setting data",
-     *      security={{ "tokenJWT": {} }},
      *      @OA\Parameter(
      *          name="id",
      *          description="Setting id",
@@ -64,7 +64,7 @@ class SettingController extends Controller
      *       )
      * )
      */
-    public function update(Request $request, $id):JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $setting = $this->settingModel->newQuery()->findOrFail($id);
         $setting->update($request->all());

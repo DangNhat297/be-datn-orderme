@@ -26,15 +26,6 @@ use Illuminate\Routing\Controller as BaseController;
  *      url=L5_SWAGGER_CONST_HOST,
  *      description="Order Me API"
  * )
- * @OA\SecurityScheme(
- *      type="http",
- *      description="Login with email and password to get the authentication token",
- *      name="Authorization",
- *      in="header",
- *      scheme="bearer",
- *      bearerFormat="JWT",
- *      securityScheme="tokenJWT",
- *)
  * @OA\Tag(
  *     name="User Authenticate",
  *     description="Đăng nhập trước nhé <3"
@@ -94,3 +85,12 @@ class Controller extends BaseController
         return response()->json([], 204);
     }
 }
+//* @OA\SecurityScheme(
+// *      type="http",
+// *      description="Login with email and password to get the authentication token",
+// *      name="Authorization",
+// *      in="header",
+// *      scheme="bearer",
+// *      bearerFormat="JWT",
+// *      securityScheme="tokenJWT",
+// *)
