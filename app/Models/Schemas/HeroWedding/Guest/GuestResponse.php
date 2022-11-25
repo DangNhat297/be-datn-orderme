@@ -1,67 +1,60 @@
 <?php
 
-namespace App\Models\Schemas\HeroWedding\Message;
+namespace App\Models\Schemas\HeroWedding\Guest;
 
 /**
  * @OA\Schema(
- *      schema="MessageResponse",
- *      title="MessageResponse",
- *      description="Message response data",
+ *      schema="GuestResponse",
+ *      title="GuestResponse",
+ *      description="Guest request body data",
  *      type="object",
  * )
  *
  */
-class MessageResponse
+class GuestResponse
 {
 
     /**
      * @OA\Property()
      *
-     * @var integer
+     * @var string
      */
-    public $id;
+    public $guest_name;
 
     /**
      * @OA\Property()
      *
      * @var string
      */
-    public $name;
+    public $guest_slug;
 
     /**
      * @OA\Property()
      *
      * @var string
      */
-    public $phone;
+    public $notes;
 
     /**
      * @OA\Property()
      *
      * @var string
      */
-    public $message;
-
-    /**
-     * @OA\Property()
-     *
-     * @var integer
-     */
-    public $confirm;
+    public $pronoun;
 
     /**
      * @OA\Property()
      *
      * @var string
      */
-    public $side;
+    public $prefix;
 
     /**
      * @OA\Property()
      *
-     * @var integer
+     * @var string
      */
-    public $quantity;
+    public $invitation_pronoun;
 
     /**
      * @OA\Property()
