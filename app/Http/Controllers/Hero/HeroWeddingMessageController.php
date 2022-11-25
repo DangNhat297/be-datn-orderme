@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Hero;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\HeroWedding\MessageCreateRequest;
 use App\Models\HeroWeddingMessage;
 use Exception;

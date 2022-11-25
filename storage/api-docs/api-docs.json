@@ -976,6 +976,161 @@
                 }
             }
         },
+        "/chat": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Get list of chat",
+                "description": "Returns list of chat",
+                "operationId": "getChats",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Create new chat",
+                "description": "Returns chat data",
+                "operationId": "createChat",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/{id}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Get chat information",
+                "description": "Returns chat data",
+                "operationId": "getChatById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Chat id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Update existing chat",
+                "description": "Returns updated chat data",
+                "operationId": "updateChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Chat id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Delete existing chat",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Chat id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/client/cart/{id}": {
             "get": {
                 "tags": [
@@ -1572,6 +1727,91 @@
                 }
             }
         },
+        "/hero-wedding/guest": {
+            "get": {
+                "tags": [
+                    "Hero Wedding Guest"
+                ],
+                "summary": "Get list of Guest",
+                "description": "Returns list of Guest",
+                "operationId": "heroGetGuest",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Hero Wedding Guest"
+                ],
+                "summary": "Create new guest",
+                "description": "Returns guest data",
+                "operationId": "heroAddGuest",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GuestCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hero-wedding/guest/{id}": {
+            "get": {
+                "tags": [
+                    "Hero Wedding Guest"
+                ],
+                "summary": "Get Guest information",
+                "description": "Returns Guest data",
+                "operationId": "heroGetGuestById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Guest id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/hero-wedding/message": {
             "get": {
                 "tags": [
@@ -1746,6 +1986,54 @@
                 },
                 "type": "object"
             },
+            "ChatCreate": {
+                "properties": {
+                    "sender_id": {
+                        "type": "integer"
+                    },
+                    "receiver_id": {
+                        "type": "integer"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatResponse": {
+                "properties": {
+                    "sender": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "receiver": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatUpdate": {
+                "properties": {
+                    "sender_id": {
+                        "type": "integer"
+                    },
+                    "receiver_id": {
+                        "type": "integer"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "DishesCreate": {
                 "properties": {
                     "name": {
@@ -1858,6 +2146,62 @@
                 },
                 "type": "object"
             },
+            "GuestCreate": {
+                "title": "GuestCreate",
+                "description": "Guest request body data",
+                "properties": {
+                    "guest_name": {
+                        "type": "string"
+                    },
+                    "guest_slug": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "pronoun": {
+                        "type": "string"
+                    },
+                    "prefix": {
+                        "type": "string"
+                    },
+                    "invitation_pronoun": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "GuestResponse": {
+                "title": "GuestResponse",
+                "description": "Guest request body data",
+                "properties": {
+                    "guest_name": {
+                        "type": "string"
+                    },
+                    "guest_slug": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "pronoun": {
+                        "type": "string"
+                    },
+                    "prefix": {
+                        "type": "string"
+                    },
+                    "invitation_pronoun": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "MessageCreate": {
                 "title": "MessageCreate",
                 "description": "Message request body data",
@@ -1913,6 +2257,12 @@
                     },
                     "quantity": {
                         "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
