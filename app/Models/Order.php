@@ -50,6 +50,18 @@ class Order extends BaseModel
         return $this->belongsTo(Location::class);
     }
 
+
+    /**
+     * location
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'phone', 'phone');
+    }
+
+
     /**
      * dishes
      *
