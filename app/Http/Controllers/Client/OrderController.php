@@ -62,7 +62,7 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'logs'])
+            ->with(['location', 'user'])
             ->where('phone', $phone)
             ->latest()
             ->get();

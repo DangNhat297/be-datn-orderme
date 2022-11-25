@@ -4,13 +4,14 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\OrderController as AdminOrder;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CategoryController as CategoryClient;
 use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\LocationController as LocationClient;
-use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\Client\OrderController as ClientOrder;
 use App\Http\Controllers\HeroWeddingMessageController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +37,8 @@ Route::prefix('client')->group(function () {
     Route::apiResource('location', LocationClient::class);
 
     // order
-    Route::apiResource('order', OrderController::class)->except(['destroy']);
-    Route::get('orderList/{phone}', [OrderController::class, 'index']);
+    Route::apiResource('order', ClientOrder::class)->except(['destroy']);
+    Route::get('orderList/{phone}', [ClientOrder::class, 'index']);
 });
 
 
@@ -52,14 +53,18 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
         // category
         Route::apiResource('category', CategoryController::class);
+
         // dish
         Route::apiResource('dish', DishesController::class);
 
         // location
         Route::apiResource('location', LocationController::class);
 
+        // setting
         Route::apiResource('setting', SettingController::class);
 
+        // order
+        Route::apiResource('order', AdminOrder::class);
     });
 });
 

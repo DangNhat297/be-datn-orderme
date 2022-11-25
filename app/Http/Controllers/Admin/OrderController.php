@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Dishes;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -14,7 +13,8 @@ class OrderController extends Controller
     public function __construct(
         protected Order  $order,
         protected Dishes $dish,
-    ) {
+    )
+    {
     }
 
     /**
@@ -25,17 +25,26 @@ class OrderController extends Controller
      *      summary="Get list of order",
      *      description="Returns list of order",
      *      @OA\Parameter(
-     *          name="category",
-     *          description="category slug",
+     *          name="search",
+     *          description="code of order",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
      *              type="string"
      *          )
      *      ),
-     *        @OA\Parameter(
-     *          name="search",
-     *          description="dish name",
+     *      @OA\Parameter(
+     *          name="start_date",
+     *          description="start date of order",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_date",
+     *          description="end date of order",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
@@ -61,22 +70,8 @@ class OrderController extends Controller
      *          )
      *      ),
      *      @OA\Parameter(
-     *          name="start_price",
-     *          description=" start price",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(type="number"),
-     *      ),
-     *      @OA\Parameter(
-     *          name="end_price",
-     *          description=" end price",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(type="number"),
-     *      ),
-     *      @OA\Parameter(
-     *          name="sort",
-     *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
+     *          name="status",
+     *          description="status of order",
      *          required=false,
      *          in="query",
      *          @OA\Schema(type="string"),
@@ -84,7 +79,7 @@ class OrderController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/DishesResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
      *       ),
      *     )
      */
@@ -94,6 +89,7 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
+            ->with(['location', 'user'])
             ->findByCode($request)
             ->findByStatus($request)
             ->findByDateRange($request)
@@ -146,11 +142,29 @@ class OrderController extends Controller
         return $res;
     }
 
+
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
+     * @OA\Get(
+     *      path="/admin/order/{id}",
+     *      operationId="getOrderByIdAdmin",
+     *      tags={"Order"},
+     *      summary="Get order detail information",
+     *      description="Returns order data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderDetailResponse")
+     *       ),
+     * )
      */
     public function show(Order $order)
     {
@@ -174,11 +188,31 @@ class OrderController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
+     * @OA\Put(
+     *      path="/admin/order/{id}",
+     *      operationId="updateOrderAdmin",
+     *      tags={"Order"},
+     *      summary="Update existing Order",
+     *      description="Returns updated location data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *       )
+     * )
      */
     public function update(Request $request, Order $order)
     {
@@ -187,12 +221,7 @@ class OrderController extends Controller
         return $this->updateSuccess($order);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
+
     public function destroy(Order $order)
     {
         //

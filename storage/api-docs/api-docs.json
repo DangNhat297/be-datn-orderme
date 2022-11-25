@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": " http://localhost:8000/api/v1/",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -617,18 +617,27 @@
                 "operationId": "getOrders",
                 "parameters": [
                     {
-                        "name": "category",
+                        "name": "search",
                         "in": "query",
-                        "description": "category slug",
+                        "description": "code of order",
                         "required": false,
                         "schema": {
                             "type": "string"
                         }
                     },
                     {
-                        "name": "search",
+                        "name": "start_date",
                         "in": "query",
-                        "description": "dish name",
+                        "description": "start date of order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "end date of order",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -653,27 +662,9 @@
                         }
                     },
                     {
-                        "name": "start_price",
+                        "name": "status",
                         "in": "query",
-                        "description": " start price",
-                        "required": false,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
-                    {
-                        "name": "end_price",
-                        "in": "query",
-                        "description": " end price",
-                        "required": false,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
-                    {
-                        "name": "sort",
-                        "in": "query",
-                        "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
+                        "description": "status of order",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -686,7 +677,81 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DishesResponse"
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/order/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get order detail information",
+                "description": "Returns order data",
+                "operationId": "getOrderByIdAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderDetailResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Update existing Order",
+                "description": "Returns updated location data",
+                "operationId": "updateOrderAdmin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
                                 }
                             }
                         }
@@ -1967,6 +2032,12 @@
                             "$ref": "#/components/schemas/OrderDishItem"
                         }
                     },
+                    "logs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LogResponse"
+                        }
+                    },
                     "total": {
                         "type": "string"
                     },
@@ -2031,12 +2102,6 @@
                     },
                     "user": {
                         "$ref": "#/components/schemas/UserResponse"
-                    },
-                    "logs": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/LogResponse"
-                        }
                     },
                     "created_at": {
                         "type": "string"

@@ -73,15 +73,6 @@ class OrderResponse
     public $user;
 
     /**
-     * @OA\Property(
-     *     type="array",
-     *     @OA\Items(ref="#/components/schemas/LogResponse")
-     * )
-     *
-     * @var array
-     */
-    public $logs;
-    /**
      * @OA\Property()
      *
      * @var string
