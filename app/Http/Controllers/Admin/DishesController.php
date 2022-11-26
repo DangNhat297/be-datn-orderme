@@ -8,7 +8,6 @@ use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 
@@ -19,17 +18,6 @@ class DishesController extends Controller
     public function __construct(Dishes $dishes)
     {
         $this->dishes = $dishes;
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
     }
 
 
