@@ -33,13 +33,18 @@ class HeroWeddingMessageController extends Controller
      *       ),
      *     )
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
-        $data = $this->heroMessage
-            ->newQuery()
-            ->paginate(PAGE_SIZE_DEFAULT);
-
-        return $this->sendSuccess($data);
+        try {
+            $data = $this->heroMessage
+                ->newQuery()
+                ->paginate(PAGE_SIZE_DEFAULT);
+            return response()->json($data, 200);
+        } catch (Exception $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**
