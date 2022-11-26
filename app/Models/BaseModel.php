@@ -51,7 +51,7 @@ class BaseModel extends Model
     public function scopeFindByCategory(Builder $query, Request $request): Builder
     {
         if ($category = $request->category) {
-            $cate=Category::query()->where('slug',$category)->first();
+            $cate = Category::query()->where('slug', $category)->first();
             return $query->where('category_id', $cate->id);
         }
 
@@ -68,18 +68,27 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFindByHeroSlug(Builder $query, Request $request): Builder
+    {
+        if ($slug = $request->keyword) {
+            return $query->where('guest_slug', 'like', '%' . $slug . '%');
+        }
+
+        return $query;
+    }
+
     public function scopeFindSort(Builder $query, Request $request): Builder
     {
-        $desc='-';
-        $asc='+';
+        $desc = '-';
+        $asc = '+';
         if (isset($request->sort)) {
-            $sort=$request->sort;
+            $sort = $request->sort;
             if (strlen(strstr($sort, $desc)) > 0) {
-                $sort= str_replace($desc, '', $request->sort);
-                return $query->orderBy("$sort",'desc');
+                $sort = str_replace($desc, '', $request->sort);
+                return $query->orderBy("$sort", 'desc');
             } else {
-                $sort= str_replace($asc, '', $request->sort);
-                return $query->orderBy("$sort",'asc');
+                $sort = str_replace($asc, '', $request->sort);
+                return $query->orderBy("$sort", 'asc');
             }
 
         }
@@ -87,25 +96,23 @@ class BaseModel extends Model
     }
 
 
-
-
     public function scopeFindByPriceRange(Builder $query, Request $request): Builder
     {
         if (!$request->start_price && !$request->end_price) return $query;
-            $priceStart = $request->start_price;
-            $priceEnd = $request->end_price;
-             return $query->whereBetween('price', [$priceStart, $priceEnd]);
+        $priceStart = $request->start_price;
+        $priceEnd = $request->end_price;
+        return $query->whereBetween('price', [$priceStart, $priceEnd]);
     }
 
 
-    function scopeFindByLocation(Builder $query, Request $request){
-        if($search=$request->search){
+    function scopeFindByLocation(Builder $query, Request $request)
+    {
+        if ($search = $request->search) {
             return $query->where('address', 'like', '%' . $search . '%')
-                ->orWhere('distance','like', '%' . $search . '%');
+                ->orWhere('distance', 'like', '%' . $search . '%');
         }
         return $query;
     }
-
 
 
 }

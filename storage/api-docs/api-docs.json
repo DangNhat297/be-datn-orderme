@@ -1735,6 +1735,17 @@
                 "summary": "Get list of Guest",
                 "description": "Returns list of Guest",
                 "operationId": "heroGetGuest",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "slug of guest ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -2175,6 +2186,9 @@
                 "title": "GuestResponse",
                 "description": "Guest request body data",
                 "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
                     "guest_name": {
                         "type": "string"
                     },

@@ -26,6 +26,15 @@ class HeroWeddingGuestController extends Controller
      *      tags={"Hero Wedding Guest"},
      *      summary="Get list of Guest",
      *      description="Returns list of Guest",
+     *      @OA\Parameter(
+     *          name="keyword",
+     *          description="slug of guest ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -37,6 +46,7 @@ class HeroWeddingGuestController extends Controller
     {
         $data = $this->heroGuest
             ->newQuery()
+            ->findByHeroSlug($request)
             ->paginate(PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
