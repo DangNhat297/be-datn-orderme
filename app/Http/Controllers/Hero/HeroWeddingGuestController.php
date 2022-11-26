@@ -44,12 +44,17 @@ class HeroWeddingGuestController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $data = $this->heroGuest
-            ->newQuery()
-            ->findByHeroSlug($request)
-            ->paginate(PAGE_SIZE_DEFAULT);
-
-        return $this->sendSuccess($data);
+        try {
+            $data = $this->heroGuest
+                ->newQuery()
+                ->findByHeroSlug($request)
+                ->paginate(PAGE_SIZE_DEFAULT);
+            return response()->json($data, 200);
+        } catch (Exception $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 500);
+        }
     }
 
 
