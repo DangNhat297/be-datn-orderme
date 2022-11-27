@@ -18,8 +18,7 @@ class OrderController extends Controller
         protected Dishes      $dish,
         protected Cart        $cart,
         protected UserService $userService
-    )
-    {
+    ) {
     }
 
     /**
@@ -48,21 +47,21 @@ class OrderController extends Controller
     public function index($phone, Request $request)
     {
 
-//        if (auth()->check()) {
-//            $orders = $this->order
-//                ->newQuery()
-//                ->where('user_id', auth()->id)
-//                ->latest()
-//                ->get();
-//
-//            return $this->sendSuccess($orders);
-//        }
-//
-//        $phone = $this->userService->getInfoGuest();
+        //        if (auth()->check()) {
+        //            $orders = $this->order
+        //                ->newQuery()
+        //                ->where('user_id', auth()->id)
+        //                ->latest()
+        //                ->get();
+        //
+        //            return $this->sendSuccess($orders);
+        //        }
+        //
+        //        $phone = $this->userService->getInfoGuest();
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'user'])
+            ->with(['location', 'logs'])
             ->where('phone', $phone)
             ->latest()
             ->get();
@@ -121,6 +120,8 @@ class OrderController extends Controller
 
             $order->dishes()->attach($dishOfOrder);
 
+            $order->logs()->create([]);
+
             return $order;
         });
 
@@ -152,7 +153,10 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load('dishes');
+        $order->load([
+            'dishes',
+            'logs'
+        ]);
 
         $order->dishes->transform(function ($dish) {
             $dish->quantity = $dish->pivot->quantity;
@@ -202,6 +206,11 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $order->update(['status' => 0]);
+
+        $order->logs()->create([
+            'status' => 0,
+            'change_by' => auth()->id ?? null
+        ]);
 
         return $this->updateSuccess($order);
     }

@@ -13,8 +13,7 @@ class OrderController extends Controller
     public function __construct(
         protected Order  $order,
         protected Dishes $dish,
-    )
-    {
+    ) {
     }
 
     /**
@@ -168,7 +167,10 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load('dishes');
+        $order->load([
+            'dishes',
+            'logs'
+        ]);
 
         $order->dishes->transform(function ($dish) {
             $dish->quantity = $dish->pivot->quantity;
@@ -217,6 +219,11 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $order->update(['status' => $request->status]);
+
+        $order->logs()->create([
+            'status' => $request->status,
+            'change_by' => auth()->id
+        ]);
 
         return $this->updateSuccess($order);
     }
