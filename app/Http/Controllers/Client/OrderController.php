@@ -120,7 +120,10 @@ class OrderController extends Controller
 
             $order->dishes()->attach($dishOfOrder);
 
-            $order->logs()->create([]);
+            $order->logs()->create([
+                'status' => 1,
+                'change_by' => auth()->id ?? null
+            ]);
 
             return $order;
         });
