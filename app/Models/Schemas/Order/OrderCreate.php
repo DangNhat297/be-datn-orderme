@@ -16,12 +16,6 @@ class OrderCreate
     /**
      * @OA\Property()
      *
-     * @var integer
-     */
-    public $user_id;
-    /**
-     * @OA\Property()
-     *
      * @var string
      */
     public $phone;

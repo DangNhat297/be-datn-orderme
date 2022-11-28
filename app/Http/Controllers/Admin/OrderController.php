@@ -14,7 +14,8 @@ class OrderController extends Controller
     public function __construct(
         protected Order  $order,
         protected Dishes $dish,
-    ) {
+    )
+    {
     }
 
     /**
@@ -138,7 +139,7 @@ class OrderController extends Controller
 
             $order->logs->transform(function ($log) {
                 $log->title = OrderLog::textLog[$log->status];
-    
+
                 return $log;
             });
 
@@ -229,7 +230,7 @@ class OrderController extends Controller
 
         $order->logs()->create([
             'status' => $request->status,
-            'change_by' => auth()->id
+            'change_by' => auth()->id ?? null
         ]);
 
         return $this->updateSuccess($order);

@@ -48,7 +48,7 @@ class HeroWeddingGuestController extends Controller
             $data = $this->heroGuest
                 ->newQuery()
                 ->findByHeroSlug($request)
-                ->paginate(PAGE_SIZE_DEFAULT);
+                ->get();
             return response()->json($data, 200);
         } catch (Exception $th) {
             return response()->json([

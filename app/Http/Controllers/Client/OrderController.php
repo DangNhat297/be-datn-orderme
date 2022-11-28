@@ -19,7 +19,8 @@ class OrderController extends Controller
         protected Dishes      $dish,
         protected Cart        $cart,
         protected UserService $userService
-    ) {
+    )
+    {
     }
 
     /**
@@ -62,7 +63,7 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'logs'])
+            ->with(['location'])
             ->where('phone', $phone)
             ->latest()
             ->get();
