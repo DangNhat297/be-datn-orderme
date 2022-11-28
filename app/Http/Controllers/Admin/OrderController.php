@@ -137,12 +137,6 @@ class OrderController extends Controller
                 'change_by' => auth()->id ?? null
             ]);
 
-            $order->logs->transform(function ($log) {
-                $log->title = OrderLog::textLog[$log->status];
-
-                return $log;
-            });
-
             return $order;
         });
 
@@ -192,6 +186,12 @@ class OrderController extends Controller
                 'price',
                 'quantity'
             ]);
+        });
+
+        $order->logs->transform(function ($log) {
+            $log->title = OrderLog::textLog[$log->status];
+
+            return $log;
         });
 
         return $this->sendSuccess($order);
