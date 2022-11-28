@@ -38,7 +38,7 @@ class HeroWeddingMessageController extends Controller
         try {
             $data = $this->heroMessage
                 ->newQuery()
-                ->paginate(PAGE_SIZE_DEFAULT);
+                ->get();
             return response()->json($data, 200);
         } catch (Exception $th) {
             return response()->json([
