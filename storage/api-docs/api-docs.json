@@ -2349,9 +2349,6 @@
                 "title": "Order Request",
                 "description": "Order model",
                 "properties": {
-                    "user_id": {
-                        "type": "integer"
-                    },
                     "phone": {
                         "type": "string"
                     },
