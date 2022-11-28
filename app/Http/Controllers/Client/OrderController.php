@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Dishes;
 use App\Models\Order;
+use App\Models\OrderLog;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -173,6 +174,12 @@ class OrderController extends Controller
                 'price',
                 'quantity'
             ]);
+        });
+
+        $order->logs->transform(function ($log) {
+            $log->title = OrderLog::textLog[$log->status];
+
+            return $log;
         });
 
         return $this->sendSuccess($order);

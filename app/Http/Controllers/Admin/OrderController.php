@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Dishes;
 use App\Models\Order;
+use App\Models\OrderLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -134,6 +135,12 @@ class OrderController extends Controller
                 'status' => 1,
                 'change_by' => auth()->id ?? null
             ]);
+
+            $order->logs->transform(function ($log) {
+                $log->title = OrderLog::textLog[$log->status];
+    
+                return $log;
+            });
 
             return $order;
         });
