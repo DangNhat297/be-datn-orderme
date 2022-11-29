@@ -17,5 +17,6 @@ class HeroWeddingGuest extends BaseModel
         'pronoun',
         'prefix',
         'invitation_pronoun',
+        'side'
     ];
 }
