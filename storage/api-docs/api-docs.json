@@ -2178,6 +2178,9 @@
                     },
                     "invitation_pronoun": {
                         "type": "string"
+                    },
+                    "side": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -2205,6 +2208,9 @@
                         "type": "string"
                     },
                     "invitation_pronoun": {
+                        "type": "string"
+                    },
+                    "side": {
                         "type": "string"
                     },
                     "created_at": {

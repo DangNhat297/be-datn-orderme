@@ -60,6 +60,12 @@ class GuestResponse
      *
      * @var string
      */
+    public $side;
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $created_at;
     /**
      * @OA\Property()

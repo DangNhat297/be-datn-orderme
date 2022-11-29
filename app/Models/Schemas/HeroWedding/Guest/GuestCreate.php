@@ -55,5 +55,11 @@ class GuestCreate
      * @var string
      */
     public $invitation_pronoun;
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $side;
 
 }
