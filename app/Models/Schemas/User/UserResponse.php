@@ -59,11 +59,4 @@ class UserResponse
      * @var integer
      */
     private $id;
-    /**
-     * @OA\Property()
-     *
-     * @var string
-     */
-    private $password;
-
 }
