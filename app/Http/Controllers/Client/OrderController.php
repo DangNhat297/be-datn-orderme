@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Dishes;
 use App\Models\Order;
 use App\Models\OrderLog;
+use App\Services\PaymentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,9 +19,9 @@ class OrderController extends Controller
         protected Order       $order,
         protected Dishes      $dish,
         protected Cart        $cart,
-        protected UserService $userService
-    )
-    {
+        protected UserService $userService,
+        protected PaymentService $paymentService,
+    ) {
     }
 
     /**
@@ -96,8 +97,11 @@ class OrderController extends Controller
             'phone',
             'note',
             'location_id',
-            'total'
+            'total',
+            'payment_method'
         ]);
+
+        $data['payment_status'] = ORDER_PAYMENT_WAITING;
 
         $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
 
