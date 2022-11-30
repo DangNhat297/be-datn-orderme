@@ -965,44 +965,6 @@
                 }
             }
         },
-        "/me": {
-            "get": {
-                "tags": [
-                    "Authenticate"
-                ],
-                "summary": "Get user",
-                "description": "Returns a single user.",
-                "operationId": "getProfile",
-                "responses": {
-                    "200": {
-                        "description": "return a user",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/logout": {
             "post": {
                 "tags": [
@@ -1072,6 +1034,44 @@
                                         "isExits": {
                                             "format": "boolean",
                                             "default": "false"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Get user",
+                "description": "Returns a single user.",
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "return a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
                                         }
                                     },
                                     "type": "object"
