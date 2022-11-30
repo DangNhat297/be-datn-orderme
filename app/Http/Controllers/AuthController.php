@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class AuthController extends Controller
      * @OA\Post(
      *      path="/register",
      *      operationId="authRegister",
-     *      tags={"User Authenticate"},
+     *      tags={"Authenticate"},
      *      summary="Create new",
      *      description="Returns user data",
      *      @OA\RequestBody(
@@ -53,7 +52,7 @@ class AuthController extends Controller
      *      )
      * )
      */
-    public function register(AuthRequest $request): JsonResponse
+    public function register(Request $request)
     {
         $user = $this->user->newQuery()->where('phone', $request->phone)->first();
         if ($user) {
@@ -64,15 +63,33 @@ class AuthController extends Controller
             $user = $this->user->fill($request->except('password'));
             $user->password = Hash::make($request->password);
             $user->save();
-            return $this->createSuccess($user);
+
+            $token = $user->createToken('token')->plainTextToken;
+            $cookie = $this->getCookie($token);
+            $response = [
+                'user' => $user,
+                'token' => $token,
+            ];
+            return response($response, 201)->cookie($cookie);
         }
+    }
+
+    private function getCookie($token)
+    {
+        return Cookie::create(env('AUTH_COOKIE_NAME'))
+            ->withValue($token)
+            ->withExpires(strtotime("+6 months"))
+            ->withSecure(true)
+            ->withHttpOnly(true)
+            ->withDomain(env('SESSION_DOMAIN'))
+            ->withSameSite("none");
     }
 
     /**
      * @OA\Post(
      *      path="/login",
      *      operationId="authLogin",
-     *      tags={"User Authenticate"},
+     *      tags={"Authenticate"},
      *      summary="User Login",
      *      description="Login into system",
      *      @OA\RequestBody(
@@ -114,13 +131,7 @@ class AuthController extends Controller
             $user->tokens()->delete();
             $token = $user->createToken('token')->plainTextToken;
 
-            $cookie = Cookie::create(env('AUTH_COOKIE_NAME'))
-                ->withValue($token)
-                ->withExpires(strtotime("+6 months"))
-                ->withSecure(true)
-                ->withHttpOnly(true)
-                ->withDomain(env('SESSION_DOMAIN'))
-                ->withSameSite("none");
+            $cookie = $this->getCookie($token);
 
             $response = [
                 'user' => $user,
@@ -132,40 +143,9 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/me",
-     *     tags={"User Authenticate"},
-     *     summary="Get user",
-     *     operationId="getProfile",
-     *     description="Returns a single user.",
-     *     @OA\Response(
-     *         response=200,
-     *         description="return a user",
-     *         @OA\JsonContent(ref="#/components/schemas/UserResponse"),
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="message",
-     *                  type="string",
-     *                  example="Unauthenticated."
-     *              ),
-     *         ),
-     *     ),
-     * )
-     */
-    public function profile(): JsonResponse
-    {
-        return $this->sendSuccess(auth()->user());
-    }
-
-    /**
      * @OA\Post(
      *     path="/logout",
-     *     tags={"User Authenticate"},
+     *     tags={"Authenticate"},
      *     summary="Logout",
      *     operationId="authLogout",
      *     description="logout",
@@ -198,13 +178,84 @@ class AuthController extends Controller
         ], 202);
     }
 
-    protected function respondWithToken($token)
+    /**
+     * @OA\Post(
+     *      path="/check-user-phone",
+     *      operationId="checkUserPhone",
+     *      tags={"Authenticate"},
+     *      summary="Check User Phone",
+     *      description="Check User Phone and return boolean value",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  format="string",
+     *                  property="phone"
+     *              )
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Login success",
+     *           @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  format="boolean",
+     *                  default="false",
+     *                  property="isExits"
+     *              )
+     *          ),
+     *       ),
+     * )
+     */
+    public function checkPhone(Request $request)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => 3600
-//            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ]);
+        $user = $this->user
+            ->newQuery()
+            ->where('phone', $request->phone)
+            ->first();
+        if (!$user) {
+            return response()->json([
+                'isExits' => false
+            ], 200);
+        } else {
+            return response()->json([
+                'isExits' => true
+            ], 200);
+        }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/me",
+     *     tags={"Authenticate"},
+     *     summary="Get user",
+     *     operationId="getProfile",
+     *     description="Returns a single user.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="return a user",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse"),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Unauthenticated."
+     *              ),
+     *         ),
+     *     ),
+     * )
+     */
+    public function profile(): JsonResponse
+    {
+        return $this->sendSuccess(auth()->user());
+    }
+
+
 }

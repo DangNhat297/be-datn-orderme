@@ -27,8 +27,8 @@ use Illuminate\Routing\Controller as BaseController;
  *      description="Order Me API"
  * )
  * @OA\Tag(
- *     name="User Authenticate",
- *     description="Đăng nhập trước nhé <3"
+ *     name="Authenticate",
+ *     description="Đăng nhập để đẹp trai hơn nhé <3"
  * )
  */
 class Controller extends BaseController

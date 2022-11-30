@@ -263,10 +263,7 @@
                         "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
                         "required": false,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 ],
@@ -893,7 +890,7 @@
         "/register": {
             "post": {
                 "tags": [
-                    "User Authenticate"
+                    "Authenticate"
                 ],
                 "summary": "Create new",
                 "description": "Returns user data",
@@ -937,7 +934,7 @@
         "/login": {
             "post": {
                 "tags": [
-                    "User Authenticate"
+                    "Authenticate"
                 ],
                 "summary": "User Login",
                 "description": "Login into system",
@@ -968,22 +965,20 @@
                 }
             }
         },
-        "/me": {
-            "get": {
+        "/logout": {
+            "post": {
                 "tags": [
-                    "User Authenticate"
+                    "Authenticate"
                 ],
-                "summary": "Get user",
-                "description": "Returns a single user.",
-                "operationId": "getProfile",
+                "summary": "Logout",
+                "description": "logout",
+                "operationId": "authLogout",
                 "responses": {
                     "200": {
-                        "description": "return a user",
+                        "description": "logout success",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserResponse"
-                                }
+                                "schema": {}
                             }
                         }
                     },
@@ -1006,20 +1001,65 @@
                 }
             }
         },
-        "/logout": {
+        "/check-user-phone": {
             "post": {
                 "tags": [
-                    "User Authenticate"
+                    "Authenticate"
                 ],
-                "summary": "Logout",
-                "description": "logout",
-                "operationId": "authLogout",
+                "summary": "Check User Phone",
+                "description": "Check User Phone and return boolean value",
+                "operationId": "checkUserPhone",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "phone": {
+                                        "format": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "logout success",
+                        "description": "Login success",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "properties": {
+                                        "isExits": {
+                                            "format": "boolean",
+                                            "default": "false"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Get user",
+                "description": "Returns a single user.",
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "return a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
                             }
                         }
                     },
@@ -2699,8 +2739,8 @@
     },
     "tags": [
         {
-            "name": "User Authenticate",
-            "description": "Đăng nhập trước nhé <3"
+            "name": "Authenticate",
+            "description": "Đăng nhập để đẹp trai hơn nhé <3"
         }
     ]
 }
