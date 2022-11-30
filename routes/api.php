@@ -19,9 +19,13 @@ use App\Http\Controllers\Hero\HeroWeddingMessageController;
 use Illuminate\Support\Facades\Route;
 
 
+// Authenticate
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+Route::post('check-user-phone', [AuthController::class, 'checkPhone']);
 
+
+// chat
 Route::apiResource('chat', ChatController::class);
 
 
