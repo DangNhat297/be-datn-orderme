@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Client\CartController;
@@ -70,6 +71,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         // order
         Route::apiResource('order', AdminOrder::class);
+
+        // user
+        Route::apiResource('user', UserController::class);
     });
 });
 

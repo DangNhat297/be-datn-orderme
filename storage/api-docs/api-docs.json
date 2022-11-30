@@ -263,7 +263,10 @@
                         "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 ],
@@ -817,6 +820,69 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SettingRespone"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get list of user",
+                "description": "Returns list of user",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by name, phone, email",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "User status",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "description": "User role",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
                                 }
                             }
                         }
@@ -2625,9 +2691,6 @@
                     },
                     "id": {
                         "type": "integer"
-                    },
-                    "password": {
-                        "type": "string"
                     }
                 },
                 "type": "object"
