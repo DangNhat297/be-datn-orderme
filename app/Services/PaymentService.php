@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class PaymentService
 {
-    public static function create(Request $request,$order_code,$total_price)
+    public function create(Request $request,$order_code,$total_price)
     {
         $vnp_Url = config('common.vnp_sandbox');
         $vnp_Returnurl = "http://127.0.0.1:8000/order/return-data-vnpay";

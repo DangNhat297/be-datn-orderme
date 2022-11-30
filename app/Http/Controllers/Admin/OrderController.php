@@ -106,7 +106,9 @@ class OrderController extends Controller
         $data = $request->only([
             'phone',
             'note',
-            'location_id'
+            'location_id',
+            'payment_method',
+            'payment_status'
         ]);
 
         $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
