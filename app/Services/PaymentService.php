@@ -6,19 +6,19 @@ use Illuminate\Http\Request;
 
 class PaymentService
 {
-    public function create(Request $request,$order_code,$total_price)
+    public function createVNP($order_code,$total_price)
     {
         $vnp_Url = config('common.vnp_sandbox');
-        $vnp_Returnurl = "http://127.0.0.1:8000/order/return-data-vnpay";
+        $vnp_Returnurl = route('return.vnpay');
         $vnp_TmnCode = config('common.vnp_TmnCode');
         $vnp_HashSecret = config('common.vnp_HashSecret');
 
         $vnp_TxnRef = $order_code;
-        $vnp_OrderInfo = 'thanh toán khóa học online';
+        $vnp_OrderInfo = 'Thanh toán đơn hàng ' . $order_code;
         $vnp_OrderType = 'billpayment';
         $vnp_Amount = $total_price * 100;
         $vnp_Locale = 'vn';
-        $vnp_BankCode = 'NCB';
+        $vnp_BankCode = 'VNPAY';
         $vnp_IpAddr = request()->ip();
 
         $inputData = array(
@@ -61,14 +61,11 @@ class PaymentService
         }
 
         $returnData = array(
-            'code' => '00', 'message' => 'success', 'data' => $vnp_Url
+            'code' => '00', 'message' => 'success', 'vnp_url' => $vnp_Url
         );
 
-        if (isset($request->redirect_vnpay)) {
-            header('location:'.$vnp_Url);
-            die();
-        } else {
-            dd(json_encode($returnData));
-        }
+        dd($returnData);
+
+        return response()->json($returnData);
     }
 }

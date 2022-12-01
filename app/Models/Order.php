@@ -18,7 +18,9 @@ class Order extends BaseModel
         'phone',
         'note',
         'location_id',
-        'total'
+        'total',
+        'payment_method',
+        'payment_status'
     ];
 
     public static function booted()
@@ -72,4 +74,5 @@ class Order extends BaseModel
         return $this->belongsToMany(Dishes::class, 'dish_order', 'order_id', 'dish_id')
             ->withPivot(['quantity', 'price']);
     }
+
 }

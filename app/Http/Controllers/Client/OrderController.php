@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Dishes;
 use App\Models\Order;
 use App\Models\OrderLog;
+use App\Models\Payment;
 use App\Services\PaymentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class OrderController extends Controller
         protected Cart        $cart,
         protected UserService $userService,
         protected PaymentService $paymentService,
+        protected Payment $payment,
     ) {
     }
 
@@ -119,7 +121,7 @@ class OrderController extends Controller
         //     return $sum += $currentVal['price'];
         // }, 0);
 
-        $res = DB::transaction(function () use ($data, $dishOfOrder) {
+        $res = DB::transaction(function () use ($data, $dishOfOrder, $request) {
             $order = $this->order
                 ->newQuery()
                 ->create($data);
@@ -133,6 +135,9 @@ class OrderController extends Controller
 
             return $order;
         });
+
+        if (!is_null($res) && $request->payment_method == 2)
+            return $this->paymentService->createVNP($res->code, $res->total);
 
         return $res;
     }
@@ -239,5 +244,60 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function payment(Request $request, Order $order)
+    {
+        return $this->paymentService->createVNP($order->code, $order->total);
+    }
+
+    public function returnPaymentVNP(Request $request)
+    {
+        $order = $this->order
+            ->newQuery()
+            ->where('code', $request->vnp_TxnRef)
+            ->firstOrFail();
+
+        if ($order->payment_status == 0) {
+            if ($order->total == ($request->vnp_Amount/100)) {
+                if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
+                    $order->update(['payment_status' => 1]);
+                    $res = [
+                        'code' => '00',
+                        'message' => 'Thanh toán thành công'
+                    ];
+                } else {
+                    $res = [
+                        'code' => $request->vnp_ResponseCode,
+                        'message' => 'Thanh toán thất bại, vui lòng thử lại'
+                    ];
+                }
+
+                $res = $this->payment
+                    ->newQuery()
+                    ->create([
+                        'order_code' => $request->vnp_TxnRef,
+                        'payment_method' => 'VNPAY',
+                        'amount' => $request->vnp_Amount,
+                        'transaction_no' => $request->vnp_TransactionNo,
+                        'transaction_status' => $request->vnp_TransactionStatus,
+                        'bank_code' => $request->vnp_BankCode,
+                        'card_type' => $request->vnp_CardType,
+                        'message' => $res['message']
+                    ]);
+            } else {
+                $res = [
+                    'code' => '04',
+                    'message' => 'Sai dữ liệu nhập vào'
+                ];
+            }
+        } else {
+            $res = [
+                'code' => '02',
+                'message' => 'Đơn hàng đã được thanh toán'
+            ];
+        }
+
+        return $this->sendSuccess($res);
     }
 }
