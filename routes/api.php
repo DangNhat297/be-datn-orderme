@@ -16,6 +16,7 @@ use App\Http\Controllers\Client\LocationController as LocationClient;
 use App\Http\Controllers\Client\OrderController as ClientOrder;
 use App\Http\Controllers\Hero\HeroWeddingGuestController;
 use App\Http\Controllers\Hero\HeroWeddingMessageController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,10 +24,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('check-user-phone', [AuthController::class, 'checkPhone']);
-
-
-// chat
-Route::apiResource('chat', ChatController::class);
 
 
 // client
@@ -58,6 +55,12 @@ Route::prefix('client')->group(function () {
 
 
 Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+
+    // chat
+    Route::apiResource('chat', ChatController::class);
+    Route::get('chat-by-room/{id}', [ChatController::class, 'getChatByRoom']);
+    Route::apiResource('room', RoomController::class);
+    Route::get('room-by-user', [RoomController::class, 'getRoomByUser']);
 
 // account
     Route::post('logout', [AuthController::class, 'logout']);

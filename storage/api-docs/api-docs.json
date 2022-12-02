@@ -1082,14 +1082,25 @@
                 }
             }
         },
-        "/chat": {
+        "/chat-by-room/{id}": {
             "get": {
                 "tags": [
                     "Chat"
                 ],
                 "summary": "Get list of chat",
                 "description": "Returns list of chat",
-                "operationId": "getChats",
+                "operationId": "getChatByRoom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "room id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1102,7 +1113,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/chat": {
             "post": {
                 "tags": [
                     "Chat"
@@ -1128,109 +1141,6 @@
                                 "schema": {
                                     "$ref": "#/components/schemas/ChatResponse"
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/chat/{id}": {
-            "get": {
-                "tags": [
-                    "Chat"
-                ],
-                "summary": "Get chat information",
-                "description": "Returns chat data",
-                "operationId": "getChatById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Chat id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ChatResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Chat"
-                ],
-                "summary": "Update existing chat",
-                "description": "Returns updated chat data",
-                "operationId": "updateChat",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Chat id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ChatUpdate"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ChatResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Chat"
-                ],
-                "summary": "Delete existing chat",
-                "description": "Deletes a record and returns no content",
-                "operationId": "deleteChat",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Chat id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
                             }
                         }
                     }
@@ -1980,6 +1890,50 @@
                     }
                 }
             }
+        },
+        "/room": {
+            "get": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get list of room",
+                "description": "Returns list of room",
+                "operationId": "getRooms",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/room-by-user": {
+            "get": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "get room and message by user",
+                "description": "Returns room and message data",
+                "operationId": "getRoomByUser",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -2105,13 +2059,10 @@
             },
             "ChatCreate": {
                 "properties": {
-                    "sender_id": {
+                    "room_id": {
                         "type": "integer"
                     },
-                    "receiver_id": {
-                        "type": "integer"
-                    },
-                    "content": {
+                    "message": {
                         "type": "string"
                     }
                 },
@@ -2120,9 +2071,6 @@
             "ChatResponse": {
                 "properties": {
                     "sender": {
-                        "$ref": "#/components/schemas/UserResponse"
-                    },
-                    "receiver": {
                         "$ref": "#/components/schemas/UserResponse"
                     },
                     "content": {
@@ -2590,6 +2538,22 @@
                 "description": "Order model",
                 "properties": {
                     "status": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "RoomCreate": {
+                "properties": {
+                    "userId": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "RoomResponse": {
+                "properties": {
+                    "room_id": {
                         "type": "integer"
                     }
                 },

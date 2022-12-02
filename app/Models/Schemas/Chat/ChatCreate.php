@@ -16,19 +16,12 @@ class ChatCreate
      *
      * @var integer
      */
-    public $sender_id;
-
-    /**
-     * @OA\Property()
-     *
-     * @var integer
-     */
-    public $receiver_id;
+    public $room_id;
 
     /**
      * @OA\Property()
      *
      * @var string
      */
-    public $content;
+    public $message;
 }

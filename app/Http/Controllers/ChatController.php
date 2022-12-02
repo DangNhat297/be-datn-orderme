@@ -14,11 +14,20 @@ class ChatController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/chat",
-     *      operationId="getChats",
+     *      path="/chat-by-room/{id}",
+     *      operationId="getChatByRoom",
      *      tags={"Chat"},
      *      summary="Get list of chat",
      *      description="Returns list of chat",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="room id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -26,11 +35,12 @@ class ChatController extends Controller
      *       ),
      *     )
      */
-    public function index(): JsonResponse
+    public function getChatByRoom(int $id): JsonResponse
     {
         $data = $this->chatModel
             ->newQuery()
-            ->with(['receiver', 'sender'])
+            ->with(['sender'])
+            ->where('room_id', $id)
             ->get();
 
         return $this->sendSuccess($data);
@@ -57,7 +67,11 @@ class ChatController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $data = $request->all();
+        $data = [
+            'content' => $request->message,
+            'room_id' => $request->room_id,
+            'sender_id' => auth()->id()
+        ];
 
         $item = $this->chatModel
             ->newQuery()
@@ -66,29 +80,29 @@ class ChatController extends Controller
         return $this->createSuccess($item);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/chat/{id}",
-     *      operationId="getChatById",
-     *      tags={"Chat"},
-     *      summary="Get chat information",
-     *      description="Returns chat data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Chat id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
-     *       ),
-     * )
-     */
+//    /**
+//     * @OA\Get(
+//     *      path="/chat/{id}",
+//     *      operationId="getChatById",
+//     *      tags={"Chat"},
+//     *      summary="Get chat information",
+//     *      description="Returns chat data",
+//     *      @OA\Parameter(
+//     *          name="id",
+//     *          description="Chat id",
+//     *          required=true,
+//     *          in="path",
+//     *          @OA\Schema(
+//     *              type="integer"
+//     *          )
+//     *      ),
+//     *      @OA\Response(
+//     *          response=200,
+//     *          description="Successful operation",
+//     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
+//     *       ),
+//     * )
+//     */
     public function show(int $id): JsonResponse
     {
         $item = $this->chatModel
@@ -99,33 +113,33 @@ class ChatController extends Controller
     }
 
 
-    /**
-     * @OA\Put(
-     *      path="/chat/{id}",
-     *      operationId="updateChat",
-     *      tags={"Chat"},
-     *      summary="Update existing chat",
-     *      description="Returns updated chat data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Chat id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/ChatUpdate")
-     *      ),
-     *      @OA\Response(
-     *          response=202,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
-     *       )
-     * )
-     */
+//    /**
+//     * @OA\Put(
+//     *      path="/chat/{id}",
+//     *      operationId="updateChat",
+//     *      tags={"Chat"},
+//     *      summary="Update existing chat",
+//     *      description="Returns updated chat data",
+//     *      @OA\Parameter(
+//     *          name="id",
+//     *          description="Chat id",
+//     *          required=true,
+//     *          in="path",
+//     *          @OA\Schema(
+//     *              type="integer"
+//     *          )
+//     *      ),
+//     *      @OA\RequestBody(
+//     *          required=true,
+//     *          @OA\JsonContent(ref="#/components/schemas/ChatUpdate")
+//     *      ),
+//     *      @OA\Response(
+//     *          response=202,
+//     *          description="Successful operation",
+//     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
+//     *       )
+//     * )
+//     */
     public function update(Request $request, $id): JsonResponse
     {
         $data = $request->all();
@@ -139,29 +153,29 @@ class ChatController extends Controller
     }
 
 
-    /**
-     * @OA\Delete(
-     *      path="/chat/{id}",
-     *      operationId="deleteChat",
-     *      tags={"Chat"},
-     *      summary="Delete existing chat",
-     *      description="Deletes a record and returns no content",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Chat id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *       @OA\Response(
-     *          response=204,
-     *          description="Successful operation",
-     *          @OA\JsonContent()
-     *       )
-     * )
-     */
+//    /**
+//     * @OA\Delete(
+//     *      path="/chat/{id}",
+//     *      operationId="deleteChat",
+//     *      tags={"Chat"},
+//     *      summary="Delete existing chat",
+//     *      description="Deletes a record and returns no content",
+//     *      @OA\Parameter(
+//     *          name="id",
+//     *          description="Chat id",
+//     *          required=true,
+//     *          in="path",
+//     *          @OA\Schema(
+//     *              type="integer"
+//     *          )
+//     *      ),
+//     *       @OA\Response(
+//     *          response=204,
+//     *          description="Successful operation",
+//     *          @OA\JsonContent()
+//     *       )
+//     * )
+//     */
     public function destroy($id): JsonResponse
     {
         $this->chatModel

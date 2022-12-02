@@ -126,13 +126,11 @@ class DishesController extends Controller
      */
     public function store(DishesRequest $request)
     {
-
         $item = $this->dishes->fill($request->all());
         $item->image = $request->image ?? fakeImage();
         $item->slug = $request->slug ?? Str::slug($request->name, '-');
         $item->save();
         return $this->createSuccess($item);
-
     }
 
     /**
