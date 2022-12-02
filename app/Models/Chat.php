@@ -12,8 +12,8 @@ class Chat extends Model
 
     protected $fillable = [
         'sender_id',
-        'receiver_id',
         'content',
+        'room_id'
     ];
 
     /**
@@ -27,13 +27,13 @@ class Chat extends Model
     }
 
     /**
-     * User
+     * Room
      *
      * @return BelongsTo
      */
-    public function receiver(): BelongsTo
+    public function room(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'receiver_id', 'id');
+        return $this->belongsTo(User::class, 'room_id', 'id');
     }
 
 }

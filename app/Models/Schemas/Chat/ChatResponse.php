@@ -22,21 +22,22 @@ class ChatResponse
     public $sender;
 
     /**
-     * @OA\Property(
-     *     type="object",
-     *     ref="#/components/schemas/UserResponse"
-     * )
-     *
-     * @var object
-     */
-    public $receiver;
-
-    /**
      * @OA\Property()
      *
      * @var string
      */
     public $content;
+
+//    /**
+//     * @OA\Property(
+//     *     type="object",
+//     *     ref="#/components/schemas/RoomResponse"
+//     * )
+//     *
+//     * @var object
+//     */
+//    public $room;
+
 
     /**
      * @OA\Property()
