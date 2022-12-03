@@ -1082,25 +1082,14 @@
                 }
             }
         },
-        "/chat-by-room/{id}": {
+        "/chat-by-user": {
             "get": {
                 "tags": [
                     "Chat"
                 ],
                 "summary": "Get list of chat",
                 "description": "Returns list of chat",
-                "operationId": "getChatByRoom",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "room id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "getChatByUser",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1891,7 +1880,7 @@
                 }
             }
         },
-        "/room": {
+        "/admin/room": {
             "get": {
                 "tags": [
                     "Room"
@@ -1901,28 +1890,6 @@
                 "operationId": "getRooms",
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/RoomResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/room-by-user": {
-            "get": {
-                "tags": [
-                    "Room"
-                ],
-                "summary": "get room and message by user",
-                "description": "Returns room and message data",
-                "operationId": "getRoomByUser",
-                "responses": {
-                    "201": {
                         "description": "Successful operation",
                         "content": {
                             "application/json": {
@@ -2059,9 +2026,6 @@
             },
             "ChatCreate": {
                 "properties": {
-                    "room_id": {
-                        "type": "integer"
-                    },
                     "message": {
                         "type": "string"
                     }
@@ -2553,8 +2517,14 @@
             },
             "RoomResponse": {
                 "properties": {
-                    "room_id": {
+                    "id": {
                         "type": "integer"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "messages": {
+                        "$ref": "#/components/schemas/ChatResponse"
                     }
                 },
                 "type": "object"

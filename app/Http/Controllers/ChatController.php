@@ -2,32 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatEvent;
+use App\Events\ChatMessageEvent;
 use App\Models\Chat;
+use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function __construct(protected Chat $chatModel)
+    public function __construct(protected Chat $chatModel, private Room $roomModel)
     {
     }
 
     /**
      * @OA\Get(
-     *      path="/chat-by-room/{id}",
-     *      operationId="getChatByRoom",
+     *      path="/chat-by-user",
+     *      operationId="getChatByUser",
      *      tags={"Chat"},
      *      summary="Get list of chat",
      *      description="Returns list of chat",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="room id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -35,17 +29,33 @@ class ChatController extends Controller
      *       ),
      *     )
      */
-    public function getChatByRoom(int $id): JsonResponse
+    public function getChatByUser()
     {
         $data = $this->chatModel
             ->newQuery()
             ->with(['sender'])
-            ->where('room_id', $id)
+            ->where('room_id', $this->getRoomByUser())
             ->get();
 
-        return $this->sendSuccess($data);
+        return response()->json($data, 200);
     }
 
+    public function getRoomByUser()
+    {
+        $userExitsInRoom = $this->roomModel
+            ->newQuery()
+            ->where('userId', auth()->id())
+            ->first();
+        if ($userExitsInRoom) {
+            return $userExitsInRoom->id;
+        }
+        $data = ['userId' => auth()->id()];
+        $item = $this->roomModel
+            ->newQuery()
+            ->create($data);
+        return $item->id;
+
+    }
 
     /**
      * @OA\Post(
@@ -65,19 +75,19 @@ class ChatController extends Controller
      *       ),
      * )
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $data = [
             'content' => $request->message,
-            'room_id' => $request->room_id,
-            'sender_id' => auth()->id()
+            'room_id' => $this->getRoomByUser(),
+            'sender_id' => auth()->id(),
+            'isSeen' => true
         ];
 
         $item = $this->chatModel
             ->newQuery()
             ->create($data);
-
-        return $this->createSuccess($item);
+        event(new ChatMessageEvent(auth()->id(), $item));
     }
 
 //    /**

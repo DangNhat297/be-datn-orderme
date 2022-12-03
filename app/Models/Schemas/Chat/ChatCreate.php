@@ -14,13 +14,6 @@ class ChatCreate
     /**
      * @OA\Property()
      *
-     * @var integer
-     */
-    public $room_id;
-
-    /**
-     * @OA\Property()
-     *
      * @var string
      */
     public $message;
