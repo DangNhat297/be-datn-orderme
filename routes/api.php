@@ -58,9 +58,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
-    Route::get('chat-by-room/{id}', [ChatController::class, 'getChatByRoom']);
-    Route::apiResource('room', RoomController::class);
-    Route::get('room-by-user', [RoomController::class, 'getRoomByUser']);
+    Route::get('chat-by-user', [ChatController::class, 'getChatByUser']);
 
 // account
     Route::post('logout', [AuthController::class, 'logout']);
@@ -86,6 +84,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         // user
         Route::apiResource('user', UserController::class);
+
+        //room chat
+        Route::apiResource('room', RoomController::class);
     });
 });
 

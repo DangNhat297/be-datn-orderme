@@ -14,7 +14,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/room",
+     *      path="/admin/room",
      *      operationId="getRooms",
      *      tags={"Room"},
      *      summary="Get list of room",
@@ -36,39 +36,39 @@ class RoomController extends Controller
         return $this->sendSuccess($data);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/room-by-user",
-     *      operationId="getRoomByUser",
-     *      tags={"Room"},
-     *      summary="get room and message by user",
-     *      description="Returns room and message data",
-     *      @OA\Response(
-     *          response=201,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/RoomResponse")
-     *       ),
-     * )
-     */
-    public function getRoomByUser(): JsonResponse
-    {
-        $userExitsInRoom = $this->roomModel
-            ->newQuery()
-            ->where('userId', auth()->id())
-            ->with(['user'])
-            ->first();
-        if ($userExitsInRoom) {
-            return $this->createSuccess(['room_id' => $userExitsInRoom->id]);
-        }
-        $data = [
-            'userId' => auth()->id()
-        ];
-        $item = $this->roomModel
-            ->newQuery()
-            ->create($data);
-        return $this->createSuccess(['room_id' => $item->id]);
-
-    }
+//    /**
+//     * @OA\Get(
+//     *      path="/room-by-user",
+//     *      operationId="getRoomByUser",
+//     *      tags={"Room"},
+//     *      summary="get room and message by user",
+//     *      description="Returns room and message data",
+//     *      @OA\Response(
+//     *          response=201,
+//     *          description="Successful operation",
+//     *          @OA\JsonContent(ref="#/components/schemas/RoomResponse")
+//     *       ),
+//     * )
+//     */
+//    public function getRoomByUser(): JsonResponse
+//    {
+//        $userExitsInRoom = $this->roomModel
+//            ->newQuery()
+//            ->where('userId', auth()->id())
+//            ->with(['user'])
+//            ->first();
+//        if ($userExitsInRoom) {
+//            return $this->createSuccess(['room_id' => $userExitsInRoom->id]);
+//        }
+//        $data = [
+//            'userId' => auth()->id()
+//        ];
+//        $item = $this->roomModel
+//            ->newQuery()
+//            ->create($data);
+//        return $this->createSuccess(['room_id' => $item->id]);
+//
+//    }
 
 
 //    /**

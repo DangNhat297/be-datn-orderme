@@ -11,22 +11,34 @@ namespace App\Models\Schemas\Room;
  */
 class RoomResponse
 {
-//    /**
-//     * @OA\Property(
-//     *     type="object",
-//     *     ref="#/components/schemas/UserResponse"
-//     * )
-//     *
-//     * @var object
-//     */
-//    public $user;
 
     /**
      * @OA\Property()
      *
      * @var integer
      */
-    public $room_id;
+    public $id;
+
+    /**
+     * @OA\Property(
+     *     type="object",
+     *     ref="#/components/schemas/UserResponse"
+     * )
+     *
+     * @var object
+     */
+    public $user;
+
+    /**
+     * @OA\Property(
+     *     type="object",
+     *     ref="#/components/schemas/ChatResponse"
+     * )
+     *
+     * @var object
+     */
+    public $messages;
+
 
 //    /**
 //     * @OA\Property()
