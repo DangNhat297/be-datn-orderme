@@ -12,6 +12,13 @@ namespace App\Models\Schemas\Chat;
 class ChatResponse
 {
     /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $id;
+
+    /**
      * @OA\Property(
      *     type="object",
      *     ref="#/components/schemas/UserResponse"
