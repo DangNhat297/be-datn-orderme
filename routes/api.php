@@ -48,9 +48,7 @@ Route::prefix('client')->group(function () {
 
     Route::get('/order/{order}/payment', [ClientOrder::class, 'payment']);
 
-    Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.vnpay');
-
-    Route::get('orderList/{phone}', [ClientOrder::class, 'index']);
+    Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
 });
 
 

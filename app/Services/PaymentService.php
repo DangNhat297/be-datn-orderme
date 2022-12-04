@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 
 class PaymentService
 {
-    public function createVNP($order_code,$total_price)
+    public function createVNP($order_code,$total_price, $request = null)
     {
         $vnp_Url = config('common.vnp_sandbox');
-        $vnp_Returnurl = route('return.vnpay');
+        $vnp_Returnurl = optional($request)->return_url ?? config('common.vnp_returnUrl'); // config return url not ipn url, fe config
         $vnp_TmnCode = config('common.vnp_TmnCode');
         $vnp_HashSecret = config('common.vnp_HashSecret');
 
@@ -63,8 +63,6 @@ class PaymentService
         $returnData = array(
             'code' => '00', 'message' => 'success', 'vnp_url' => $vnp_Url
         );
-
-        dd($returnData);
 
         return response()->json($returnData);
     }

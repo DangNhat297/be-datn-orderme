@@ -49,7 +49,7 @@ class OrderController extends Controller
      *       ),
      * )
      */
-    public function index($phone, Request $request)
+    public function index(Request $request)
     {
 
         //        if (auth()->check()) {
@@ -67,7 +67,7 @@ class OrderController extends Controller
         $orders = $this->order
             ->newQuery()
             ->with(['location'])
-            ->where('phone', $phone)
+            ->where('phone', $request->phone)
             ->latest()
             ->get();
 
@@ -137,7 +137,7 @@ class OrderController extends Controller
         });
 
         if (!is_null($res) && $request->payment_method == 2)
-            return $this->paymentService->createVNP($res->code, $res->total);
+            return $this->paymentService->createVNP($res->code, $res->total, $request);
 
         return $res;
     }
