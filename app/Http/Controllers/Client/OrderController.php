@@ -251,6 +251,7 @@ class OrderController extends Controller
         return $this->paymentService->createVNP($order->code, $order->total);
     }
 
+    // ipn url, after payment, save to db
     public function returnPaymentVNP(Request $request)
     {
         $order = $this->order
