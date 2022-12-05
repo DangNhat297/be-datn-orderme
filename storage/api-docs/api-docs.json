@@ -1593,7 +1593,7 @@
                 }
             }
         },
-        "/client/orderList/{phone}": {
+        "/client/order": {
             "get": {
                 "tags": [
                     "Order Client"
@@ -1604,7 +1604,7 @@
                 "parameters": [
                     {
                         "name": "phone",
-                        "in": "path",
+                        "in": "query",
                         "description": "user phone",
                         "required": true,
                         "schema": {
@@ -1624,9 +1624,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/client/order": {
+            },
             "post": {
                 "tags": [
                     "Order Client"
@@ -2034,6 +2032,9 @@
             },
             "ChatResponse": {
                 "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
                     "sender": {
                         "$ref": "#/components/schemas/UserResponse"
                     },

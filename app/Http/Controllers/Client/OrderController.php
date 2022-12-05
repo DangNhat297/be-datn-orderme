@@ -17,18 +17,19 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     public function __construct(
-        protected Order       $order,
-        protected Dishes      $dish,
-        protected Cart        $cart,
-        protected UserService $userService,
+        protected Order          $order,
+        protected Dishes         $dish,
+        protected Cart           $cart,
+        protected UserService    $userService,
         protected PaymentService $paymentService,
-        protected Payment $payment,
-    ) {
+        protected Payment        $payment,
+    )
+    {
     }
 
     /**
      * @OA\Get(
-     *      path="/client/orderList/{phone}",
+     *      path="/client/order",
      *      operationId="getOrderListClient",
      *      tags={"Order Client"},
      *      summary="Get order list",
@@ -37,7 +38,7 @@ class OrderController extends Controller
      *          name="phone",
      *          description="user phone",
      *          required=true,
-     *          in="path",
+     *          in="query",
      *          @OA\Schema(
      *              type="string"
      *          )
@@ -195,46 +196,6 @@ class OrderController extends Controller
         return $this->sendSuccess($order);
     }
 
-
-    /**
-     * @OA\Put(
-     *      path="/client/order/{id}",
-     *      operationId="updateOrderClient",
-     *      tags={"Order Client"},
-     *      summary="Update existing Order",
-     *      description="Returns updated location data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Order id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
-     *      ),
-     *      @OA\Response(
-     *          response=202,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
-     *       )
-     * )
-     */
-    public function update(Request $request, Order $order)
-    {
-        $order->update(['status' => 0]);
-
-        $order->logs()->create([
-            'status' => 0,
-            'change_by' => auth()->id ?? null
-        ]);
-
-        return $this->updateSuccess($order);
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -251,7 +212,6 @@ class OrderController extends Controller
         return $this->paymentService->createVNP($order->code, $order->total);
     }
 
-    // ipn url, after payment, save to db
     public function returnPaymentVNP(Request $request)
     {
         $order = $this->order
@@ -260,7 +220,7 @@ class OrderController extends Controller
             ->firstOrFail();
 
         if ($order->payment_status == 0) {
-            if ($order->total == ($request->vnp_Amount/100)) {
+            if ($order->total == ($request->vnp_Amount / 100)) {
                 if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
                     $order->update(['payment_status' => 1]);
                     $res = [
@@ -300,5 +260,46 @@ class OrderController extends Controller
         }
 
         return $this->sendSuccess($res);
+    }
+
+    // ipn url, after payment, save to db
+
+    /**
+     * @OA\Put(
+     *      path="/client/order/{id}",
+     *      operationId="updateOrderClient",
+     *      tags={"Order Client"},
+     *      summary="Update existing Order",
+     *      description="Returns updated location data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *       )
+     * )
+     */
+    public function update(Request $request, Order $order)
+    {
+        $order->update(['status' => 0]);
+
+        $order->logs()->create([
+            'status' => 0,
+            'change_by' => auth()->id ?? null
+        ]);
+
+        return $this->updateSuccess($order);
     }
 }
