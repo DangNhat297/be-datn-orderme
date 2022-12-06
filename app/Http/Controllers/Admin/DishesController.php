@@ -38,7 +38,7 @@ class DishesController extends Controller
      *          )
      *      ),
      *        @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="dish name",
      *          required=false,
      *          in="query",
@@ -79,11 +79,14 @@ class DishesController extends Controller
      *          @OA\Schema(type="number"),
      *      ),
      *      @OA\Parameter(
-     *          name="sort",
+     *          name="orderBy",
      *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
      *          required=false,
      *          in="query",
-     *          @OA\Schema(type="string"),
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(type="string")
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -98,8 +101,8 @@ class DishesController extends Controller
             ->newQuery()
             ->findbyCategory($request)
             ->findbyName($request)
-            ->findSort($request)
             ->findByPriceRange($request)
+            ->findOrderBy($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);

@@ -24,17 +24,8 @@ class LocationController extends Controller
      *      summary="Get list of locltion",
      *      description="Returns list of location",
      *      @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="address or distance location",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *      ),
-     *      @OA\Parameter(
-     *          name="sort",
-     *          description="sort by query +id=>asc , -id =>desc",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
@@ -59,6 +50,16 @@ class LocationController extends Controller
      *              type="string"
      *          )
      *      ),
+     *      @OA\Parameter(
+     *          name="orderBy",
+     *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(type="string")
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -71,9 +72,8 @@ class LocationController extends Controller
         $data = $this->locationModel
             ->newQuery()
             ->findByLocation($request)
-            ->findSort($request)
-            ->paginate($request->limit??PAGE_SIZE_DEFAULT);
-
+            ->findOrderBy($request)
+            ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
         return $this->sendSuccess($data);
     }
 

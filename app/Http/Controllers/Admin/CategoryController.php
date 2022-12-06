@@ -23,7 +23,7 @@ class CategoryController extends Controller
      *      summary="Get list of category",
      *      description="Returns list of category",
      *      @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="Category name",
      *          required=false,
      *          in="query",

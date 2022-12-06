@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ChatMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use App\Models\Dishes;
 use App\Models\Order;
 use App\Models\OrderLog;
+use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +18,7 @@ class OrderController extends Controller
     public function __construct(
         protected Order  $order,
         protected Dishes $dish,
+        protected Chat   $chatModel,
     )
     {
     }
@@ -26,7 +31,7 @@ class OrderController extends Controller
      *      summary="Get list of order",
      *      description="Returns list of order",
      *      @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="code of order",
      *          required=false,
      *          in="query",
@@ -77,6 +82,16 @@ class OrderController extends Controller
      *          in="query",
      *          @OA\Schema(type="string"),
      *      ),
+     *      @OA\Parameter(
+     *          name="orderBy",
+     *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(type="string")
+     *          ),
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -94,6 +109,7 @@ class OrderController extends Controller
             ->findByCode($request)
             ->findByStatus($request)
             ->findByDateRange($request)
+            ->findOrderBy($request)
             ->latest()
             ->paginate($pageSize);
 
@@ -132,6 +148,10 @@ class OrderController extends Controller
                 ->newQuery()
                 ->create($data);
 
+            //add chat
+            $this->newMessage();
+
+            //log
             $order->dishes()->attach($dishOfOrder);
 
             $order->logs()->create([
@@ -145,6 +165,19 @@ class OrderController extends Controller
         return $res;
     }
 
+    public function newMessage($status = 1)
+    {
+        $adminDefault = User::where('phone', '0987654321')->first();
+        $roomByCurrentUser = Room::where('id', auth()->id())->first();
+        $msg = [
+            'content' => OrderLog::textLog[$status],
+            'room_id' => $roomByCurrentUser->id,
+            'sender_id' => $adminDefault->id,
+        ];
+        $newMsg = $this->chatModel->newQuery()->create($msg);
+        event(new ChatMessageEvent(auth()->id(), $newMsg));
+        return true;
+    }
 
     /**
      * @OA\Get(
@@ -230,14 +263,16 @@ class OrderController extends Controller
     {
         $order->update(['status' => $request->status]);
 
+
         $order->logs()->create([
             'status' => $request->status,
             'change_by' => auth()->id ?? null
         ]);
 
+        $this->newMessage($request->status);
+
         return $this->updateSuccess($order);
     }
-
 
     public function destroy(Order $order)
     {

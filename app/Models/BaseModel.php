@@ -10,7 +10,7 @@ class BaseModel extends Model
 {
     public function scopeFindByName(Builder $query, Request $request): Builder
     {
-        if ($name = $request->search) {
+        if ($name = $request->keyword) {
             return $query->where('name', 'like', '%' . $name . '%');
         }
 
@@ -40,7 +40,7 @@ class BaseModel extends Model
 
     public function scopeFindByCode(Builder $query, Request $request): Builder
     {
-        if ($code = $request->search) {
+        if ($code = $request->keyword) {
             return $query->where('code', 'like', '%' . $code . '%');
         }
 
@@ -77,17 +77,17 @@ class BaseModel extends Model
         return $query;
     }
 
-    public function scopeFindSort(Builder $query, Request $request): Builder
+    public function scopeFindOrderBy(Builder $query, Request $request): Builder
     {
         $desc = '-';
         $asc = '+';
-        if (isset($request->sort)) {
-            $sort = $request->sort;
-            if (strlen(strstr($sort, $desc)) > 0) {
-                $sort = str_replace($desc, '', $request->sort);
+        if (isset($request->orderBy)) {
+            $orderBy = $request->orderBy;
+            if (strlen(strstr($orderBy, $desc)) > 0) {
+                $sort = str_replace($desc, '', $orderBy);
                 return $query->orderBy("$sort", 'desc');
             } else {
-                $sort = str_replace($asc, '', $request->sort);
+                $sort = str_replace($asc, '', $orderBy);
                 return $query->orderBy("$sort", 'asc');
             }
 
@@ -107,7 +107,7 @@ class BaseModel extends Model
 
     function scopeFindByLocation(Builder $query, Request $request)
     {
-        if ($search = $request->search) {
+        if ($search = $request->keyword) {
             return $query->where('address', 'like', '%' . $search . '%')
                 ->orWhere('distance', 'like', '%' . $search . '%');
         }
