@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Events\ChatMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Chat;
 use App\Models\Dishes;
 use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Payment;
+use App\Models\Room;
+use App\Models\User;
 use App\Services\PaymentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -23,6 +27,7 @@ class OrderController extends Controller
         protected UserService    $userService,
         protected PaymentService $paymentService,
         protected Payment        $payment,
+        protected Chat           $chatModel,
     )
     {
     }
@@ -129,6 +134,10 @@ class OrderController extends Controller
 
             $order->dishes()->attach($dishOfOrder);
 
+            //add chat
+            $this->newMessage();
+
+            //log
             $order->logs()->create([
                 'status' => 1,
                 'change_by' => auth()->id ?? null
@@ -141,6 +150,20 @@ class OrderController extends Controller
             return $this->paymentService->createVNP($res->code, $res->total, $request);
 
         return $res;
+    }
+
+    public function newMessage($status = 1)
+    {
+        $adminDefault = User::where('phone', '0987654321')->first();
+        $roomByCurrentUser = Room::where('id', auth()->id())->first();
+        $msg = [
+            'content' => OrderLog::textLog[$status],
+            'room_id' => $roomByCurrentUser->id,
+            'sender_id' => $adminDefault->id,
+        ];
+        $newMsg = $this->chatModel->newQuery()->create($msg);
+        event(new ChatMessageEvent(auth()->id(), $newMsg));
+        return true;
     }
 
     /**
@@ -299,6 +322,7 @@ class OrderController extends Controller
             'status' => 0,
             'change_by' => auth()->id ?? null
         ]);
+        $this->newMessage(0);
 
         return $this->updateSuccess($order);
     }
