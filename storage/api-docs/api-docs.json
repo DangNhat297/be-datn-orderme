@@ -1366,7 +1366,7 @@
                 "operationId": "getClientCategories",
                 "parameters": [
                     {
-                        "name": "search",
+                        "name": "keyword",
                         "in": "query",
                         "description": "Category name",
                         "required": false,
@@ -1417,7 +1417,7 @@
                         }
                     },
                     {
-                        "name": "search",
+                        "name": "keyword",
                         "in": "query",
                         "description": "dish name",
                         "required": false,
@@ -1462,12 +1462,15 @@
                         }
                     },
                     {
-                        "name": "sort",
+                        "name": "orderBy",
                         "in": "query",
                         "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 ],
@@ -1561,18 +1564,9 @@
                 "operationId": "getClientLocations",
                 "parameters": [
                     {
-                        "name": "search",
+                        "name": "keyword",
                         "in": "query",
                         "description": "address or distance location",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sort",
-                        "in": "query",
-                        "description": "sort by query +id=>asc , -id =>desc",
                         "required": false,
                         "schema": {
                             "type": "string"

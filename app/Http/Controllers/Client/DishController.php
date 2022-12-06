@@ -32,7 +32,7 @@ class DishController extends Controller
      *          )
      *      ),
      *        @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="dish name",
      *          required=false,
      *          in="query",
@@ -73,11 +73,14 @@ class DishController extends Controller
      *          @OA\Schema(type="number"),
      *      ),
      *      @OA\Parameter(
-     *          name="sort",
+     *          name="orderBy",
      *          description=" sort by query vd :-id,+id,+name,-name,-price,+price",
      *          required=false,
      *          in="query",
-     *          @OA\Schema(type="string"),
+     *          @OA\Schema(
+     *              type="array",
+     *              @OA\Items(type="string")
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -92,11 +95,11 @@ class DishController extends Controller
             ->newQuery()
             ->findbyCategory($request)
             ->findbyName($request)
-            ->findSort($request)
+            ->findOrderBy($request)
             ->findByPriceRange($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
         $data->getCollection()->transform(function ($value) {
-            $value->makeHidden(['created_at', 'updated_at','status']);
+            $value->makeHidden(['created_at', 'updated_at', 'status']);
             return $value;
         });
         return $this->sendSuccess($data);
