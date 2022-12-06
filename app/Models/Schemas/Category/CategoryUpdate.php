@@ -25,6 +25,13 @@ class CategoryUpdate
      */
     public $slug;
 
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $image;
+
 //    /**
 //     * @OA\Property()
 //     *

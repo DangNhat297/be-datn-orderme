@@ -1136,6 +1136,39 @@
                 }
             }
         },
+        "/admin/chat-by-room/{id}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Get chat information",
+                "description": "Returns chat data",
+                "operationId": "getChatByRoom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/client/cart/{id}": {
             "get": {
                 "tags": [
@@ -1886,6 +1919,17 @@
                 "summary": "Get list of room",
                 "description": "Returns list of room",
                 "operationId": "getRooms",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "user name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1979,6 +2023,9 @@
                     "slug": {
                         "type": "string"
                     },
+                    "image": {
+                        "type": "string"
+                    },
                     "status": {
                         "type": "integer"
                     }
@@ -1991,6 +2038,9 @@
                         "type": "string"
                     },
                     "slug": {
+                        "type": "string"
+                    },
+                    "image": {
                         "type": "string"
                     },
                     "status": {
@@ -2014,6 +2064,9 @@
                         "type": "string"
                     },
                     "slug": {
+                        "type": "string"
+                    },
+                    "image": {
                         "type": "string"
                     },
                     "status": {
@@ -2391,6 +2444,12 @@
                         "items": {
                             "$ref": "#/components/schemas/OrderDetailRequest"
                         }
+                    },
+                    "payment_method": {
+                        "type": "integer"
+                    },
+                    "payment_status": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -2488,6 +2547,9 @@
                     },
                     "user": {
                         "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "vnp_url": {
+                        "type": "string"
                     },
                     "created_at": {
                         "type": "string"

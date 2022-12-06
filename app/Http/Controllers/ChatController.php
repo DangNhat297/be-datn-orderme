@@ -79,7 +79,7 @@ class ChatController extends Controller
     {
         $data = [
             'content' => $request->message,
-            'room_id' => $this->getRoomByUser(),
+            'room_id' => $request->room_id ?? $this->getRoomByUser(),
             'sender_id' => auth()->id(),
             'isSeen' => true
         ];
@@ -88,38 +88,41 @@ class ChatController extends Controller
             ->newQuery()
             ->create($data);
         event(new ChatMessageEvent(auth()->id(), $item));
+        return response()->json($item, 200);
     }
 
-//    /**
-//     * @OA\Get(
-//     *      path="/chat/{id}",
-//     *      operationId="getChatById",
-//     *      tags={"Chat"},
-//     *      summary="Get chat information",
-//     *      description="Returns chat data",
-//     *      @OA\Parameter(
-//     *          name="id",
-//     *          description="Chat id",
-//     *          required=true,
-//     *          in="path",
-//     *          @OA\Schema(
-//     *              type="integer"
-//     *          )
-//     *      ),
-//     *      @OA\Response(
-//     *          response=200,
-//     *          description="Successful operation",
-//     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
-//     *       ),
-//     * )
-//     */
-    public function show(int $id): JsonResponse
+    /**
+     * @OA\Get(
+     *      path="/admin/chat-by-room/{id}",
+     *      operationId="getChatByRoom",
+     *      tags={"Chat"},
+     *      summary="Get chat information",
+     *      description="Returns chat data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Room id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
+     *       ),
+     * )
+     */
+    public function getChatByRoom(int $id)
     {
-        $item = $this->chatModel
+        $data = $this->chatModel
             ->newQuery()
-            ->findOrFail($id);
+            ->with(['sender'])
+            ->where('room_id', $id)
+            ->get();
 
-        return $this->sendSuccess($item);
+        return response()->json($data, 200);
     }
 
 

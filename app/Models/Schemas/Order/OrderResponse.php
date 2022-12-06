@@ -77,6 +77,13 @@ class OrderResponse
      *
      * @var string
      */
+    public $vnp_url;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $created_at;
     /**
      * @OA\Property()

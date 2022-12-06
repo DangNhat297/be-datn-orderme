@@ -85,6 +85,8 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         //room chat
         Route::apiResource('room', RoomController::class);
+        Route::get('chat-by-room/{id}', [ChatController::class, 'getChatByRoom']);
+
     });
 });
 

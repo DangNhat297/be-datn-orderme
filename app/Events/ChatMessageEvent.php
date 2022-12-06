@@ -40,7 +40,7 @@ class ChatMessageEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'message-event';
+        return 'chat';
     }
 
     public function broadcastWith()

@@ -25,6 +25,13 @@ class CategoryCreate
      */
     public $slug;
 
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $image;
+
 //    /**
 //     * @OA\Property()
 //     *
