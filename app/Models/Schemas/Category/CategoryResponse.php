@@ -23,12 +23,22 @@ class CategoryResponse
      * @var string
      */
     public $slug;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $image;
+
     /**
      * @OA\Property()
      *
      * @var integer
      */
     public $status;
+
+
     /**
      * @OA\Property()
      *

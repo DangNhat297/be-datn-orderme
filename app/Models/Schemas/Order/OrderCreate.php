@@ -48,4 +48,18 @@ class OrderCreate
      * @var array
      */
     public $dishes;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $payment_method;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $payment_status;
 }
