@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     protected $categoryModel;
-    public function __construct( Category $categoryModel)
+
+    public function __construct(Category $categoryModel)
     {
-        $this->categoryModel=$categoryModel;
+        $this->categoryModel = $categoryModel;
     }
 
     /**
@@ -23,7 +24,7 @@ class CategoryController extends Controller
      *      summary="Get list of category",
      *      description="Returns list of category",
      *      @OA\Parameter(
-     *          name="search",
+     *          name="keyword",
      *          description="Category name",
      *          required=false,
      *          in="query",
@@ -54,10 +55,10 @@ class CategoryController extends Controller
             ->where('is_deleted', 0)
             ->findByName($request)
             ->findByStatus($request)
-            ->paginate($request->limit??PAGE_SIZE_DEFAULT);
+            ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         $data->getCollection()->transform(function ($value) {
-            $value->makeHidden(['created_at', 'updated_at','is_deleted','status']);
+            $value->makeHidden(['created_at', 'updated_at', 'is_deleted', 'status']);
             return $value;
         });
 
