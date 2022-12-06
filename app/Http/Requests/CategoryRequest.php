@@ -29,7 +29,7 @@ class CategoryRequest extends FormRequest
         return [
             'name' => 'required',
             'slug'  => 'required|unique:dish_categories,slug',
-            'image' => 'image'
+            // 'image' => 'image'
             // 'parent_id' => [
             //     'required',
             //     'integer',

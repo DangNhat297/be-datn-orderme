@@ -29,7 +29,7 @@ class CategoryUpdateRequest extends FormRequest
         return [
             'name' => 'required',
             'slug'  => 'required|unique:dish_categories,slug,' . $this->category,
-            'image' => 'nullable|image'
+            // 'image' => 'nullable|image'
             // 'parent_id' => [
             //     'required',
             //     'integer',
