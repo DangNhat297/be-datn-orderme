@@ -18,6 +18,7 @@ class Order extends BaseModel
         'phone',
         'note',
         'location_id',
+        'location_detail',
         'total',
         'price_sale',
         'price_none_sale',
