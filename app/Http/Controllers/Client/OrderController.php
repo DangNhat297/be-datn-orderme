@@ -110,7 +110,8 @@ class OrderController extends Controller
             'price_sale',
             'price_none_sale',
             'coupon_id',
-            'payment_method'
+            'payment_method',
+            'location_detail'
         ]);
 
         $data['payment_status'] = ORDER_PAYMENT_WAITING;
@@ -139,7 +140,7 @@ class OrderController extends Controller
             $order->dishes()->attach($dishOfOrder);
 
             //add chat
-            // $this->newMessage();
+            $this->newMessage();
 
             //log
             $order->logs()->create([

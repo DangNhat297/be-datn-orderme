@@ -17,6 +17,15 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFindByCoupon(Builder $query, Request $request): Builder
+    {
+        if ($name = $request->keyword) {
+            return $query->where('coupon', 'like', '%' . $name . '%');
+        }
+
+        return $query;
+    }
+
     public function scopeFindByDateRange(Builder $query, Request $request): Builder
     {
 
@@ -116,25 +125,24 @@ class BaseModel extends Model
 
     public function scopeFindByDay(Builder $query, Request $request): Builder
     {
-        if (!$request->day ) return $query;
+        if (!$request->day) return $query;
         $day = $request->day;
-        return $query->whereDay('created',$day);
+        return $query->whereDay('created', $day);
     }
 
     public function scopeFindByMonth(Builder $query, Request $request): Builder
     {
-        if (!$request->month ) return $query;
+        if (!$request->month) return $query;
         $month = $request->month;
-        return $query->whereMoth('created',$month);
+        return $query->whereMoth('created', $month);
     }
 
     public function scopeFindByYear(Builder $query, Request $request): Builder
     {
-        if (!$request->year ) return $query;
+        if (!$request->year) return $query;
         $year = $request->year;
-        return $query->whereYear('created',$year);
+        return $query->whereYear('created', $year);
     }
-
 
 
 }

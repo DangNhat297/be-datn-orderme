@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": " http://localhost:8000/api/v1/",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -176,6 +176,171 @@
                         "name": "id",
                         "in": "path",
                         "description": "Category id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon": {
+            "get": {
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Get list of Coupon",
+                "description": "Returns list of Coupon",
+                "operationId": "getCoupon",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "name coupon",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit page",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": " sort by query vd :-id,+id,+name,-name,-price,+price",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Create new coupon",
+                "description": "Returns coupon data",
+                "operationId": "createCoupon",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CouponCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupon/{id}": {
+            "put": {
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Update existing coupon",
+                "description": "Returns updated coupon data",
+                "operationId": "updateCoupon",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coupon id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CouponUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Delete existing coupon",
+                "description": "Deletes a record and returns no content",
+                "operationId": "deleteCoupon",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coupon id",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -903,7 +1068,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrderResponse"
+                                    "$ref": "#/components/schemas/StatisticResponse"
                                 }
                             }
                         }
@@ -925,7 +1090,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrderResponse"
+                                    "$ref": "#/components/schemas/StatisticTopProductResponse"
                                 }
                             }
                         }
@@ -947,7 +1112,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CategoryResponse"
+                                    "$ref": "#/components/schemas/StatisticCategoryResponse"
                                 }
                             }
                         }
@@ -1504,6 +1669,61 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/CategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/coupon": {
+            "get": {
+                "tags": [
+                    "Coupon Client"
+                ],
+                "summary": "Get list of Coupon",
+                "description": "Returns list of Coupon",
+                "operationId": "getCouponClient",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/coupon/{id}": {
+            "get": {
+                "tags": [
+                    "Coupon Client"
+                ],
+                "summary": "Get coupon information",
+                "description": "Returns coupon data",
+                "operationId": "getCouponByIdClient",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coupon id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
                                 }
                             }
                         }
@@ -2242,6 +2462,108 @@
                 },
                 "type": "object"
             },
+            "CouponCreate": {
+                "properties": {
+                    "coupon": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "discount_percent": {
+                        "type": "integer"
+                    },
+                    "discount_price": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CouponResponse": {
+                "properties": {
+                    "coupon": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "discount_percent": {
+                        "type": "integer"
+                    },
+                    "discount_price": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "CouponUpdate": {
+                "properties": {
+                    "coupon": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "discount_percent": {
+                        "type": "integer"
+                    },
+                    "discount_price": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "DishesCreate": {
                 "properties": {
                     "name": {
@@ -2562,6 +2884,9 @@
                         "type": "integer"
                     },
                     "total": {
+                        "type": "number"
+                    },
+                    "location_detail": {
                         "type": "string"
                     },
                     "dishes": {
@@ -2676,6 +3001,9 @@
                     "vnp_url": {
                         "type": "string"
                     },
+                    "location_detail": {
+                        "type": "string"
+                    },
                     "created_at": {
                         "type": "string"
                     },
@@ -2781,6 +3109,82 @@
                     },
                     "id": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "StatisticCategoryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "dishes_count": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "StatisticDishItem": {
+                "title": " Dish Item",
+                "description": " model",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "quantity_buy": {
+                        "type": "number"
+                    },
+                    "total": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "StatisticResponse": {
+                "properties": {
+                    "duration": {
+                        "type": "string"
+                    },
+                    "dishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatisticDishItem"
+                        }
+                    },
+                    "total_money": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "StatisticTopProductResponse": {
+                "properties": {
+                    "users": {
+                        "type": "integer"
+                    },
+                    "dishes": {
+                        "type": "integer"
+                    },
+                    "categories": {
+                        "type": "integer"
+                    },
+                    "orders": {
+                        "type": "integer"
+                    },
+                    "topSelling": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatisticDishItem"
+                        }
                     }
                 },
                 "type": "object"
