@@ -21,3 +21,11 @@ const ORDER_PAYMENT_VNPAY = 2;
 const ORDER_PAYMENT_WAITING = 0;
 
 const ORDER_PAYMENT_SUCCESS = 1;
+
+const ENABLE = 1;
+
+const DISABLE = 0;
+
+const DISCOUNT_PERCENT = 1;
+
+const DISCOUNT_PRICE = 2;

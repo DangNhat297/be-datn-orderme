@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
@@ -52,19 +53,19 @@ Route::prefix('client')->group(function () {
 });
 
 
-Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+Route::group([], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
     Route::get('chat-by-user', [ChatController::class, 'getChatByUser']);
 
-// account
+    // account
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
 
-// admin
-    Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
+    // admin
+    Route::group(['prefix' => 'admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
@@ -87,6 +88,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         Route::apiResource('room', RoomController::class);
         Route::get('chat-by-room/{id}', [ChatController::class, 'getChatByRoom']);
 
+        // coupon
+        Route::apiResource('coupon', CouponController::class);
+        Route::put('/coupon/change-status/{coupon}', [CouponController::class, 'toggleStatus']);
     });
 });
 
@@ -97,5 +101,6 @@ Route::prefix('hero-wedding')->group(function () {
 
 Route::fallback(function () {
     return response()->json([
-        'message' => 'Page Not Found'], 404);
+        'message' => 'Page Not Found'
+    ], 404);
 });
