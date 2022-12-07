@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000/api/v1",
+            "url": " http://localhost:8000/api/v1/",
             "description": "Order Me API"
         }
     ],
@@ -835,6 +835,119 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SettingRespone"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/statistical": {
+            "get": {
+                "tags": [
+                    "Statistical"
+                ],
+                "summary": "Get list of statistical",
+                "description": "Returns list of statistical",
+                "operationId": "getStatistical",
+                "parameters": [
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "filter by month , day ,week example : sort=day,moth,week",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "filter by duration example: duration= -7 => 7 day ago || duration= 7 => +7 day  ",
+                        "required": false,
+                        "schema": {
+                            "type": "interger"
+                        }
+                    },
+                    {
+                        "name": "column",
+                        "in": "query",
+                        "description": "show by column ",
+                        "required": false,
+                        "schema": {
+                            "type": "interger"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "filter by day start_date ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "filter by day end_date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/statistical/all-table": {
+            "get": {
+                "tags": [
+                    "Statistical"
+                ],
+                "summary": "Get list of statistical all table",
+                "description": "Returns list of statistical all table",
+                "operationId": "getStatisticalAllTable",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/statistical/category-table": {
+            "get": {
+                "tags": [
+                    "Statistical"
+                ],
+                "summary": "Get list of statistical category table ",
+                "description": "Returns list of statistical category table ",
+                "operationId": "getStatisticalCategoryTable",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResponse"
                                 }
                             }
                         }

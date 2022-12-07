@@ -17,4 +17,8 @@ class Category extends BaseModel
         'is_deleted'
     ];
 
+    function dishes(){
+       return $this->hasMany(Dishes::class);
+    }
+
 }

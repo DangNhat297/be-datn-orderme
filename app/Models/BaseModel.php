@@ -114,5 +114,27 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFindByDay(Builder $query, Request $request): Builder
+    {
+        if (!$request->day ) return $query;
+        $day = $request->day;
+        return $query->whereDay('created',$day);
+    }
+
+    public function scopeFindByMonth(Builder $query, Request $request): Builder
+    {
+        if (!$request->month ) return $query;
+        $month = $request->month;
+        return $query->whereMoth('created',$month);
+    }
+
+    public function scopeFindByYear(Builder $query, Request $request): Builder
+    {
+        if (!$request->year ) return $query;
+        $year = $request->year;
+        return $query->whereYear('created',$year);
+    }
+
+
 
 }
