@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
@@ -19,7 +20,6 @@ use App\Http\Controllers\Client\OrderController as ClientOrder;
 use App\Http\Controllers\Hero\HeroWeddingGuestController;
 use App\Http\Controllers\Hero\HeroWeddingMessageController;
 use App\Http\Controllers\RoomController;
-use App\Http\Controllers\Admin\StatisticalController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -57,7 +57,7 @@ Route::prefix('client')->group(function () {
 });
 
 
-Route::group([], function ($routes) {
+Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
@@ -96,9 +96,9 @@ Route::group([], function ($routes) {
 
 //        statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');
-        Route::group(['prefix'=>'statistical'],function (){
-            Route::get('all-table',[StatisticalController::class,'statistical_count_table']);
-            Route::get('category-table',[StatisticalController::class,'statistical_table_category']);
+        Route::group(['prefix' => 'statistical'], function () {
+            Route::get('all-table', [StatisticalController::class, 'statistical_count_table']);
+            Route::get('category-table', [StatisticalController::class, 'statistical_table_category']);
         });
 
     });
