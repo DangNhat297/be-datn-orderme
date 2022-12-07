@@ -32,7 +32,6 @@ class CouponRequest extends FormRequest
                         ->orWhereBetween('end_date', [request('start_date'), request('end_date')]);
                 })
             ],
-            'status' => 'required|integer|in:0,1',
             'type' => 'required|integer|in:1,2',
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
             'discount_price' => 'required_if:type,=,2|integer',

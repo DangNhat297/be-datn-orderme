@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Events\ChatMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
 use App\Models\Chat;
 use App\Models\Dishes;
@@ -99,13 +100,16 @@ class OrderController extends Controller
      *       ),
      * )
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $data = $request->only([
             'phone',
             'note',
             'location_id',
             'total',
+            'price_sale',
+            'price_none_sale',
+            'coupon_id',
             'payment_method'
         ]);
 
@@ -135,13 +139,15 @@ class OrderController extends Controller
             $order->dishes()->attach($dishOfOrder);
 
             //add chat
-            $this->newMessage();
+            // $this->newMessage();
 
             //log
             $order->logs()->create([
                 'status' => 1,
                 'change_by' => auth()->id ?? null
             ]);
+
+            $order->coupon()->decrement('quantity');
 
             return $order;
         });

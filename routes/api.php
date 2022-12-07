@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
@@ -11,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CategoryController as CategoryClient;
+use App\Http\Controllers\Client\CouponController as ClientCouponController;
 use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\LocationController as LocationClient;
 use App\Http\Controllers\Client\OrderController as ClientOrder;
@@ -18,7 +20,6 @@ use App\Http\Controllers\Hero\HeroWeddingGuestController;
 use App\Http\Controllers\Hero\HeroWeddingMessageController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\Admin\StatisticalController;
-use App\Http\Controllers\Admin\CouponController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -51,10 +52,12 @@ Route::prefix('client')->group(function () {
     Route::get('/order/{order}/payment', [ClientOrder::class, 'payment']);
 
     Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
+
+    Route::get('coupon', [ClientCouponController::class, 'show']);
 });
 
 
-Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+Route::group([], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\ChatMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Models\Chat;
 use App\Models\Dishes;
 use App\Models\Order;
@@ -117,12 +118,16 @@ class OrderController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $data = $request->only([
             'phone',
             'note',
             'location_id',
+            'total',
+            'price_sale',
+            'price_none_sale',
+            'coupon_id',
             'payment_method',
             'payment_status'
         ]);
@@ -139,10 +144,6 @@ class OrderController extends Controller
             return $dish;
         })->keyBy('dish_id');
 
-        $data['total'] = $dishOfOrder->reduce(function ($sum, $currentVal) {
-            return $sum += $currentVal['price'];
-        }, 0);
-
         $res = DB::transaction(function () use ($data, $dishOfOrder) {
             $order = $this->order
                 ->newQuery()
@@ -158,6 +159,8 @@ class OrderController extends Controller
                 'status' => 1,
                 'change_by' => auth()->id ?? null
             ]);
+
+            $order->coupon()->decrement('quantity');
 
             return $order;
         });
