@@ -53,11 +53,13 @@ Route::prefix('client')->group(function () {
 
     Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
 
-    Route::get('coupon', [ClientCouponController::class, 'show']);
+    Route::get('coupon', [ClientCouponController::class, 'index']);
+
+    // Route::get('coupon', [ClientCouponController::class, 'show']);
 });
 
 
-Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+Route::group([], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);

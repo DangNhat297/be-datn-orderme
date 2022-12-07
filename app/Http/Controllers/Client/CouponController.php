@@ -13,16 +13,29 @@ class CouponController extends Controller
     ) {
     }
 
+    public function index()
+    {
+        $coupons = $this->coupon
+            ->newQuery()
+            ->where('status', ENABLE)
+            ->where('quantity', '>', 0)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->get();
+
+        return $this->sendSuccess($coupons);
+    }
+
     public function show(Request $request)
     {
         $coupon = $this->coupon
-                        ->newQuery()
-                        ->where('coupon', $request->coupon)
-                        ->where('status', ENABLE)
-                        ->where('quantity', '>', 0)
-                        ->whereDate('start_date', '<=', now())
-                        ->whereDate('end_date', '>=', now())
-                        ->first();
+            ->newQuery()
+            ->where('coupon', $request->coupon)
+            ->where('status', ENABLE)
+            ->where('quantity', '>', 0)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->first();
 
         return $this->sendSuccess($coupon);
     }
