@@ -1071,7 +1071,7 @@
                         "description": "filter by duration example: duration= -7 => 7 day ago || duration= 7 => +7 day  ",
                         "required": false,
                         "schema": {
-                            "type": "interger"
+                            "type": "integer"
                         }
                     },
                     {
@@ -1080,7 +1080,7 @@
                         "description": "show by column ",
                         "required": false,
                         "schema": {
-                            "type": "interger"
+                            "type": "integer"
                         }
                     },
                     {
