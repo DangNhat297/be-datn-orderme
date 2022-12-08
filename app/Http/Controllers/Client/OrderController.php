@@ -140,7 +140,9 @@ class OrderController extends Controller
             $order->dishes()->attach($dishOfOrder);
 
             //add chat
-            $this->newMessage();
+            if (auth()->check()) {
+                $this->newMessage();
+            }
 
             //log
             $order->logs()->create([
@@ -329,8 +331,9 @@ class OrderController extends Controller
             'status' => 0,
             'change_by' => auth()->id ?? null
         ]);
-        $this->newMessage(0);
-
+        if (auth()->check()) {
+            $this->newMessage(0);
+        }
         return $this->updateSuccess($order);
     }
 }
