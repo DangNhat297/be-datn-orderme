@@ -49,7 +49,7 @@ class StatisticalController extends Controller
      *          required=false,
      *          in="query",
      *          @OA\Schema(
-     *              type="interger"
+     *              type="integer"
      *          )
      *      ),
      *      @OA\Parameter(
@@ -58,7 +58,7 @@ class StatisticalController extends Controller
      *          required=false,
      *          in="query",
      *          @OA\Schema(
-     *              type="interger"
+     *              type="integer"
      *          )
      *      ),
      *      @OA\Parameter(
