@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CouponRequest;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class CouponController extends Controller
 {
@@ -121,14 +120,34 @@ class CouponController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
+     * @OA\Get(
+     *      path="/admin/coupon/{id}",
+     *      operationId="getCouponById",
+     *      tags={"Coupon"},
+     *      summary="Get coupon information",
+     *      description="Returns coupon data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Coupon id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/CouponResponse")
+     *       ),
+     * )
      */
-    public function show(Coupon $coupon)
+    public function show(int $id)
     {
-        return $this->sendSuccess($coupon);
+        $item = $this->coupon
+            ->newQuery()
+            ->findOrFail($id);
+        return $this->sendSuccess($item);
     }
 
     /**
