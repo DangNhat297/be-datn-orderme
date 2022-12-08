@@ -213,6 +213,15 @@
                         }
                     },
                     {
+                        "name": "type",
+                        "in": "query",
+                        "description": "type = 1 là giá chiết khấu %, type = 2 là giá đơn hàng cố định",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "limit",
                         "in": "query",
                         "description": "limit page",
@@ -288,6 +297,37 @@
             }
         },
         "/admin/coupon/{id}": {
+            "get": {
+                "tags": [
+                    "Coupon"
+                ],
+                "summary": "Get coupon information",
+                "description": "Returns coupon data",
+                "operationId": "getCouponById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coupon id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "put": {
                 "tags": [
                     "Coupon"

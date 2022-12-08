@@ -26,6 +26,15 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFindByType(Builder $query, Request $request): Builder
+    {
+        if ($name = $request->type) {
+            return $query->where('type', $name);
+        }
+
+        return $query;
+    }
+
     public function scopeFindByDateRange(Builder $query, Request $request): Builder
     {
 

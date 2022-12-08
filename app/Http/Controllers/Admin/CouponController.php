@@ -33,6 +33,15 @@ class CouponController extends Controller
      *          )
      *      ),
      *      @OA\Parameter(
+     *          name="type",
+     *          description="type = 1 là giá chiết khấu %, type = 2 là giá đơn hàng cố định",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Parameter(
      *          name="limit",
      *          description="limit page",
      *          required=false,
@@ -74,6 +83,7 @@ class CouponController extends Controller
         $coupons = $this->coupon
             ->newQuery()
             ->findByCoupon($request)
+            ->findByType($request)
             ->findOrderBy($request)
             ->paginate($page_size);
 
