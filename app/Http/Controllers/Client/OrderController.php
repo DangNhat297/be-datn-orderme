@@ -198,8 +198,14 @@ class OrderController extends Controller
      *       ),
      * )
      */
-    public function show(Order $order)
+    public function show($order)
     {
+        $order = $this->order 
+                        ->newQuery()
+                        ->where('id', $order)
+                        ->orWhere('code', $order)
+                        ->firstOrFail();
+
         $order->load([
             'dishes',
             'logs'
