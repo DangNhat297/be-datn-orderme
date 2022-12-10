@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ChatEvent;
-use App\Events\ChatMessageEvent;
+use App\Events\Chat\ChatMessageEvent;
+use App\Events\Chat\ChatNotiEvent;
+use App\Events\Chat\ChatTyping;
 use App\Models\Chat;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function __construct(protected Chat $chatModel, private Room $roomModel)
+    public function __construct(protected Chat $chatModel, protected Room $roomModel)
     {
     }
 
@@ -37,7 +38,7 @@ class ChatController extends Controller
             ->where('room_id', $this->getRoomByUser())
             ->get();
 
-        return response()->json($data, 200);
+        event(new ChatMessageEvent($data));
     }
 
     public function getRoomByUser()
@@ -54,7 +55,6 @@ class ChatController extends Controller
             ->newQuery()
             ->create($data);
         return $item->id;
-
     }
 
     /**
@@ -81,14 +81,31 @@ class ChatController extends Controller
             'content' => $request->message,
             'room_id' => $request->room_id ?? $this->getRoomByUser(),
             'sender_id' => auth()->id(),
-            'isSeen' => true
+            'isSeen' => false
         ];
 
         $item = $this->chatModel
             ->newQuery()
             ->create($data);
-        event(new ChatMessageEvent(auth()->id(), $item));
-        return response()->json($item, 200);
+
+        $list = $this->getMessageByRoom($item->room_id);
+        event(new ChatMessageEvent($list));
+
+        event(new ChatNotiEvent($this->getListRoomChatAdmin()));
+    }
+
+    public function getMessageByRoom($roomId)
+    {
+        return $this->chatModel
+            ->newQuery()
+            ->with(['sender'])
+            ->where('room_id', $roomId)
+            ->get();
+    }
+
+    public function getListRoomChatAdmin()
+    {
+        return $this->roomModel->newQuery()->get();
     }
 
     /**
@@ -116,17 +133,32 @@ class ChatController extends Controller
      */
     public function getChatByRoom(int $id)
     {
-        $data = $this->chatModel
-            ->newQuery()
-            ->with(['sender'])
-            ->where('room_id', $id)
-            ->get();
+        $data = $this->getMessageByRoom($id);
+        event(new ChatMessageEvent($data));
 
-        return response()->json($data, 200);
+        $ids = $data->pluck('id');
+        $this->chatModel->newQuery()
+            ->whereIn('id', $ids)
+            ->update(['isSeen' => true]);
+
+        event(new ChatNotiEvent($this->getListRoomChatAdmin()));
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $data = $request->all();
+        $item = $this->chatModel
+            ->newQuery()
+            ->findOrFail($id);
+
+        $item->update($data);
+
+        return $this->updateSuccess($item);
     }
 
 
-//    /**
+
+    //    /**
 //     * @OA\Put(
 //     *      path="/chat/{id}",
 //     *      operationId="updateChat",
@@ -153,17 +185,31 @@ class ChatController extends Controller
 //     *       )
 //     * )
 //     */
-    public function update(Request $request, $id): JsonResponse
+
+    /**
+     * @OA\Post(
+     *      path="/chat/typing",
+     *      operationId="typingChat",
+     *      tags={"Chat"},
+     *      summary="Typing chat realtime",
+     *      description="Returns Typing chat realtime",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/ChatTyping")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
+     *       ),
+     * )
+     */
+    public function onTypingChat(Request $request)
     {
-        $data = $request->all();
-        $item = $this->chatModel
-            ->newQuery()
-            ->findOrFail($id);
-
-        $item->update($data);
-
-        return $this->updateSuccess($item);
+        event(new ChatTyping($request->typing));
     }
+
+
 
 
 //    /**
@@ -189,6 +235,7 @@ class ChatController extends Controller
 //     *       )
 //     * )
 //     */
+
     public function destroy($id): JsonResponse
     {
         $this->chatModel

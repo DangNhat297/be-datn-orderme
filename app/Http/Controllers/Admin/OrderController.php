@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\ChatMessageEvent;
+use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Chat;

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Chat\ChatNotiEvent;
+use App\Models\Chat;
 use App\Models\Room;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -36,48 +37,45 @@ class RoomController extends Controller
      *       ),
      *     )
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $data = $this->roomModel
             ->newQuery()
-            ->with(['user'])
             ->findByName($request)
             ->get();
 
-        return $this->sendSuccess($data);
+        event(new ChatNotiEvent($data));
+
+//        return \response()->json($data, 200);
     }
 
 
-//    /**
-//     * @OA\Get(
-//     *      path="/room/{id}",
-//     *      operationId="getRoomById",
-//     *      tags={"Room"},
-//     *      summary="Get room information",
-//     *      description="Returns room data",
-//     *      @OA\Parameter(
-//     *          name="id",
-//     *          description="Room id",
-//     *          required=true,
-//     *          in="path",
-//     *          @OA\Schema(
-//     *              type="integer"
-//     *          )
-//     *      ),
-//     *      @OA\Response(
-//     *          response=200,
-//     *          description="Successful operation",
-//     *          @OA\JsonContent(ref="#/components/schemas/RoomResponse")
-//     *       ),
-//     * )
-//     */
-    public function show(int $id): JsonResponse
+    /**
+     * @OA\Get(
+     *      path="/room/message-not-seen-by-user",
+     *      operationId="getMessageNotSeenByUser",
+     *      tags={"Room"},
+     *      summary="Get room information",
+     *      description="Returns room data",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/RoomResponse")
+     *       ),
+     * )
+     */
+    public function getMessageNotSeenByUser()
     {
-        $item = $this->roomModel
-            ->newQuery()
-            ->findOrFail($id);
-
-        return $this->sendSuccess($item);
+        if (auth()->user()->role !== 'admin') {
+            $roomByUser = Room::where('userId', auth()->id())->first();
+            $data = [
+                'messageNotSeen' => count(Chat::where('sender_id', '!=', auth()->id())
+                    ->where('room_id', $roomByUser->id)
+                    ->where('isSeen', false)
+                    ->get())
+            ];
+            return \response()->json($data, 200);
+        }
     }
 
 

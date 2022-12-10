@@ -33,7 +33,7 @@ class Chat extends Model
      */
     public function room(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'room_id', 'id');
+        return $this->belongsTo(Room::class, 'room_id', 'id');
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Events\ChatMessageEvent;
+use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
@@ -200,7 +200,7 @@ class OrderController extends Controller
      */
     public function show($order)
     {
-        $order = $this->order 
+        $order = $this->order
                         ->newQuery()
                         ->where('id', $order)
                         ->orWhere('code', $order)

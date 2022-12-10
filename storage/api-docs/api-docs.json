@@ -1505,6 +1505,38 @@
                 }
             }
         },
+        "/chat/typing": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Typing chat realtime",
+                "description": "Returns Typing chat realtime",
+                "operationId": "typingChat",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChatTyping"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChatResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/client/cart/{id}": {
             "get": {
                 "tags": [
@@ -2328,6 +2360,28 @@
                     }
                 }
             }
+        },
+        "/room/message-not-seen-by-user": {
+            "get": {
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get room information",
+                "description": "Returns room data",
+                "operationId": "getMessageNotSeenByUser",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoomResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -2483,6 +2537,14 @@
                         "type": "string"
                     },
                     "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ChatTyping": {
+                "properties": {
+                    "typing": {
                         "type": "string"
                     }
                 },
@@ -3067,6 +3129,14 @@
                 "properties": {
                     "userId": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "RoomMessageNotSeen": {
+                "properties": {
+                    "messageNotSeen": {
+                        "type": "string"
                     }
                 },
                 "type": "object"

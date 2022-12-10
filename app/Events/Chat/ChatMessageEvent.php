@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Chat;
 
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
@@ -19,13 +19,11 @@ class ChatMessageEvent implements ShouldBroadcast
      * @return void
      */
 
-    public $newMessage;
-    public $sender_id;
+    public $list = [];
 
-    public function __construct($sender_id, $newMessage)
+    public function __construct($list)
     {
-        $this->newMessage = $newMessage;
-        $this->sender_id = $sender_id;
+        $this->list = $list;
     }
 
     /**
@@ -45,13 +43,11 @@ class ChatMessageEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $user = User::where('id', $this->sender_id)->first();
+        $this->list->map(function ($item) {
+            $item['sender'] = User::where('id', $item->sender_id)->first();
 
-        return [
-            'id' => $this->newMessage->id,
-            'content' => $this->newMessage->content,
-            'created_at' => $this->newMessage->created_at,
-            'sender' => $user
-        ];
+            return $item;
+        });
+        return [$this->list];
     }
 }

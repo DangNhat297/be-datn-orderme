@@ -62,7 +62,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
+    Route::get('chat/typing', [ChatController::class, 'onTypingChat']);
     Route::get('chat-by-user', [ChatController::class, 'getChatByUser']);
+    Route::get('room/message-not-seen-by-user', [RoomController::class, 'getMessageNotSeenByUser']);
 
     // account
     Route::post('logout', [AuthController::class, 'logout']);
