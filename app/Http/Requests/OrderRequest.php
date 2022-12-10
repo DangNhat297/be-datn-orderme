@@ -32,7 +32,10 @@ class OrderRequest extends FormRequest
             'coupon_id' => [
                 'nullable',
                 'integer',
-                Rule::exists('coupons', 'id')->where(fn ($q) => $q->where('quantity', '>', 0))
+                Rule::exists('coupons', 'id')
+                    ->where(fn ($q) =>
+                    $q->where('quantity', '>', 0)
+                        ->where('status', ENABLE))
             ]
         ];
     }

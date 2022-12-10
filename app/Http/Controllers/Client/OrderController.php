@@ -262,17 +262,17 @@ class OrderController extends Controller
                 if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
                     $order->update(['payment_status' => 1]);
                     $res = [
-                        'code' => '00',
-                        'message' => 'Thanh toán thành công'
+                        'RspCode' => '00',
+                        'Message' => 'Confirm Success'
                     ];
                 } else {
                     $res = [
-                        'code' => $request->vnp_ResponseCode,
-                        'message' => 'Thanh toán thất bại, vui lòng thử lại'
+                        'RspCode' => '99',
+                        'Message' => 'Unknow error'
                     ];
                 }
 
-                $res = $this->payment
+                $this->payment
                     ->newQuery()
                     ->create([
                         'order_code' => $request->vnp_TxnRef,
@@ -286,14 +286,14 @@ class OrderController extends Controller
                     ]);
             } else {
                 $res = [
-                    'code' => '04',
-                    'message' => 'Sai dữ liệu nhập vào'
+                    'RspCode' => '04',
+                    'Message' => 'invalid amount'
                 ];
             }
         } else {
             $res = [
-                'code' => '02',
-                'message' => 'Đơn hàng đã được thanh toán'
+                'RspCode' => '02',
+                'Message' => 'Order already confirmed'
             ];
         }
 
