@@ -78,6 +78,7 @@ class Order extends BaseModel
         return $this->belongsToMany(Dishes::class, 'dish_order', 'order_id', 'dish_id')
             ->withPivot(['quantity', 'price']);
     }
+
     
     /**
      * coupon
@@ -88,4 +89,3 @@ class Order extends BaseModel
     {
         return $this->belongsTo(Coupon::class);
     }
-}

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
+use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Admin\UserController;
@@ -57,7 +58,6 @@ Route::prefix('client')->group(function () {
 
 });
 
-
 Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // chat
@@ -70,7 +70,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
-    Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
+   Route::group(['prefix' => 'admin', 'middleware' => ['auth.admin']], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
@@ -97,12 +97,17 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         Route::apiResource('coupon', CouponController::class);
         Route::put('/coupon/change-status/{coupon}', [CouponController::class, 'toggleStatus']);
 
-//        statistical
+        //program
+        Route::apiResource('program', ProgramController::class);
+        Route::put('/program/change-status/{program}', [ProgramController::class, 'toggleStatus']);
+
+//      statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');
-        Route::group(['prefix' => 'statistical'], function () {
-            Route::get('all-table', [StatisticalController::class, 'statistical_count_table']);
-            Route::get('category-table', [StatisticalController::class, 'statistical_table_category']);
-        });
+        Route::group(['prefix'=>'statistical'],function (){
+            Route::get('all-table',[StatisticalController::class,'statistical_count_table']);
+            Route::get('category-table',[StatisticalController::class,'statistical_table_category']);
+       });
+
 
     });
 });
