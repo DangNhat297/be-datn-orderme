@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class PaymentService
 {
-    public function createVNP($order_code,$total_price, $request = null)
+    public function createVNP($order_code, $total_price, $request = null)
     {
         $vnp_Url = config('common.vnp_sandbox');
         $vnp_Returnurl = optional($request)->return_url ?? config('common.vnp_returnUrl'); // config return url not ipn url, fe config

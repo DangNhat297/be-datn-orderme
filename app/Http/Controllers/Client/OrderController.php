@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Events\ChatMessageEvent;
+use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
 use App\Models\Chat;
 use App\Models\Dishes;
@@ -99,14 +100,18 @@ class OrderController extends Controller
      *       ),
      * )
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $data = $request->only([
             'phone',
             'note',
             'location_id',
             'total',
-            'payment_method'
+            'price_sale',
+            'price_none_sale',
+            'coupon_id',
+            'payment_method',
+            'location_detail'
         ]);
 
         $data['payment_status'] = ORDER_PAYMENT_WAITING;
@@ -135,13 +140,17 @@ class OrderController extends Controller
             $order->dishes()->attach($dishOfOrder);
 
             //add chat
-            $this->newMessage();
+            if (auth()->check()) {
+                $this->newMessage();
+            }
 
             //log
             $order->logs()->create([
                 'status' => 1,
                 'change_by' => auth()->id ?? null
             ]);
+
+            $order->coupon()->decrement('quantity');
 
             return $order;
         });
@@ -189,8 +198,14 @@ class OrderController extends Controller
      *       ),
      * )
      */
-    public function show(Order $order)
+    public function show($order)
     {
+        $order = $this->order
+                        ->newQuery()
+                        ->where('id', $order)
+                        ->orWhere('code', $order)
+                        ->firstOrFail();
+
         $order->load([
             'dishes',
             'logs'
@@ -247,17 +262,17 @@ class OrderController extends Controller
                 if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
                     $order->update(['payment_status' => 1]);
                     $res = [
-                        'code' => '00',
-                        'message' => 'Thanh toán thành công'
+                        'RspCode' => '00',
+                        'Message' => 'Confirm Success'
                     ];
                 } else {
                     $res = [
-                        'code' => $request->vnp_ResponseCode,
-                        'message' => 'Thanh toán thất bại, vui lòng thử lại'
+                        'RspCode' => '99',
+                        'Message' => 'Unknow error'
                     ];
                 }
 
-                $res = $this->payment
+                $this->payment
                     ->newQuery()
                     ->create([
                         'order_code' => $request->vnp_TxnRef,
@@ -271,14 +286,14 @@ class OrderController extends Controller
                     ]);
             } else {
                 $res = [
-                    'code' => '04',
-                    'message' => 'Sai dữ liệu nhập vào'
+                    'RspCode' => '04',
+                    'Message' => 'invalid amount'
                 ];
             }
         } else {
             $res = [
-                'code' => '02',
-                'message' => 'Đơn hàng đã được thanh toán'
+                'RspCode' => '02',
+                'Message' => 'Order already confirmed'
             ];
         }
 
@@ -322,8 +337,9 @@ class OrderController extends Controller
             'status' => 0,
             'change_by' => auth()->id ?? null
         ]);
-        $this->newMessage(0);
-
+        if (auth()->check()) {
+            $this->newMessage(0);
+        }
         return $this->updateSuccess($order);
     }
 }

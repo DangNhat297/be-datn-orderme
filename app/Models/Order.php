@@ -18,7 +18,11 @@ class Order extends BaseModel
         'phone',
         'note',
         'location_id',
+        'location_detail',
         'total',
+        'price_sale',
+        'price_none_sale',
+        'coupon_id',
         'payment_method',
         'payment_status'
     ];
@@ -74,4 +78,14 @@ class Order extends BaseModel
         return $this->belongsToMany(Dishes::class, 'dish_order', 'order_id', 'dish_id')
             ->withPivot(['quantity', 'price']);
     }
-}
+
+    
+    /**
+     * coupon
+     *
+     * @return BelongsTo
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
+    }

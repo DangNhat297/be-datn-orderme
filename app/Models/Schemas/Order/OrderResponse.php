@@ -84,6 +84,13 @@ class OrderResponse
      *
      * @var string
      */
+    public $location_detail;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $created_at;
     /**
      * @OA\Property()

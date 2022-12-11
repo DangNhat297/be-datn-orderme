@@ -35,9 +35,16 @@ class OrderCreate
     /**
      * @OA\Property()
      *
-     * @var string
+     * @var number
      */
     public $total;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $location_detail;
 
     /**
      * @OA\Property(
