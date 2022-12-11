@@ -162,7 +162,7 @@ class StatisticalController extends Controller
     public function getProductStatistic($orders)
     {
         $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
-            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", "image", 'quantity', 'category_id', 'status']))
+            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
 
@@ -252,6 +252,7 @@ class StatisticalController extends Controller
                     $listDishes[] = $this->getProductStatistic($Order);
                 }
             }
+
             $listDishes = collect($listDishes)->reduce(fn($init, $dishes) => $init->merge($dishes), collect([]));
             $newList = $listDishes->reduce(function ($init, $dish) use ($listDishes) {
                 if (!$init->contains('id', $dish->id)) {
@@ -293,7 +294,7 @@ class StatisticalController extends Controller
     {
         $orders = $this->orders->newQuery()->with('dishes')->get();
         $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
-            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", "image", 'quantity', 'category_id', 'status']))
+            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content" ,'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
 

@@ -79,7 +79,7 @@ class Order extends BaseModel
             ->withPivot(['quantity', 'price']);
     }
 
-    
+
     /**
      * coupon
      *
@@ -89,3 +89,5 @@ class Order extends BaseModel
     {
         return $this->belongsTo(Coupon::class);
     }
+
+}
