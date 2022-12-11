@@ -152,7 +152,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $day,
                 'dishes' => $listDishes,
-                'total_money' => $total_money,
+                'total_money' =>convert_price($total_money) ,
             ];
 
         }
@@ -203,7 +203,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $week . ' - ' . $datetime,
                 'dishes' => $listDishes,
-                'total_money' => $totalWeek
+                'total_money' => convert_price($totalWeek)
             ];
         }
 
@@ -269,7 +269,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $month,
                 'dishes' => $newList,
-                'total_money' => $totalMoney
+                'total_money' =>convert_price( $totalMoney)
             ];
 
         }
@@ -297,7 +297,6 @@ class StatisticalController extends Controller
             ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content" ,'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
-
 //            start
         $products->transform(function ($product) use ($orders) {
             $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
@@ -309,12 +308,15 @@ class StatisticalController extends Controller
             return $product;
         }, collect([]));
         $topList = $products->sortByDesc('quantity_buy');
+        $topNotSelling = $products->sortBy('quantity_buy');
+
         $data = [
             'users' => $this->user->newQuery()->count(),
             'dishes' => $this->dishes->newQuery()->count(),
             'categories' => $this->category->newQuery()->count(),
             'orders' => $this->orders->newQuery()->count(),
-            'topSelling' => $topList->values()->slice(0, 5)
+            'topSelling' => $topList->values()->slice(0, 5),
+            'topNotSelling'=>$topNotSelling->values()->slice(0, 5)
         ];
 //            end  hiện thì dạng object
         return $this->sendSuccess($data);

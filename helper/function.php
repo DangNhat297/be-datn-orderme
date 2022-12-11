@@ -61,3 +61,10 @@ function convert_end_date(string $date, $format = 'Y-m-d H:i:s')
         }
         return $aryRange;
     }
+
+    if (!function_exists('convert_price')) {
+    function convert_price(int $price)
+    {
+        return number_format($price, 0, '.', '.');
+    }
+    }
