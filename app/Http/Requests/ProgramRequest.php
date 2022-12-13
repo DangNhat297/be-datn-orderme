@@ -27,12 +27,12 @@ class ProgramRequest extends FormRequest
         $rules = [
             'start_date' => [
                 'required',
-                'date_format:Y-m-d H:i:s',
+                'date_format:YYYY-MM-DD H:mm:ss',
 //                new CheckDateProgram()
             ],
             'end_date' => [
                 'required',
-                'date_format:Y-m-d H:i:s',
+                'date_format:YYYY-MM-DD H:mm:ss',
 //                new CheckDateProgram()
             ],
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
@@ -45,7 +45,7 @@ class ProgramRequest extends FormRequest
             $rules = [
                 'start_date' => [
                     'required',
-                    'date_format:Y-m-d H:i:s',
+                    'date_format:YYYY-MM-DD H:mm:ss',
                     Rule::unique('programs', 'start_date')
                         ->ignore(request()->route('program')->id)->where(function ($q) {
                             $q->where('start_date', '>=', request('start_date'))
