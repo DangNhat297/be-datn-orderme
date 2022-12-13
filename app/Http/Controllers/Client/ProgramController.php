@@ -11,6 +11,16 @@ class ProgramController extends Controller
     {
     }
 
+    public function index(){
+        $program = $this->program
+            ->newQuery()
+            ->where('status', ENABLE)
+            ->get()
+            ->load('dishes');
+
+        return $this->sendSuccess($program);
+    }
+
     public function show(){
         $program = $this->program
                 ->newQuery()

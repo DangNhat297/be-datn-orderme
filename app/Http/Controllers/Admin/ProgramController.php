@@ -93,6 +93,7 @@ class ProgramController extends Controller
     {
         $data = $request->only([
             'title',
+            'banner',
             'description',
             'status',
             'discount_percent',
@@ -213,6 +214,7 @@ class ProgramController extends Controller
     {
         $data = $request->only([
             'title',
+            'banner',
             'description',
             'status',
             'discount_percent',

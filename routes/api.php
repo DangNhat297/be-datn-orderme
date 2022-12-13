@@ -56,6 +56,9 @@ Route::prefix('client')->group(function () {
 
     Route::get('/program', [\App\Http\Controllers\Client\ProgramController::class,'show']);
 
+    Route::get('/programs', [\App\Http\Controllers\Client\ProgramController::class,'index']);
+
+
     Route::apiResource('coupon', ClientCouponController::class);
 
 });

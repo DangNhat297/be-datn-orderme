@@ -38,7 +38,7 @@ class ProgramRequest extends FormRequest
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
             'status' => 'required|integer|in:0,1',
             'title' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ];
 
         if (request()->method() == 'PUT') {
