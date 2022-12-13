@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 
 class BaseModel extends Model
 {
+    public function scopeFindByTitle(Builder $query, Request $request): Builder
+    {
+        if ($name = $request->keyword) {
+            return $query->where('title', 'like', '%' . $name . '%');
+        }
+
+        return $query;
+    }
+
     public function scopeFindByName(Builder $query, Request $request): Builder
     {
         if ($name = $request->keyword) {
