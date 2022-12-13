@@ -19,11 +19,11 @@ class ChatMessageEvent implements ShouldBroadcast
      * @return void
      */
 
-    public $list = [];
+    public $newMessage;
 
-    public function __construct($list)
+    public function __construct($newMessage)
     {
-        $this->list = $list;
+        $this->newMessage = $newMessage;
     }
 
     /**
@@ -43,11 +43,14 @@ class ChatMessageEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $this->list->map(function ($item) {
-            $item['sender'] = User::where('id', $item->sender_id)->first();
+        $user = User::where('id', $this->newMessage->sender_id)->first();
 
-            return $item;
-        });
-        return [$this->list];
+        return [
+            'id' => $this->newMessage->id,
+            'content' => $this->newMessage->content,
+            'created_at' => $this->newMessage->created_at,
+            'room_id' => $this->newMessage->room_id,
+            'sender' => $user
+        ];
     }
 }

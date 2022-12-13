@@ -7,12 +7,16 @@ use App\Events\Chat\ChatNotiEvent;
 use App\Events\Chat\ChatTyping;
 use App\Models\Chat;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function __construct(protected Chat $chatModel, protected Room $roomModel)
+    public function __construct
+    (protected Chat $chatModel,
+     protected Room $roomModel,
+     protected User $userModel)
     {
     }
 
@@ -32,13 +36,10 @@ class ChatController extends Controller
      */
     public function getChatByUser()
     {
-        $data = $this->chatModel
-            ->newQuery()
-            ->with(['sender'])
-            ->where('room_id', $this->getRoomByUser())
-            ->get();
+        $room = $this->getRoomByUser();
+        $list = $this->getMessageByRoom($room);
 
-        event(new ChatMessageEvent($data));
+        return response()->json($list, 200);
     }
 
     public function getRoomByUser()
@@ -55,6 +56,15 @@ class ChatController extends Controller
             ->newQuery()
             ->create($data);
         return $item->id;
+    }
+
+    public function getMessageByRoom($roomId)
+    {
+        return $this->chatModel
+            ->newQuery()
+            ->with(['sender'])
+            ->where('room_id', $roomId)
+            ->get();
     }
 
     /**
@@ -88,19 +98,9 @@ class ChatController extends Controller
             ->newQuery()
             ->create($data);
 
-        $list = $this->getMessageByRoom($item->room_id);
-        event(new ChatMessageEvent($list));
+        event(new ChatMessageEvent($item));
 
         event(new ChatNotiEvent($this->getListRoomChatAdmin()));
-    }
-
-    public function getMessageByRoom($roomId)
-    {
-        return $this->chatModel
-            ->newQuery()
-            ->with(['sender'])
-            ->where('room_id', $roomId)
-            ->get();
     }
 
     public function getListRoomChatAdmin()
@@ -134,7 +134,6 @@ class ChatController extends Controller
     public function getChatByRoom(int $id)
     {
         $data = $this->getMessageByRoom($id);
-        event(new ChatMessageEvent($data));
 
         $ids = $data->pluck('id');
         $this->chatModel->newQuery()
@@ -142,6 +141,8 @@ class ChatController extends Controller
             ->update(['isSeen' => true]);
 
         event(new ChatNotiEvent($this->getListRoomChatAdmin()));
+
+        return response()->json($data, 200);
     }
 
     public function update(Request $request, $id): JsonResponse
