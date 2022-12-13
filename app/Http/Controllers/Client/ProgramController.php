@@ -11,7 +11,22 @@ class ProgramController extends Controller
     {
     }
 
-    public function index(){
+    /**
+     * @OA\Get(
+     *      path="/client/programs",
+     *      operationId="getProgramsClient",
+     *      tags={"Program Client"},
+     *      summary="Get list of program",
+     *      description="Returns list of program",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/ProgramResponse")
+     *       ),
+     *     )
+     */
+    public function index()
+    {
         $program = $this->program
             ->newQuery()
             ->where('status', ENABLE)
@@ -21,14 +36,29 @@ class ProgramController extends Controller
         return $this->sendSuccess($program);
     }
 
-    public function show(){
+    /**
+     * @OA\Get(
+     *      path="/client/program",
+     *      operationId="getProgramShow",
+     *      tags={"Program Client"},
+     *      summary="Get program information",
+     *      description="Returns program data",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/ProgramResponse")
+     *       ),
+     * )
+     */
+    public function show()
+    {
         $program = $this->program
-                ->newQuery()
-                ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now())
-                ->where('status', ENABLE)
-                ->firstOrFail()
-                ->load('dishes');
+            ->newQuery()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->where('status', ENABLE)
+            ->firstOrFail()
+            ->load('dishes');
 
         return $this->sendSuccess($program);
     }

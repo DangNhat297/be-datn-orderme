@@ -59,6 +59,13 @@ class ProgramUpdate
     /**
      * @OA\Property()
      *
+     * @var string
+     */
+    public $banner;
+
+    /**
+     * @OA\Property()
+     *
      * @var integer
      */
     public $status;

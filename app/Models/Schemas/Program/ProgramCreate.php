@@ -61,6 +61,13 @@ class ProgramCreate
      *
      * @var string
      */
+    public $banner;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $status;
 
 }

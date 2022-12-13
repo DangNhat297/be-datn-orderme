@@ -2367,6 +2367,50 @@
                 }
             }
         },
+        "/client/programs": {
+            "get": {
+                "tags": [
+                    "Program Client"
+                ],
+                "summary": "Get list of program",
+                "description": "Returns list of program",
+                "operationId": "getProgramsClient",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgramResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/client/program": {
+            "get": {
+                "tags": [
+                    "Program Client"
+                ],
+                "summary": "Get program information",
+                "description": "Returns program data",
+                "operationId": "getProgramShow",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgramResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/hero-wedding/guest": {
             "get": {
                 "tags": [
@@ -3335,6 +3379,9 @@
                             "type": "number"
                         }
                     },
+                    "banner": {
+                        "type": "string"
+                    },
                     "status": {
                         "type": "string"
                     }
@@ -3366,6 +3413,9 @@
                         "items": {
                             "$ref": "#/components/schemas/DishesResponse"
                         }
+                    },
+                    "banner": {
+                        "type": "string"
                     },
                     "status": {
                         "type": "integer"
@@ -3401,6 +3451,9 @@
                         "items": {
                             "type": "number"
                         }
+                    },
+                    "banner": {
+                        "type": "string"
                     },
                     "status": {
                         "type": "integer"
