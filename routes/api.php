@@ -54,6 +54,8 @@ Route::prefix('client')->group(function () {
 
     Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
 
+    Route::get('/program', [\App\Http\Controllers\Client\ProgramController::class,'show']);
+
     Route::apiResource('coupon', ClientCouponController::class);
 
 });
