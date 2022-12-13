@@ -11,6 +11,7 @@ class Program extends BaseModel
 
     protected $fillable = [
         'title',
+        'banner',
         'description',
         'status',
         'discount_percent',
