@@ -204,7 +204,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $week . ' - ' . $datetime,
                 'dishes' => $listDishes,
-                'total_money' =>$totalWeek
+                'total_money' => $totalWeek
             ];
         }
 
@@ -270,7 +270,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $month,
                 'dishes' => $newList,
-                'total_money' =>$totalMoney
+                'total_money' => $totalMoney
             ];
 
         }
@@ -295,7 +295,7 @@ class StatisticalController extends Controller
     {
         $orders = $this->orders->newQuery()->with('dishes')->get();
         $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
-            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content" ,'quantity', 'category_id', 'status']))
+            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
 
@@ -330,7 +330,7 @@ class StatisticalController extends Controller
             'categories' => $this->category->newQuery()->count(),
             'orders' => $this->orders->newQuery()->count(),
             'topSelling' => $topList->values()->slice(0, 5),
-            'topNotSelling'=>$noteSell
+            'topNotSelling' => $topNotSelling->values()->slice(0, 5)
         ];
 //            end  hiện thì dạng object
         return $this->sendSuccess($data);

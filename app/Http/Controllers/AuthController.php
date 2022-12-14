@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -131,19 +130,29 @@ class AuthController extends Controller
             $user->tokens()->delete();
             $token = $user->createToken('token')->plainTextToken;
 
-            $cookie = $this->getCookie($token);
+            $cookie = cookie(
+                env('AUTH_COOKIE_NAME'),
+                $token,
+                strtotime("+6 months"),
+                '/',
+                env('SESSION_DOMAIN'),
+                true,
+                true,
+                '',
+                'none',
+            );
 
             $response = [
                 'user' => $user,
                 'token' => $token,
             ];
 
-            return response($response, 201)->cookie($cookie);
+            return response($response, 201)->withCookie($cookie);
         }
     }
 
     /**
-     * @OA\Post(
+     * @OA\Get(
      *     path="/logout",
      *     tags={"Authenticate"},
      *     summary="Logout",
@@ -168,14 +177,15 @@ class AuthController extends Controller
      *     ),
      * )
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        $res = new Response();
-        $res->headers->clearCookie(env('AUTH_COOKIE_NAME'));
-        $res->send();
-        return response()->json([
-            'message' => 'Logged out'
-        ], 202);
+//        $res = new Response();
+//        $res->headers->clearCookie(env('AUTH_COOKIE_NAME'));
+//        $res->send();
+        return response([''], 200)->withCookie(cookie(env('AUTH_COOKIE_NAME'),
+            '',
+            '-1'
+        ));
     }
 
     /**

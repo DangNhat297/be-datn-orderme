@@ -74,7 +74,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     Route::get('room/message-not-seen-by-user', [RoomController::class, 'getMessageNotSeenByUser']);
 
     // account
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
     Route::group(['prefix' => 'admin'], function () {
