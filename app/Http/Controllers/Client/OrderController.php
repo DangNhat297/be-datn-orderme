@@ -29,8 +29,7 @@ class OrderController extends Controller
         protected PaymentService $paymentService,
         protected Payment        $payment,
         protected Chat           $chatModel,
-    )
-    {
+    ) {
     }
 
     /**
@@ -201,10 +200,10 @@ class OrderController extends Controller
     public function show($order)
     {
         $order = $this->order
-                        ->newQuery()
-                        ->where('id', $order)
-                        ->orWhere('code', $order)
-                        ->firstOrFail();
+            ->newQuery()
+            ->where('id', $order)
+            ->orWhere('code', $order)
+            ->firstOrFail();
 
         $order->load([
             'dishes',
@@ -282,7 +281,7 @@ class OrderController extends Controller
                         'transaction_status' => $request->vnp_TransactionStatus,
                         'bank_code' => $request->vnp_BankCode,
                         'card_type' => $request->vnp_CardType,
-                        'message' => $res['message']
+                        'message' => $res['Message']
                     ]);
             } else {
                 $res = [
@@ -297,7 +296,7 @@ class OrderController extends Controller
             ];
         }
 
-        return $this->sendSuccess($res);
+        return $res;
     }
 
     // ipn url, after payment, save to db
@@ -341,5 +340,15 @@ class OrderController extends Controller
             $this->newMessage(0);
         }
         return $this->updateSuccess($order);
+    }
+
+    public function getTrans(Request $request)
+    {
+        $order = $this->order
+                    ->newQuery()
+                    ->where('code', $request->code)
+                    ->firstOrFail();
+
+        return $this->paymentService->checkTransVNP($order);
     }
 }

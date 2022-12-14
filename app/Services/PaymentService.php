@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-
+use GuzzleHttp\Client as GuzzleClient;
 class PaymentService
 {
     public function createVNP($order_code, $total_price, $request = null)
@@ -65,5 +65,58 @@ class PaymentService
         );
 
         return response()->json($returnData);
+    }
+
+    public function checkTransVNP($order)
+    {
+        $vnp_Url = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction';
+        $vnp_TmnCode = config('common.vnp_TmnCode');
+        $vnp_RequestId = time();
+        $vnp_IpAddr = request()->ip();
+        $vnp_Locale = 'vn';
+        $vnp_OrderInfo = 'Thanh toán đơn hàng ' . $order->code;
+        $vnp_HashSecret = config('common.vnp_HashSecret');
+        $inputData = array(
+            "vnp_RequestId" => $vnp_RequestId,
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Command" => "refund",
+            "vnp_TransactionType" => '02',
+            "vnp_Amount" => $order->payments()->latest()->first()->amount,
+            "vnp_CreateBy" => "linhloi2k2@gmail.com",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_TxnRef" => $order->code,
+            "vnp_TransactionNo" => $order->last_payment()->transaction_no,
+            "vnp_TransactionDate" => (int) str_replace(["-"," ",":"], "", $order->last_payment()->created_at),
+            "vnp_CreateDate" => (int) date("YmdHis")
+        );
+
+        ksort($inputData);
+        $query = "";
+        $i = 0;
+        $hashdata = "";
+        foreach($inputData as $key => $value) {
+            $hashdata .= $value . '|';
+        }
+
+        $hashdata = $inputData['vnp_RequestId'] . "|" . $inputData['vnp_Version'] . "|" . $inputData['vnp_Command'] . "|" . $inputData['vnp_TmnCode'] . "|" . $inputData['vnp_TransactionType'] . "|" . $inputData['vnp_TxnRef'] . "|" . $inputData['vnp_Amount'] . "|" . $inputData['vnp_TransactionNo'] . "|" . $inputData['vnp_TransactionDate'] . "|" . $inputData['vnp_CreateBy'] . "|" . $inputData['vnp_CreateDate'] . "|" . $inputData['vnp_IpAddr'] . "|" . $inputData['vnp_OrderInfo'];
+        $checksum = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+
+        $inputData['vnp_SecureHash'] = $checksum;
+
+        $client = new GuzzleClient();
+
+        $req = $client->post($vnp_Url, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode($inputData)
+        ]);
+
+        dd($req->getBody()->__toString());
+
+        return $vnp_Url;
     }
 }

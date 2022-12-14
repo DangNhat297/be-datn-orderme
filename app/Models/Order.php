@@ -90,4 +90,13 @@ class Order extends BaseModel
         return $this->belongsTo(Coupon::class);
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'order_code', 'code');
+    }
+
+    public function last_payment()
+    {
+        return $this->payments()->latest()->first();
+    }
 }

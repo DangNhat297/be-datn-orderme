@@ -47,6 +47,8 @@ Route::prefix('client')->group(function () {
     // location
     Route::apiResource('location', LocationClient::class);
 
+    Route::get('/order/transaction', [ClientOrder::class, 'getTrans']);
+
     // order
     Route::apiResource('order', ClientOrder::class)->except(['destroy']);
 

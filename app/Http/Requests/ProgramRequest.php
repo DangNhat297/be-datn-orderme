@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckDateProgram;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,25 +28,25 @@ class ProgramRequest extends FormRequest
         $rules = [
             'start_date' => [
                 'required',
-                'date_format:YYYY-MM-DD H:mm:ss',
-//                new CheckDateProgram()
+                'date_format:Y-m-d H:i:s',
+               new CheckDateProgram()
             ],
             'end_date' => [
                 'required',
-                'date_format:YYYY-MM-DD H:mm:ss',
-//                new CheckDateProgram()
+                'date_format:Y-m-d H:i:s',
+               new CheckDateProgram()
             ],
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
             'status' => 'required|integer|in:0,1',
             'title' => 'required',
-            'description' => 'required',
+            'description' => 'required'
         ];
 
         if (request()->method() == 'PUT') {
             $rules = [
                 'start_date' => [
                     'required',
-                    'date_format:YYYY-MM-DD H:mm:ss',
+                    'date_format:Y-m-d H:i:s',
                     Rule::unique('programs', 'start_date')
                         ->ignore(request()->route('program')->id)->where(function ($q) {
                             $q->where('start_date', '>=', request('start_date'))
