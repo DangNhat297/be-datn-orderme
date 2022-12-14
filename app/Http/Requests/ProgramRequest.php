@@ -28,12 +28,10 @@ class ProgramRequest extends FormRequest
         $rules = [
             'start_date' => [
                 'required',
-                'date_format:Y-m-d H:i:s',
                new CheckDateProgram()
             ],
             'end_date' => [
                 'required',
-                'date_format:Y-m-d H:i:s',
                new CheckDateProgram()
             ],
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',

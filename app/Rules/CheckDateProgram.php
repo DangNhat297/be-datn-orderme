@@ -27,9 +27,9 @@ class CheckDateProgram implements Rule
      */
     public function passes($attribute, $value)
     {
-        return Program::query()
-                    ->where('start_date', '>=', $value)
-                    ->where('end_date', '<=', $value)
+        return !Program::query()
+                    ->where('start_date', '<=', $value)
+                    ->where('end_date', '>=', $value)
                     ->exists();
     }
 
