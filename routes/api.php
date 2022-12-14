@@ -56,16 +56,16 @@ Route::prefix('client')->group(function () {
 
     Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
 
-    Route::get('/program', [\App\Http\Controllers\Client\ProgramController::class,'show']);
+    Route::get('/program', [\App\Http\Controllers\Client\ProgramController::class, 'show']);
 
-    Route::get('/programs', [\App\Http\Controllers\Client\ProgramController::class,'index']);
+    Route::get('/programs', [\App\Http\Controllers\Client\ProgramController::class, 'index']);
 
 
     Route::apiResource('coupon', ClientCouponController::class);
 
 });
 
-Route::group([], function ($routes) {
+Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
@@ -77,7 +77,7 @@ Route::group([], function ($routes) {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
-   Route::group(['prefix' => 'admin'], function () {
+    Route::group(['prefix' => 'admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
@@ -110,10 +110,10 @@ Route::group([], function ($routes) {
 
 //      statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');
-        Route::group(['prefix'=>'statistical'],function (){
-            Route::get('all-table',[StatisticalController::class,'statistical_count_table']);
-            Route::get('category-table',[StatisticalController::class,'statistical_table_category']);
-       });
+        Route::group(['prefix' => 'statistical'], function () {
+            Route::get('all-table', [StatisticalController::class, 'statistical_count_table']);
+            Route::get('category-table', [StatisticalController::class, 'statistical_table_category']);
+        });
 
 
     });

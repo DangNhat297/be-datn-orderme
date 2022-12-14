@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CheckDateProgram;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,11 +27,11 @@ class ProgramRequest extends FormRequest
         $rules = [
             'start_date' => [
                 'required',
-               new CheckDateProgram()
+//                new CheckDateProgram()
             ],
             'end_date' => [
                 'required',
-               new CheckDateProgram()
+//                new CheckDateProgram()
             ],
             'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
             'status' => 'required|integer|in:0,1',
