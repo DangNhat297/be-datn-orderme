@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StatisticalController extends Controller
 {
@@ -152,7 +153,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $day,
                 'dishes' => $listDishes,
-                'total_money' =>convert_price($total_money) ,
+                'total_money' =>$total_money,
             ];
 
         }
@@ -203,7 +204,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $week . ' - ' . $datetime,
                 'dishes' => $listDishes,
-                'total_money' => convert_price($totalWeek)
+                'total_money' =>$totalWeek
             ];
         }
 
@@ -269,7 +270,7 @@ class StatisticalController extends Controller
             $listData[] = [
                 'duration' => $month,
                 'dishes' => $newList,
-                'total_money' =>convert_price( $totalMoney)
+                'total_money' =>$totalMoney
             ];
 
         }
@@ -297,6 +298,10 @@ class StatisticalController extends Controller
             ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content" ,'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
+
+
+
+
 //            start
         $products->transform(function ($product) use ($orders) {
             $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
@@ -307,8 +312,17 @@ class StatisticalController extends Controller
             $product->total = $product->quantity_buy * $product->price;
             return $product;
         }, collect([]));
+
         $topList = $products->sortByDesc('quantity_buy');
         $topNotSelling = $products->sortBy('quantity_buy');
+
+        $dish_order=DB::table('dish_order')->pluck('dish_id')->unique();
+        $noteSell=$this->dishes->newQuery()->whereNotIn('id',$dish_order)->paginate(5);
+
+        $noteSell= $noteSell->makeHidden(['created_at','updated_at','category_id','status','description']);
+
+
+
 
         $data = [
             'users' => $this->user->newQuery()->count(),
@@ -316,7 +330,7 @@ class StatisticalController extends Controller
             'categories' => $this->category->newQuery()->count(),
             'orders' => $this->orders->newQuery()->count(),
             'topSelling' => $topList->values()->slice(0, 5),
-            'topNotSelling'=>$topNotSelling->values()->slice(0, 5)
+            'topNotSelling'=>$noteSell
         ];
 //            end  hiện thì dạng object
         return $this->sendSuccess($data);

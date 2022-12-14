@@ -4,14 +4,16 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dishes;
+use App\Models\Program;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DishController extends Controller
 {
-    public function __construct(Dishes $dishes)
+    public function __construct(Dishes $dishes, Program $program)
     {
         $this->dishes = $dishes;
+        $this->program = $program;
     }
 
 
@@ -98,9 +100,23 @@ class DishController extends Controller
             ->findOrderBy($request)
             ->findByPriceRange($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
-        $data->getCollection()->transform(function ($value) {
-            $value->makeHidden(['created_at', 'updated_at', 'status']);
-            return $value;
+
+        $currentFlashSales = $this->program
+            ->newQuery()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->where('status', ENABLE)
+            ->firstOrFail()
+            ->load('dishes');
+
+        $data->getCollection()->transform(function ($dish)use ($currentFlashSales){
+            $dish->makeHidden(['created_at', 'updated_at', 'status']);
+
+            if ($currentFlashSales->dishes->contains('id', $dish->id)) {
+                $dish->price_sale = $dish->price - ($dish->price*($currentFlashSales->discount_percent/100));
+            }
+
+            return $dish;
         });
         return $this->sendSuccess($data);
     }
@@ -133,6 +149,18 @@ class DishController extends Controller
         $item = $this->dishes
             ->newQuery()
             ->findOrFail($id);
+
+        $currentFlashSales = $this->program
+            ->newQuery()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->where('status', ENABLE)
+            ->firstOrFail()
+            ->load('dishes');
+
+        if ($currentFlashSales->dishes->contains('id', $item->id)) {
+            $item->price_sale = $item->price - ($item->price*($currentFlashSales->discount_percent/100));
+        }
         $item->makeHidden('status', 'created_at', 'updated_at')->toArray();
         return $this->sendSuccess($item);
     }
