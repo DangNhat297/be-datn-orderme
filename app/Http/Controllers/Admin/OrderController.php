@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,8 +21,8 @@ class OrderController extends Controller
         protected Order  $order,
         protected Dishes $dish,
         protected Chat   $chatModel,
-    )
-    {
+        protected PaymentService $paymentService,
+    ) {
     }
 
     /**
@@ -280,5 +281,32 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function refundVNP($id)
+    {
+        $order = $this->order
+            ->newQuery()
+            ->where('id', $id)
+            ->where('payment_status', ENABLE)
+            ->whereHas('payments', function ($q) {
+                return $q->where('transaction_status', '00');
+            })
+            ->doesntHave('payments', 'and', function ($q) {
+                return $q->where('transaction_status', '05');
+            })
+            ->firstOrFail();
+
+        return $this->paymentService->refundRequest($order);
+    }
+
+    public function getTransaction($id)
+    {
+        $order = $this->order
+                ->newQuery()
+                ->where('id', $id)
+                ->firstOrFail();
+
+        return $this->paymentService->getTrans($order);
     }
 }

@@ -262,12 +262,12 @@ class OrderController extends Controller
                     $order->update(['payment_status' => 1]);
                     $res = [
                         'RspCode' => '00',
-                        'Message' => 'Confirm Success'
+                        'Message' => 'Thanh toán thành công'
                     ];
                 } else {
                     $res = [
                         'RspCode' => '99',
-                        'Message' => 'Unknow error'
+                        'Message' => 'Lỗi không xác định'
                     ];
                 }
 
@@ -286,13 +286,13 @@ class OrderController extends Controller
             } else {
                 $res = [
                     'RspCode' => '04',
-                    'Message' => 'invalid amount'
+                    'Message' => 'Sai giá'
                 ];
             }
         } else {
             $res = [
                 'RspCode' => '02',
-                'Message' => 'Order already confirmed'
+                'Message' => 'Đơn hàng đã được thanh toán'
             ];
         }
 
@@ -340,15 +340,5 @@ class OrderController extends Controller
             $this->newMessage(0);
         }
         return $this->updateSuccess($order);
-    }
-
-    public function getTrans(Request $request)
-    {
-        $order = $this->order
-                    ->newQuery()
-                    ->where('code', $request->code)
-                    ->firstOrFail();
-
-        return $this->paymentService->checkTransVNP($order);
     }
 }

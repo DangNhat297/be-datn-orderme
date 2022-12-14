@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
+
 class PaymentService
 {
     public function createVNP($order_code, $total_price, $request = null)
@@ -67,14 +69,13 @@ class PaymentService
         return response()->json($returnData);
     }
 
-    public function checkTransVNP($order)
+    public function refundRequest($order)
     {
-        $vnp_Url = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction';
+        $vnp_Url = config('common.vnp_sandbox_transaction');
         $vnp_TmnCode = config('common.vnp_TmnCode');
         $vnp_RequestId = time();
         $vnp_IpAddr = request()->ip();
-        $vnp_Locale = 'vn';
-        $vnp_OrderInfo = 'Thanh toán đơn hàng ' . $order->code;
+        $vnp_OrderInfo = 'Gửi yêu cầu hoàn tiền đơn hàng ' . $order->code;
         $vnp_HashSecret = config('common.vnp_HashSecret');
         $inputData = array(
             "vnp_RequestId" => $vnp_RequestId,
@@ -82,24 +83,16 @@ class PaymentService
             "vnp_TmnCode" => $vnp_TmnCode,
             "vnp_Command" => "refund",
             "vnp_TransactionType" => '02',
-            "vnp_Amount" => $order->payments()->latest()->first()->amount,
+            "vnp_Amount" => $order->last_payment()->amount,
             "vnp_CreateBy" => "linhloi2k2@gmail.com",
             "vnp_CreateDate" => date('YmdHis'),
             "vnp_IpAddr" => $vnp_IpAddr,
             "vnp_OrderInfo" => $vnp_OrderInfo,
             "vnp_TxnRef" => $order->code,
             "vnp_TransactionNo" => $order->last_payment()->transaction_no,
-            "vnp_TransactionDate" => (int) str_replace(["-"," ",":"], "", $order->last_payment()->created_at),
-            "vnp_CreateDate" => (int) date("YmdHis")
+            "vnp_TransactionDate" => str_replace(["-", " ", ":"], "", $order->last_payment()->created_at),
+            "vnp_CreateDate" => date("YmdHis")
         );
-
-        ksort($inputData);
-        $query = "";
-        $i = 0;
-        $hashdata = "";
-        foreach($inputData as $key => $value) {
-            $hashdata .= $value . '|';
-        }
 
         $hashdata = $inputData['vnp_RequestId'] . "|" . $inputData['vnp_Version'] . "|" . $inputData['vnp_Command'] . "|" . $inputData['vnp_TmnCode'] . "|" . $inputData['vnp_TransactionType'] . "|" . $inputData['vnp_TxnRef'] . "|" . $inputData['vnp_Amount'] . "|" . $inputData['vnp_TransactionNo'] . "|" . $inputData['vnp_TransactionDate'] . "|" . $inputData['vnp_CreateBy'] . "|" . $inputData['vnp_CreateDate'] . "|" . $inputData['vnp_IpAddr'] . "|" . $inputData['vnp_OrderInfo'];
         $checksum = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
@@ -108,15 +101,93 @@ class PaymentService
 
         $client = new GuzzleClient();
 
-        $req = $client->post($vnp_Url, [
-            'headers' => [
-                'Content-Type' => 'application/json'
-            ],
-            'body' => json_encode($inputData)
-        ]);
+        try {
+            $req = $client->post($vnp_Url, [
+                'headers' => [
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode($inputData),
+                'verify' => false
+            ]);
 
-        dd($req->getBody()->__toString());
+            $res = json_decode($req->getBody()->__toString(), true);
 
-        return $vnp_Url;
+            $pay = $order->payments()
+                ->create([
+                    'payment_method' => 'VNPAY',
+                    'amount' => $res['vnp_Amount'],
+                    'transaction_no' => $res['vnp_TransactionNo'] ?? 0,
+                    'transaction_status' => $res['vnp_TransactionStatus'] ?? 0,
+                    'bank_code' => $res['vnp_BankCode'],
+                    'message' => $vnp_OrderInfo
+                ]);
+
+            if (
+                $res['vnp_ResponseCode'] == '00'
+                && $res['vnp_TransactionStatus'] == '05'
+            ) {
+                $order->update(['payment_status' => ORDER_PAYMENT_REFUND_REQUEST]);
+                return response()->json(['message' => 'Gửi yêu cầu hoàn tiền thành công']);
+            }
+
+            return response()->json(['error' => 'Có lỗi xảy ra, vui lòng thử lại']);
+        } catch (RequestException $e) {
+            return response()->json(['error' => 'Có lỗi xảy ra, vui lòng thử lại'], 406);
+        }
+    }
+
+    public function getTrans($order)
+    {
+        $vnp_Url = config('common.vnp_sandbox_transaction');
+        $vnp_TmnCode = config('common.vnp_TmnCode');
+        $vnp_RequestId = time();
+        $vnp_IpAddr = request()->ip();
+        $vnp_OrderInfo = 'Xem trạng thái giao dịch ' . $order->code;
+        $vnp_HashSecret = config('common.vnp_HashSecret');
+        $inputData = array(
+            "vnp_RequestId" => $vnp_RequestId,
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Command" => "querydr",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_TxnRef" => $order->code,
+            "vnp_IpAddr" => request()->ip(),
+            "vnp_TransactionNo" => $order->last_payment()->transaction_no,
+            "vnp_TransactionDate" => str_replace(["-", " ", ":"], "", $order->last_payment()->created_at),
+            "vnp_CreateDate" => date("YmdHis")
+        );
+
+        $hashdata = $inputData['vnp_RequestId'] . "|" . $inputData['vnp_Version'] . "|" . $inputData['vnp_Command'] . "|" . $inputData['vnp_TmnCode'] . "|" . $inputData['vnp_TxnRef'] . "|" . $inputData['vnp_TransactionDate'] . "|" . $inputData['vnp_CreateDate'] . "|" . $inputData['vnp_IpAddr'] . "|" . $inputData['vnp_OrderInfo'];
+        $checksum = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+
+        $inputData['vnp_SecureHash'] = $checksum;
+
+        $client = new GuzzleClient();
+
+        try {
+            $req = $client->post($vnp_Url, [
+                'headers' => [
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode($inputData),
+                'verify' => false
+            ]);
+
+            $res = json_decode($req->getBody()->__toString(), true);
+
+            if (
+                $res['vnp_ResponseCode'] == '00'
+                && $res['vnp_TransactionStatus'] == '06'
+            ) {
+                $order->update(['payment_status' => ORDER_PAYMENT_REFUND]);
+                return response()->json(['message' => 'Đã hoàn tiền']);
+            }
+
+            return response()->json($res);
+        } catch (RequestException $e) {
+            return response()->json(['error' => 'Có lỗi xảy ra, vui lòng thử lại'], 406);
+        }
     }
 }

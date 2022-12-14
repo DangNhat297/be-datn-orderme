@@ -47,8 +47,6 @@ Route::prefix('client')->group(function () {
     // location
     Route::apiResource('location', LocationClient::class);
 
-    Route::get('/order/transaction', [ClientOrder::class, 'getTrans']);
-
     // order
     Route::apiResource('order', ClientOrder::class)->except(['destroy']);
 
@@ -90,6 +88,10 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         // setting
         Route::apiResource('setting', SettingController::class);
 
+
+        Route::put('order/refund/{order}', [AdminOrder::class, 'refundVNP']);
+
+        Route::get('order/transaction/{order}', [AdminOrder::class, 'getTransaction']);
         // order
         Route::apiResource('order', AdminOrder::class);
 

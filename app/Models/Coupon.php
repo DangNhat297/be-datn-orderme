@@ -15,6 +15,7 @@ class Coupon extends BaseModel
         'status',
         'type',
         'discount_percent',
+        'price_sale_max',
         'discount_price',
         'quantity',
         'start_date',

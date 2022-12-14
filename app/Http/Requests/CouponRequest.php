@@ -33,7 +33,7 @@ class CouponRequest extends FormRequest
                 })
             ],
             'type' => 'required|integer|in:1,2',
-            'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100|',
+            'discount_percent' => 'required_if:type,=,1|integer|min:0|max:100',
             'discount_price' => 'required_if:type,=,2|integer',
             'quantity' => 'required|integer|min:0',
             'start_date' => 'required|date',
