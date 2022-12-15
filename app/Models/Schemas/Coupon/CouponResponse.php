@@ -52,6 +52,12 @@ class CouponResponse
      *
      * @var integer
      */
+    public $price_sale_max;
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
     public $quantity;
     /**
      * @OA\Property()
