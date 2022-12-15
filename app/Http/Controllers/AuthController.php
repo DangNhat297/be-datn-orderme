@@ -64,24 +64,23 @@ class AuthController extends Controller
             $user->save();
 
             $token = $user->createToken('token')->plainTextToken;
-            $cookie = $this->getCookie($token);
+            $cookie = cookie(
+                env('AUTH_COOKIE_NAME'),
+                $token,
+                strtotime("+6 months"),
+                '/',
+                env('SESSION_DOMAIN'),
+                true,
+                true,
+                '',
+                'none',
+            );
             $response = [
                 'user' => $user,
                 'token' => $token,
             ];
             return response($response, 201)->cookie($cookie);
         }
-    }
-
-    private function getCookie($token)
-    {
-        return Cookie::create(env('AUTH_COOKIE_NAME'))
-            ->withValue($token)
-            ->withExpires(strtotime("+6 months"))
-            ->withSecure(true)
-            ->withHttpOnly(true)
-            ->withDomain(env('SESSION_DOMAIN'))
-            ->withSameSite("none");
     }
 
     /**
@@ -265,6 +264,17 @@ class AuthController extends Controller
     public function profile(): JsonResponse
     {
         return $this->sendSuccess(auth()->user());
+    }
+
+    private function getCookie($token)
+    {
+        return Cookie::create(env('AUTH_COOKIE_NAME'))
+            ->withValue($token)
+            ->withExpires(strtotime("+6 months"))
+            ->withSecure(true)
+            ->withHttpOnly(true)
+            ->withDomain(env('SESSION_DOMAIN'))
+            ->withSameSite("none");
     }
 
 

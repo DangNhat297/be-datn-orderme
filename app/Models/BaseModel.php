@@ -162,5 +162,14 @@ class BaseModel extends Model
         return $query->whereYear('created', $year);
     }
 
+    public function scopeFindByMultiple(Builder $query, Request $request): Builder
+    {
+        if ($keyword = $request->keyword) {
+            return $query->where('code', 'like', '%' . $keyword . '%')
+                ->orWhere('phone', 'like', '%' . $keyword . '%');
+        }
+
+        return $query;
+    }
 
 }

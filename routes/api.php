@@ -6,23 +6,24 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
-use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Chief\OrderController as ChiefOrder;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CategoryController as CategoryClient;
 use App\Http\Controllers\Client\CouponController as ClientCouponController;
 use App\Http\Controllers\Client\DishController;
 use App\Http\Controllers\Client\LocationController as LocationClient;
 use App\Http\Controllers\Client\OrderController as ClientOrder;
+use App\Http\Controllers\Client\ProgramController;
 use App\Http\Controllers\Hero\HeroWeddingGuestController;
 use App\Http\Controllers\Hero\HeroWeddingMessageController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\Shipper\OrderController as ShipperOrder;
 use Illuminate\Support\Facades\Route;
-
 
 // Authenticate
 Route::post('login', [AuthController::class, 'login']);
@@ -37,7 +38,7 @@ Route::prefix('client')->group(function () {
     Route::apiResource('cart', CartController::class);
     Route::post('cart/deleteMultiple', [CartController::class, 'Delete_Cart_By_Selection']);
 
-
+    // category
     Route::apiResource('category', CategoryClient::class)->only('index');
 
     // dish
@@ -49,16 +50,14 @@ Route::prefix('client')->group(function () {
 
     // order
     Route::apiResource('order', ClientOrder::class)->except(['destroy']);
-
     Route::get('/order/{order}/payment', [ClientOrder::class, 'payment']);
-
     Route::get('/return-vnpay', [ClientOrder::class, 'returnPaymentVNP'])->name('return.ipn.vnpay');
 
-    Route::get('/program', [\App\Http\Controllers\Client\ProgramController::class, 'show']);
+    // Program
+    Route::get('/program', [ProgramController::class, 'show']);
+    Route::get('/programs', [ProgramController::class, 'index']);
 
-    Route::get('/programs', [\App\Http\Controllers\Client\ProgramController::class, 'index']);
-
-
+    // Coupon
     Route::apiResource('coupon', ClientCouponController::class);
 
 });
@@ -75,7 +74,18 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     Route::get('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'profile']);
 
-    Route::group(['prefix' => 'admin'], function () {
+    /* ==== Chief role ====*/
+    Route::group(['prefix' => 'chief', 'middleware' => 'auth.chief'], function () {
+        Route::apiResource('order', ChiefOrder::class);
+    });
+
+    /* ==== Shipper role ====*/
+    Route::group(['prefix' => 'shipper', 'middleware' => 'auth.shipper'], function () {
+        Route::apiResource('order', ShipperOrder::class);
+    });
+
+    /* ==== Admin role ====*/
+    Route::group(['prefix' => 'admin', 'middleware' => 'auth.admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
@@ -88,11 +98,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         // setting
         Route::apiResource('setting', SettingController::class);
 
-
-        Route::put('order/refund/{order}', [AdminOrder::class, 'refundVNP']);
-
-        Route::get('order/transaction/{order}', [AdminOrder::class, 'getTransaction']);
         // order
+        Route::put('order/refund/{order}', [AdminOrder::class, 'refundVNP']);
+        Route::get('order/transaction/{order}', [AdminOrder::class, 'getTransaction']);
         Route::apiResource('order', AdminOrder::class);
 
         // user
@@ -110,7 +118,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         Route::apiResource('program', ProgramController::class);
         Route::put('/program/change-status/{program}', [ProgramController::class, 'toggleStatus']);
 
-//      statistical
+        //statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');
         Route::group(['prefix' => 'statistical'], function () {
             Route::get('all-table', [StatisticalController::class, 'statistical_count_table']);

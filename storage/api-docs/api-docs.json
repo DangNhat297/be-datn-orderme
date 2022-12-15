@@ -1724,6 +1724,142 @@
                 }
             }
         },
+        "/chief/order": {
+            "get": {
+                "tags": [
+                    "Chief Order"
+                ],
+                "summary": "Get list of order",
+                "description": "Returns list of order",
+                "operationId": "getOrdersByChief",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Can search by order code, user name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "status of order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "can sort by multiple field vd :-id,+id,+name,-name,-code, +code",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chief/order/{id}": {
+            "get": {
+                "tags": [
+                    "Chief Order"
+                ],
+                "summary": "Get order information",
+                "description": "Returns order data",
+                "operationId": "getOrderChiefById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Chief Order"
+                ],
+                "summary": "Update existing Order",
+                "description": "Returns updated location data",
+                "operationId": "updateOrderChief",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/client/cart/{id}": {
             "get": {
                 "tags": [
@@ -2613,6 +2749,152 @@
                     }
                 }
             }
+        },
+        "/shipper/order": {
+            "get": {
+                "tags": [
+                    "Shipper Order"
+                ],
+                "summary": "Get list of order",
+                "description": "Returns list of order",
+                "operationId": "getOrdersByShipper",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Can search by order code, user name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "status of order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "can sort by multiple field vd :-id,+id,+name,-name,-code, +code",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shipper/order/{id}": {
+            "get": {
+                "tags": [
+                    "Shipper Order"
+                ],
+                "summary": "Get order information",
+                "description": "Returns order data",
+                "operationId": "getOrderShipperById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Shipper Order"
+                ],
+                "summary": "Update existing Order",
+                "description": "Returns updated location data",
+                "operationId": "updateOrderShipper",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -2815,6 +3097,9 @@
                     "discount_price": {
                         "type": "integer"
                     },
+                    "price_sale_max": {
+                        "type": "integer"
+                    },
                     "quantity": {
                         "type": "integer"
                     },
@@ -2845,6 +3130,9 @@
                         "type": "integer"
                     },
                     "discount_price": {
+                        "type": "integer"
+                    },
+                    "price_sale_max": {
                         "type": "integer"
                     },
                     "quantity": {
@@ -2883,6 +3171,9 @@
                         "type": "integer"
                     },
                     "discount_price": {
+                        "type": "integer"
+                    },
+                    "price_sale_max": {
                         "type": "integer"
                     },
                     "quantity": {

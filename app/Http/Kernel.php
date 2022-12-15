@@ -5,10 +5,12 @@ namespace App\Http;
 use App\Http\Middleware\AddAuthTokenHeader;
 use App\Http\Middleware\AdminMidleware;
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\ChiefMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\JWTMiddleware;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\ShipperMiddleware;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateSignature;
@@ -91,6 +93,8 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'auth.jwt' => JWTMiddleware::class,
-        'auth.admin' => AdminMidleware::class
+        'auth.admin' => AdminMidleware::class,
+        'auth.chief' => ChiefMiddleware::class,
+        'auth.shipper' => ShipperMiddleware::class
     ];
 }
