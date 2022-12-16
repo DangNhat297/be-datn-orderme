@@ -63,7 +63,7 @@ Route::prefix('client')->group(function () {
 
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+Route::group([], function ($routes) {
 
     // chat
     Route::apiResource('chat', ChatController::class);
@@ -86,7 +86,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     });
 
     /* ==== Admin role ====*/
-    Route::group(['prefix' => 'admin', 'middleware' => 'auth.admin'], function () {
+    Route::group(['prefix' => 'admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
