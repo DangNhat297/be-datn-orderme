@@ -184,6 +184,7 @@ class OrderController extends Controller
      */
     public function show($order)
     {
+        dd($order);
         $order = $this->order
             ->newQuery()
             ->where('id', $order)

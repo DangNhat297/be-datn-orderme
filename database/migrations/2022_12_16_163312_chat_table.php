@@ -12,6 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
+        Schema::dropIfExists('chats');
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->string('sender_phone');
@@ -29,6 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('chats');
     }
 };
