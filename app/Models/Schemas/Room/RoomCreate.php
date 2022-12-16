@@ -14,8 +14,15 @@ class RoomCreate
     /**
      * @OA\Property()
      *
-     * @var integer
+     * @var string
      */
-    public $userId;
+    public $user_phone;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $user_name;
 
 }

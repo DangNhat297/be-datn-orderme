@@ -17,4 +17,18 @@ class ChatCreate
      * @var string
      */
     public $message;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $phone;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $room_id;
 }

@@ -35,16 +35,6 @@ class ChatResponse
      */
     public $content;
 
-//    /**
-//     * @OA\Property(
-//     *     type="object",
-//     *     ref="#/components/schemas/RoomResponse"
-//     * )
-//     *
-//     * @var object
-//     */
-//    public $room;
-
 
     /**
      * @OA\Property()

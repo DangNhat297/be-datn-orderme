@@ -11,7 +11,7 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sender_id',
+        'sender_phone',
         'content',
         'room_id'
     ];
@@ -23,7 +23,7 @@ class Chat extends Model
      */
     public function sender(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'sender_id', 'id');
+        return $this->belongsTo(User::class, 'sender_phone', 'phone');
     }
 
     /**

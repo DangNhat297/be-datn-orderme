@@ -20,14 +20,18 @@ class RoomResponse
     public $id;
 
     /**
-     * @OA\Property(
-     *     type="object",
-     *     ref="#/components/schemas/UserResponse"
-     * )
+     * @OA\Property()
      *
-     * @var object
+     * @var string
      */
-    public $user;
+    public $user_phone;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $user_name;
 
     /**
      * @OA\Property(

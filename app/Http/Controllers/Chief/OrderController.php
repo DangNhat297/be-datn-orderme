@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Chief;
 
+use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderLog;
+use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use function response;
@@ -155,8 +158,24 @@ class OrderController extends Controller
             'status' => 3,
             'change_by' => auth()->id ?? null
         ]);
-
+        $this->newMessage(3, $order->phone, $order);
         return response()->json($order, 202);
+    }
+
+    public function newMessage($status, $phoneUser, $order, $content = null)
+    {
+        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        $phoneAdmin = '0987654321';
+        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
+        $msg = [
+            'content' => $content ?? $contentDefault,
+            'room_id' => $roomByCurrentUser->id,
+            'sender_phone' => $phoneAdmin,
+            'isSeen' => false
+        ];
+        $newMsg = $this->chatModel->newQuery()->create($msg);
+        event(new ChatMessageEvent($newMsg));
+        return true;
     }
 
 }
