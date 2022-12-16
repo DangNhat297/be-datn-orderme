@@ -1635,7 +1635,7 @@
                 }
             }
         },
-        "/chat-by-user/{phone}/{name}": {
+        "/chat-by-user/{phone}": {
             "get": {
                 "tags": [
                     "Chat"

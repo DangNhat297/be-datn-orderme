@@ -22,7 +22,7 @@ class ChatController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/chat-by-user/{phone}/{name}",
+     *      path="/chat-by-user/{phone}",
      *      operationId="getChatByUser",
      *      tags={"Chat"},
      *      summary="Get list of chat",
