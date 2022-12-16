@@ -53,7 +53,6 @@ class CategoryController extends Controller
 
         $data = $this->categoryModel
             ->newQuery()
-            ->where('is_deleted', 0)
             ->findByName($request)
             ->findByStatus($request)
             ->paginate($pageSize);
@@ -161,7 +160,7 @@ class CategoryController extends Controller
             ->newQuery()
             ->findOrFail($id);
 
-        $item->update(['is_deleted' => 1]);
+        $item->update(['status' => DISABLE]);
 
         return $this->deleteSuccess();
     }

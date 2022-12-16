@@ -249,7 +249,7 @@ class DishesController extends Controller
 //        if (file_exists($item->image)) {
 //            unlink($fileCurrent);
 //        }
-        $item->delete();
+        $item->update(['status' => DISABLE]);
 
         return $this->deleteSuccess();
     }

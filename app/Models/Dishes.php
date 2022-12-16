@@ -16,7 +16,8 @@ class Dishes extends BaseModel
         'image',
         'quantity',
         'category_id',
-        'price'
+        'price',
+        'status'
     ];
 
     function dishes_category()

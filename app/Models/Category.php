@@ -14,7 +14,6 @@ class Category extends BaseModel
         'slug',
         'status',
         'image',
-        'is_deleted'
     ];
 
     function dishes(){
