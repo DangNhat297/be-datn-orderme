@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\Dishes;
 use App\Models\Order;
 use App\Models\OrderLog;
+use App\Models\Program;
 use App\Models\Room;
 use App\Models\User;
 use App\Services\PaymentService;
@@ -22,8 +23,8 @@ class OrderController extends Controller
         protected Dishes         $dish,
         protected Chat           $chatModel,
         protected PaymentService $paymentService,
-    )
-    {
+        protected Program           $program
+    ) {
     }
 
     /**

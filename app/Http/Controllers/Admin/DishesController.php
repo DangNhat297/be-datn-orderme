@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DishesRequest;
 use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
+use App\Models\Program;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -15,9 +16,10 @@ class DishesController extends Controller
 {
     protected $dishes;
 
-    public function __construct(Dishes $dishes)
+    public function __construct(Dishes $dishes, Program $program)
     {
         $this->dishes = $dishes;
+        $this->program = $program;
     }
 
 
@@ -106,7 +108,6 @@ class DishesController extends Controller
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         return $this->sendSuccess($data);
-
     }
 
     /**
@@ -164,6 +165,19 @@ class DishesController extends Controller
         $item = $this->dishes
             ->newQuery()
             ->findOrFail($id);
+
+        $currentFlashSales = $this->program
+            ->newQuery()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->where('status', ENABLE)
+            ->with('dishes')
+            ->first();
+
+        if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $id)) {
+            $item->in_flashsale = 1;
+        }
+        
         return $this->sendSuccess($item);
     }
 
@@ -201,11 +215,11 @@ class DishesController extends Controller
         $item->fill($request->except('image'));
 
         if ($request->image) {
-//            $file = $request->image;
-//            $fileCurrent = public_path() . '/' . $item->image;
-//            if (file_exists($item->image)) {
-//                unlink($fileCurrent);
-//            }
+            //            $file = $request->image;
+            //            $fileCurrent = public_path() . '/' . $item->image;
+            //            if (file_exists($item->image)) {
+            //                unlink($fileCurrent);
+            //            }
             //                uploadFile($file, 'images/dishes/');
             $imageFake = fakeImage();
             $item->image = $request->image ?? $imageFake;
@@ -245,10 +259,10 @@ class DishesController extends Controller
         $item = $this->dishes
             ->newQuery()
             ->findOrFail($id);
-//        $fileCurrent = public_path() . '/' . $item->image;
-//        if (file_exists($item->image)) {
-//            unlink($fileCurrent);
-//        }
+        //        $fileCurrent = public_path() . '/' . $item->image;
+        //        if (file_exists($item->image)) {
+        //            unlink($fileCurrent);
+        //        }
         $item->update(['status' => DISABLE]);
 
         return $this->deleteSuccess();
