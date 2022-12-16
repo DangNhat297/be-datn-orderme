@@ -81,8 +81,6 @@ class RoomController extends Controller
             ->get());
 
 //        broadcast(new CountMessageNotSeenByUser($messageNotSeen, $phone))->toOthers();
-
-
         return response()->json($messageNotSeen, 200);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class AuthController extends Controller
 {
     protected $user;
 
-    public function __construct(User $user)
+    public function __construct(User $user, protected Room $roomModel)
     {
         $this->user = $user;
     }
@@ -220,6 +221,17 @@ class AuthController extends Controller
      */
     public function checkPhone(Request $request)
     {
+        $userExitsInRoom = $this->roomModel->newQuery()
+            ->where('user_phone', $request->phone)
+            ->first();
+        if ($userExitsInRoom) {
+            $this->newQuery()
+                ->where('id', $userExitsInRoom->id)
+                ->update(['user_name', $request->name]);
+        }
+        $data = ['user_phone' => $request->phone, 'user_name' => $request->name];
+        $this->roomModel->newQuery()->create($data);
+
         $user = $this->user
             ->newQuery()
             ->where('phone', $request->phone)

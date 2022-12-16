@@ -906,6 +906,36 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Create new order",
+                "description": "Returns order data",
+                "operationId": "createOrder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/admin/order/{id}": {
@@ -1832,7 +1862,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrderResponse"
+                                    "$ref": "#/components/schemas/OrderDetailResponse"
                                 }
                             }
                         }
@@ -2869,7 +2899,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrderResponse"
+                                    "$ref": "#/components/schemas/OrderDetailResponse"
                                 }
                             }
                         }

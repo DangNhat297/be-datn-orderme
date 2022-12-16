@@ -34,7 +34,7 @@ Route::post('check-user-phone', [AuthController::class, 'checkPhone']);
 // chat
 Route::apiResource('chat', ChatController::class);
 Route::get('chat/typing', [ChatController::class, 'onTypingChat']);
-Route::get('chat-by-user/{phone}/{name}', [ChatController::class, 'getChatByUser']);
+Route::get('chat-by-user/{phone}', [ChatController::class, 'getChatByUser']);
 Route::get('room/message-not-seen-by-user/{phone}', [RoomController::class, 'getMessageNotSeenByUser']);
 
 // client

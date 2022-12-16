@@ -112,7 +112,7 @@ class OrderController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/OrderDetailResponse")
      *       ),
      * )
      */
@@ -120,7 +120,7 @@ class OrderController extends Controller
     {
         $item = $this->order
             ->newQuery()
-            ->with(['location', 'user'])
+            ->with(['location', 'user', 'dishes'])
             ->findOrFail($id);
 
         return response()->json($item, 200);

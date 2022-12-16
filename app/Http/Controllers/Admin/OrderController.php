@@ -11,7 +11,6 @@ use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Program;
 use App\Models\Room;
-use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +120,24 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     *      path="/admin/order",
+     *      operationId="createOrder",
+     *      tags={"Order"},
+     *      summary="Create new order",
+     *      description="Returns order data",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/OrderCreate")
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *       ),
+     * )
+     */
     public function store(OrderRequest $request)
     {
         $data = $request->only([
@@ -143,7 +160,7 @@ class OrderController extends Controller
                 ->create($data);
 
             //add chat
-            $this->newMessage();
+            $this->newMessage(1, $order->phone, $order);
 
             //log
             $order->dishes()->attach($dishOfOrder);
@@ -272,10 +289,6 @@ class OrderController extends Controller
         return $this->updateSuccess($order);
     }
 
-    public function destroy(Order $order)
-    {
-        //
-    }
 
     public function refundVNP($id)
     {

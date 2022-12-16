@@ -8,7 +8,6 @@ use App\Events\Chat\ChatTyping;
 use App\Models\Chat;
 use App\Models\Room;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,9 +43,9 @@ class ChatController extends Controller
      *       ),
      *     )
      */
-    public function getChatByUser($phone, $name)
+    public function getChatByUser($phone)
     {
-        $room_id = $this->getRoomByUser($phone, $name);
+        $room_id = $this->getRoomByUser($phone);
         $list = $this->getMessageByRoom($room_id);
 
         $this->chatModel->newQuery()
@@ -60,22 +59,13 @@ class ChatController extends Controller
         ], 200);
     }
 
-    public function getRoomByUser($phone, $name)
+    public function getRoomByUser($phone)
     {
         $userExitsInRoom = $this->roomModel
             ->newQuery()
             ->where('user_phone', $phone)
             ->first();
-        if ($userExitsInRoom) {
-            return $userExitsInRoom->id;
-        }
-        $data = ['user_phone' => $phone,
-            'user_name' => $name
-        ];
-        $item = $this->roomModel
-            ->newQuery()
-            ->create($data);
-        return $item->id;
+        return $userExitsInRoom->id;
     }
 
     public function getMessageByRoom($roomId)
@@ -87,17 +77,6 @@ class ChatController extends Controller
             ->get();
     }
 
-    public function update(Request $request, $id): JsonResponse
-    {
-        $data = $request->all();
-        $item = $this->chatModel
-            ->newQuery()
-            ->findOrFail($id);
-
-        $item->update($data);
-
-        return $this->updateSuccess($item);
-    }
 
     /**
      * @OA\Post(
