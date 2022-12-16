@@ -31,6 +31,7 @@ class ProgramController extends Controller
             ->newQuery()
             ->with('dishes')
             ->where('status', ENABLE)
+            ->where('end_date', '>=', now())
             ->get();
 
         $programs->each(function ($program) {
