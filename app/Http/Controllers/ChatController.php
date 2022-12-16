@@ -10,6 +10,7 @@ use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -22,11 +23,20 @@ class ChatController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/chat-by-user",
+     *      path="/chat-by-user/{phone}/{name}",
      *      operationId="getChatByUser",
      *      tags={"Chat"},
      *      summary="Get list of chat",
      *      description="Returns list of chat",
+     *      @OA\Parameter(
+     *          name="phone",
+     *          description="User Phone",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -34,24 +44,34 @@ class ChatController extends Controller
      *       ),
      *     )
      */
-    public function getChatByUser()
+    public function getChatByUser($phone, $name)
     {
-        $room = $this->getRoomByUser();
-        $list = $this->getMessageByRoom($room);
+        $room_id = $this->getRoomByUser($phone, $name);
+        $list = $this->getMessageByRoom($room_id);
 
-        return response()->json($list, 200);
+        $this->chatModel->newQuery()
+            ->where('room_id', $room_id)
+            ->where('sender_phone', '!=', $phone)
+            ->update(['isSeen' => true]);
+
+        return response()->json([
+            'data' => $list,
+            'room_id' => $room_id
+        ], 200);
     }
 
-    public function getRoomByUser()
+    public function getRoomByUser($phone, $name)
     {
         $userExitsInRoom = $this->roomModel
             ->newQuery()
-            ->where('userId', auth()->id())
+            ->where('user_phone', $phone)
             ->first();
         if ($userExitsInRoom) {
             return $userExitsInRoom->id;
         }
-        $data = ['userId' => auth()->id()];
+        $data = ['user_phone' => $phone,
+            'user_name' => $name
+        ];
         $item = $this->roomModel
             ->newQuery()
             ->create($data);
@@ -62,9 +82,21 @@ class ChatController extends Controller
     {
         return $this->chatModel
             ->newQuery()
-            ->with(['sender'])
+            ->with(['sender', 'room'])
             ->where('room_id', $roomId)
             ->get();
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        $data = $request->all();
+        $item = $this->chatModel
+            ->newQuery()
+            ->findOrFail($id);
+
+        $item->update($data);
+
+        return $this->updateSuccess($item);
     }
 
     /**
@@ -89,18 +121,27 @@ class ChatController extends Controller
     {
         $data = [
             'content' => $request->message,
-            'room_id' => $request->room_id ?? $this->getRoomByUser(),
-            'sender_id' => auth()->id(),
+            'room_id' => $request->room_id,
+            'sender_phone' => $request->phone,
             'isSeen' => false
         ];
 
         $item = $this->chatModel
             ->newQuery()
             ->create($data);
-
         event(new ChatMessageEvent($item));
-
         event(new ChatNotiEvent($this->getListRoomChatAdmin()));
+
+//        $messageNotSeen = count(
+//            $this->chatModel
+//                ->newQuery()
+//                ->where('sender_phone', $request->phone)
+//                ->where('room_id', $request->room_id)
+//                ->where('isSeen', false)
+//                ->get());
+//        $userPhone = $this->roomModel->newQuery()->where('id', $request->room_id)->first()->user_phone;
+//
+//        broadcast(new CountMessageNotSeenByUser($messageNotSeen, $userPhone))->toOthers();
     }
 
     public function getListRoomChatAdmin()
@@ -138,6 +179,7 @@ class ChatController extends Controller
         $ids = $data->pluck('id');
         $this->chatModel->newQuery()
             ->whereIn('id', $ids)
+            ->where('sender_phone', '!=', Auth::user()->phone)
             ->update(['isSeen' => true]);
 
         event(new ChatNotiEvent($this->getListRoomChatAdmin()));
@@ -145,47 +187,6 @@ class ChatController extends Controller
         return response()->json($data, 200);
     }
 
-    public function update(Request $request, $id): JsonResponse
-    {
-        $data = $request->all();
-        $item = $this->chatModel
-            ->newQuery()
-            ->findOrFail($id);
-
-        $item->update($data);
-
-        return $this->updateSuccess($item);
-    }
-
-
-
-    //    /**
-//     * @OA\Put(
-//     *      path="/chat/{id}",
-//     *      operationId="updateChat",
-//     *      tags={"Chat"},
-//     *      summary="Update existing chat",
-//     *      description="Returns updated chat data",
-//     *      @OA\Parameter(
-//     *          name="id",
-//     *          description="Chat id",
-//     *          required=true,
-//     *          in="path",
-//     *          @OA\Schema(
-//     *              type="integer"
-//     *          )
-//     *      ),
-//     *      @OA\RequestBody(
-//     *          required=true,
-//     *          @OA\JsonContent(ref="#/components/schemas/ChatUpdate")
-//     *      ),
-//     *      @OA\Response(
-//     *          response=202,
-//     *          description="Successful operation",
-//     *          @OA\JsonContent(ref="#/components/schemas/ChatResponse")
-//     *       )
-//     * )
-//     */
 
     /**
      * @OA\Post(
@@ -211,38 +212,4 @@ class ChatController extends Controller
     }
 
 
-
-
-//    /**
-//     * @OA\Delete(
-//     *      path="/chat/{id}",
-//     *      operationId="deleteChat",
-//     *      tags={"Chat"},
-//     *      summary="Delete existing chat",
-//     *      description="Deletes a record and returns no content",
-//     *      @OA\Parameter(
-//     *          name="id",
-//     *          description="Chat id",
-//     *          required=true,
-//     *          in="path",
-//     *          @OA\Schema(
-//     *              type="integer"
-//     *          )
-//     *      ),
-//     *       @OA\Response(
-//     *          response=204,
-//     *          description="Successful operation",
-//     *          @OA\JsonContent()
-//     *       )
-//     * )
-//     */
-
-    public function destroy($id): JsonResponse
-    {
-        $this->chatModel
-            ->newQuery()
-            ->findOrFail($id)->delete();
-
-        return $this->deleteSuccess();
-    }
 }

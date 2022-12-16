@@ -19,4 +19,11 @@ class OrderUpdate
      * @var integer
      */
     public $status;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
+    public $phone;
 }

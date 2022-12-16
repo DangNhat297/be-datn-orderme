@@ -2,6 +2,7 @@
 
 namespace App\Events\Chat;
 
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -43,13 +44,14 @@ class ChatMessageEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $user = User::where('id', $this->newMessage->sender_id)->first();
-
+        $user = User::where('phone', $this->newMessage->sender_phone)->first();
+        $room = Room::where('id', $this->newMessage->room_id)->first();
         return [
             'id' => $this->newMessage->id,
             'content' => $this->newMessage->content,
             'created_at' => $this->newMessage->created_at,
             'room_id' => $this->newMessage->room_id,
+            'room' => $room,
             'sender' => $user
         ];
     }

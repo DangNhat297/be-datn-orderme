@@ -12,11 +12,10 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sender_id')->nullable();
-            $table->unsignedBigInteger('receiver_id')->nullable();
-            $table->string('content');
+            $table->string('user_phone');
+            $table->string('user_name')->nullable();
             $table->timestamps();
         });
     }

@@ -89,6 +89,27 @@ class OrderResponse
     /**
      * @OA\Property()
      *
+     * @var integer
+     */
+    public $price_sale;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $price_none_sale;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $coupon_id;
+
+    /**
+     * @OA\Property()
+     *
      * @var string
      */
     public $created_at;

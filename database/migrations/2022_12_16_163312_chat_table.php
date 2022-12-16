@@ -12,9 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('rooms', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('userId');
+            $table->string('sender_phone');
+            $table->integer('room_id');
+            $table->string('content');
+            $table->boolean('isSeen')->default(false);
             $table->timestamps();
         });
     }

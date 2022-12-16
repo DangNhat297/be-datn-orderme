@@ -3,7 +3,6 @@
 namespace App\Events\Chat;
 
 use App\Models\Chat;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -45,11 +44,11 @@ class ChatNotiEvent implements ShouldBroadcast
     public function broadcastWith()
     {
         $this->list->map(function ($item) {
-            $item['user'] = User::where('id', $item->userId)->first();
+//            $item['user'] = User::where('phone', $item->user_phone)->first();
             $item['message'] = Chat::with(['sender'])
                 ->where('room_id', $item->id)
                 ->orderBy('id', 'desc')->first();
-            $item['messageNotSeen'] = count(Chat::where('sender_id', '=', $item->userId)
+            $item['messageNotSeen'] = count(Chat::where('sender_phone', '=', $item->user_phone)
                 ->where('room_id', $item->id)
                 ->where('isSeen', false)
                 ->get());

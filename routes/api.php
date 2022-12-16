@@ -31,6 +31,11 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('check-user-phone', [AuthController::class, 'checkPhone']);
 
+// chat
+Route::apiResource('chat', ChatController::class);
+Route::get('chat/typing', [ChatController::class, 'onTypingChat']);
+Route::get('chat-by-user/{phone}/{name}', [ChatController::class, 'getChatByUser']);
+Route::get('room/message-not-seen-by-user/{phone}', [RoomController::class, 'getMessageNotSeenByUser']);
 
 // client
 Route::prefix('client')->group(function () {
@@ -60,16 +65,9 @@ Route::prefix('client')->group(function () {
 
     // Coupon
     Route::apiResource('coupon', ClientCouponController::class);
-
 });
 
-Route::group([], function ($routes) {
-
-    // chat
-    Route::apiResource('chat', ChatController::class);
-    Route::get('chat/typing', [ChatController::class, 'onTypingChat']);
-    Route::get('chat-by-user', [ChatController::class, 'getChatByUser']);
-    Route::get('room/message-not-seen-by-user', [RoomController::class, 'getMessageNotSeenByUser']);
+Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
     // account
     Route::get('logout', [AuthController::class, 'logout']);
@@ -86,7 +84,7 @@ Route::group([], function ($routes) {
     });
 
     /* ==== Admin role ====*/
-    Route::group(['prefix' => 'admin'], function () {
+    Route::group(['prefix' => 'admin', 'middleware' => 'auth.admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
@@ -101,7 +99,7 @@ Route::group([], function ($routes) {
 
         // order
         Route::put('order/refund/{order}', [AdminOrder::class, 'refundVNP']);
-        
+
         Route::apiResource('order', AdminOrder::class);
 
         // user

@@ -18,11 +18,12 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     public function __construct(
-        protected Order  $order,
-        protected Dishes $dish,
-        protected Chat   $chatModel,
+        protected Order          $order,
+        protected Dishes         $dish,
+        protected Chat           $chatModel,
         protected PaymentService $paymentService,
-    ) {
+    )
+    {
     }
 
     /**
@@ -159,17 +160,19 @@ class OrderController extends Controller
         return $res;
     }
 
-    public function newMessage($status = 1)
+    public function newMessage($status, $phoneUser, $order, $content = null)
     {
-        $adminDefault = User::where('phone', '0987654321')->first();
-        $roomByCurrentUser = Room::where('id', auth()->id())->first();
+        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        $phoneAdmin = '0987654321';
+        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
         $msg = [
-            'content' => OrderLog::textLog[$status],
+            'content' => $content ?? $contentDefault,
             'room_id' => $roomByCurrentUser->id,
-            'sender_id' => $adminDefault->id,
+            'sender_phone' => $phoneAdmin,
+            'isSeen' => false
         ];
         $newMsg = $this->chatModel->newQuery()->create($msg);
-        event(new ChatMessageEvent(auth()->id(), $newMsg));
+        event(new ChatMessageEvent($newMsg));
         return true;
     }
 
@@ -263,7 +266,7 @@ class OrderController extends Controller
             'change_by' => auth()->id ?? null
         ]);
 
-        $this->newMessage($request->status);
+        $this->newMessage($request->status, $order->phone, $order);
 
         return $this->updateSuccess($order);
     }

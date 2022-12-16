@@ -6,7 +6,6 @@ use App\Events\Chat\ChatNotiEvent;
 use App\Models\Chat;
 use App\Models\Room;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class RoomController extends Controller
 {
@@ -52,11 +51,20 @@ class RoomController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/room/message-not-seen-by-user",
+     *      path="/room/message-not-seen-by-user/{phone}",
      *      operationId="getMessageNotSeenByUser",
      *      tags={"Room"},
      *      summary="Get room information",
      *      description="Returns room data",
+     *      @OA\Parameter(
+     *          name="phone",
+     *          description="User Phone",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -64,29 +72,19 @@ class RoomController extends Controller
      *       ),
      * )
      */
-    public function getMessageNotSeenByUser()
+    public function getMessageNotSeenByUser($phone)
     {
-        if (auth()->user()->role !== 'admin') {
-            $roomByUser = Room::where('userId', auth()->id())->first();
-            $data = [
-                'messageNotSeen' => count(Chat::where('sender_id', '!=', auth()->id())
-                    ->where('room_id', $roomByUser->id)
-                    ->where('isSeen', false)
-                    ->get())
-            ];
-            return \response()->json($data, 200);
-        }
+        $roomByUser = Room::where('user_phone', $phone)->first();
+        $messageNotSeen = count(Chat::where('sender_phone', '!=', $phone)
+            ->where('room_id', $roomByUser->id)
+            ->where('isSeen', false)
+            ->get());
+
+//        broadcast(new CountMessageNotSeenByUser($messageNotSeen, $phone))->toOthers();
+
+
+        return response()->json($messageNotSeen, 200);
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Room $room
-     * @return Response
-     */
-    public function destroy(Room $room)
-    {
-        //
-    }
 }

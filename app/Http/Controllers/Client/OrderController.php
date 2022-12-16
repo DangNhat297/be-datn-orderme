@@ -12,7 +12,6 @@ use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Payment;
 use App\Models\Room;
-use App\Models\User;
 use App\Services\PaymentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -29,7 +28,8 @@ class OrderController extends Controller
         protected PaymentService $paymentService,
         protected Payment        $payment,
         protected Chat           $chatModel,
-    ) {
+    )
+    {
     }
 
     /**
@@ -124,10 +124,7 @@ class OrderController extends Controller
 
             $order->dishes()->attach($dishOfOrder);
 
-            //add chat
-            if (auth()->check()) {
-                $this->newMessage();
-            }
+            $this->newMessage(1, $request->phone, $order);
 
             //log
             $order->logs()->create([
@@ -146,17 +143,19 @@ class OrderController extends Controller
         return $res;
     }
 
-    public function newMessage($status = 1)
+    public function newMessage($status, $phoneUser, $order, $content = null)
     {
-        $adminDefault = User::where('phone', '0987654321')->first();
-        $roomByCurrentUser = Room::where('id', auth()->id())->first();
+        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        $phoneAdmin = '0987654321';
+        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
         $msg = [
-            'content' => OrderLog::textLog[$status],
+            'content' => $content ?? $contentDefault,
             'room_id' => $roomByCurrentUser->id,
-            'sender_id' => $adminDefault->id,
+            'sender_phone' => $phoneAdmin,
+            'isSeen' => false
         ];
         $newMsg = $this->chatModel->newQuery()->create($msg);
-        event(new ChatMessageEvent(auth()->id(), $newMsg));
+        event(new ChatMessageEvent($newMsg));
         return true;
     }
 
@@ -320,11 +319,10 @@ class OrderController extends Controller
 
         $order->logs()->create([
             'status' => 0,
-            'change_by' => auth()->id ?? null
+            'change_by' => $request->phone
         ]);
-        if (auth()->check()) {
-            $this->newMessage(0);
-        }
+        $content = "Ôi thật là tiếc. Món ngon " . $order->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
+        $this->newMessage(0, $request->phone, $content);
         return $this->updateSuccess($order);
     }
 }

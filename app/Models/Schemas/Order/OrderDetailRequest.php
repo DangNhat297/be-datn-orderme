@@ -26,4 +26,18 @@ class OrderDetailRequest
      */
     public $quantity;
 
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $price;
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $price_sale;
+
 }
