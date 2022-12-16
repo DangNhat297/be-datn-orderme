@@ -100,7 +100,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         // order
         Route::put('order/refund/{order}', [AdminOrder::class, 'refundVNP']);
-        Route::get('order/transaction/{order}', [AdminOrder::class, 'getTransaction']);
+        
         Route::apiResource('order', AdminOrder::class);
 
         // user

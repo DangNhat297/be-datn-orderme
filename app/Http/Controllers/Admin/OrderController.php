@@ -133,17 +133,7 @@ class OrderController extends Controller
             'payment_status'
         ]);
 
-        $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
-
-        $dishes = $this->dish
-            ->newQuery()
-            ->findMany($dishIDs);
-
-        $dishOfOrder = collect($request->dishes)->map(function ($dish) use ($dishes) {
-            $dish['price'] = $dishes->find($dish['dish_id'])->price;
-
-            return $dish;
-        })->keyBy('dish_id');
+        $dishOfOrder = collect($request->dishes)->keyBy('dish_id');
 
         $res = DB::transaction(function () use ($data, $dishOfOrder) {
             $order = $this->order
@@ -298,15 +288,5 @@ class OrderController extends Controller
             ->firstOrFail();
 
         return $this->paymentService->refundRequest($order);
-    }
-
-    public function getTransaction($id)
-    {
-        $order = $this->order
-                ->newQuery()
-                ->where('id', $id)
-                ->firstOrFail();
-
-        return $this->paymentService->getTrans($order);
     }
 }

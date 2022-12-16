@@ -115,21 +115,7 @@ class OrderController extends Controller
 
         $data['payment_status'] = ORDER_PAYMENT_WAITING;
 
-        $dishIDs = collect($request->dishes)->pluck('dish_id')->toArray();
-
-        $dishes = $this->dish
-            ->newQuery()
-            ->findMany($dishIDs);
-
-        $dishOfOrder = collect($request->dishes)->map(function ($dish) use ($dishes) {
-            $dish['price'] = $dishes->find($dish['dish_id'])->price;
-
-            return $dish;
-        })->keyBy('dish_id');
-
-        // $data['total'] = $dishOfOrder->reduce(function ($sum, $currentVal) {
-        //     return $sum += $currentVal['price'];
-        // }, 0);
+        $dishOfOrder = collect($request->dishes)->keyBy('dish_id');
 
         $res = DB::transaction(function () use ($data, $dishOfOrder, $request) {
             $order = $this->order
