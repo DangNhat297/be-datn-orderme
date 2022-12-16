@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
+use App\Http\Controllers\Admin\ProgramController as AdminProgramController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StatisticalController;
 use App\Http\Controllers\Admin\UserController;
@@ -115,8 +116,8 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         Route::put('/coupon/change-status/{coupon}', [CouponController::class, 'toggleStatus']);
 
         //program
-        Route::apiResource('program', ProgramController::class);
-        Route::put('/program/change-status/{program}', [ProgramController::class, 'toggleStatus']);
+        Route::apiResource('program', AdminProgramController::class);
+        Route::put('/program/change-status/{program}', [AdminProgramController::class, 'toggleStatus']);
 
         //statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');
