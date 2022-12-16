@@ -106,13 +106,13 @@ class DishController extends Controller
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
             ->where('status', ENABLE)
-            ->firstOrFail()
-            ->load('dishes');
+            ->with('dishes')
+            ->first();
 
         $data->getCollection()->transform(function ($dish)use ($currentFlashSales){
             $dish->makeHidden(['created_at', 'updated_at', 'status']);
 
-            if ($currentFlashSales->dishes->contains('id', $dish->id)) {
+            if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $dish->id)) {
                 $dish->price_sale = $dish->price - ($dish->price*($currentFlashSales->discount_percent/100));
             }
 
@@ -155,10 +155,10 @@ class DishController extends Controller
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
             ->where('status', ENABLE)
-            ->firstOrFail()
-            ->load('dishes');
+            ->with('dishes')
+            ->first();
 
-        if ($currentFlashSales->dishes->contains('id', $item->id)) {
+        if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $item->id)) {
             $item->price_sale = $item->price - ($item->price*($currentFlashSales->discount_percent/100));
         }
         $item->makeHidden('status', 'created_at', 'updated_at')->toArray();

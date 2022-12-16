@@ -27,13 +27,25 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $program = $this->program
+        $programs = $this->program
             ->newQuery()
+            ->with('dishes')
             ->where('status', ENABLE)
-            ->get()
-            ->load('dishes');
+            ->get();
 
-        return $this->sendSuccess($program);
+        $programs->each(function ($program) {
+            $program->dishes->transform(function ($dish) {
+                $dish->makeHidden([
+                    'pivot',
+                    'updated_at',
+                    'created_at'
+                ]);
+                
+                return $dish;
+            });
+        });
+
+        return $this->sendSuccess($programs);
     }
 
     /**
@@ -59,6 +71,16 @@ class ProgramController extends Controller
             ->where('status', ENABLE)
             ->firstOrFail()
             ->load('dishes');
+
+        $program->dishes->transform(function ($dish) {
+            $dish->makeHidden([
+                'pivot',
+                'updated_at',
+                'created_at'
+            ]);
+
+            return $dish;
+        });
 
         return $this->sendSuccess($program);
     }
