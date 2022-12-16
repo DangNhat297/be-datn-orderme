@@ -12,8 +12,7 @@ class ProgramController extends Controller
 {
     public function __construct(
         protected Program $program
-    )
-    {
+    ) {
     }
 
     /**
@@ -106,7 +105,20 @@ class ProgramController extends Controller
         $program = $this->program
             ->newQuery()
             ->create($data);
+
         $program->dishes()->attach($dishesId);
+
+        $program->load('dishes');
+
+        $program->dishes->transform(function ($dish) {
+            $dish->makeHidden([
+                'pivot',
+                'created_at',
+                'updated_at'
+            ]);
+
+            return $dish;
+        });
 
         return $this->createSuccess($program);
     }
@@ -225,6 +237,18 @@ class ProgramController extends Controller
         $program->update($data);
         $dishIds = $request->dish_ids;
         $program->dishes()->sync($dishIds);
+
+        $program->load('dishes');
+
+        $program->dishes->transform(function ($dish) {
+            $dish->makeHidden([
+                'pivot',
+                'created_at',
+                'updated_at'
+            ]);
+
+            return $dish;
+        });
 
         return $this->updateSuccess($program);
     }
