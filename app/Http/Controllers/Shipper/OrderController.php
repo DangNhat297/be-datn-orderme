@@ -162,6 +162,10 @@ class OrderController extends Controller
         if (in_array($status, $listStatus)) {
             $order->update(['status' => $status]);
 
+            if ($request->status == ORDER_COMPLETE) {
+                $order->update(['payment_status' => ORDER_PAYMENT_SUCCESS]);
+            }
+
             $order->logs()->create([
                 'status' => $status,
                 'change_by' => auth()->id ?? null

@@ -281,7 +281,8 @@ class OrderController extends Controller
         $order = $this->order
             ->newQuery()
             ->where('id', $id)
-            ->where('payment_status', ENABLE)
+            ->where('payment_status', ORDER_PAYMENT_SUCCESS)
+            ->where('payment_method', ORDER_PAYMENT_VNPAY)
             ->whereHas('payments', function ($q) {
                 return $q->where('transaction_status', '00');
             })
