@@ -82,7 +82,7 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'user'])
+            ->with(['location', 'user', 'dishes'])
             ->findByMultiple($request)
             ->findByStatus($request)
             ->findOrderBy($request)
