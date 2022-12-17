@@ -395,15 +395,40 @@ class StatisticalController extends Controller
     }
 
 
+    /**
+     * @OA\Get(
+     *      path="/admin/statistical/flash-sale",
+     *      operationId="getStatisticalFlashSale",
+     *      tags={"Statistical"},
+     *      summary="Get list of statistical flash sale",
+     *      description="Returns list of statistical flash sale",
+     *      @OA\Parameter(
+     *          name="start_date",
+     *          description="filter by day start_date ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_date",
+     *          description="filter by day end_date",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/ProgramResponse"),
+     *       ),
+     *     )
+     */
     function flashSale_product_statistics(Request $request)
     {
-
-        $orders = $this->orders->newQuery()->with('dishes')->get();
-        $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
-            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
-            ->unique('id')
-            ->values();
-
 
         $flashSales = $this->program->newQuery()
                 ->where('status', ENABLE)
@@ -415,16 +440,29 @@ class StatisticalController extends Controller
 
             $orders = $this->orders
                         ->newQuery()
-                        ->whereBetween('created_at', [$flash_sale->start_date, $flash_sale->end_date])
+                        ->whereBetween('created_at', [$request->start_date??$flash_sale->start_date, $request->end_date??$flash_sale->end_date])
                         ->with('dishes')
                         ->get();
 
             $dishes = $orders->reduce(fn ($init, $order) => $init->merge($order->dishes), collect([]))
+                ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
                             ->unique('id')
                             ->values();
 
-            $flash_sale->dish_purchased_in_flashsale = $dishes->filter(fn ($dish) => $flash_sale->dishes->contains('id', $dish->id));// get product in flash sale & order
-            //  $flash_sale->total=
+
+              $flash_sale->dish_in_flashsale =
+                  $dishes->transform(function ($product) use ($orders) {
+                $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
+                    return $init += $order->dishes
+                        ->where('id', $product->id)
+                        ->sum(fn($d) => $d->pivot->quantity);
+                }, 0);
+                $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+                return $product;
+            }, collect([]));
+//                  $dishes->filter(fn ($dish) => $flash_sale->dishes->contains('id', $dish->id));
+
+               $flash_sale->total_flashSale=  $flash_sale->dish_in_flashsale->sum('total');
             return $flash_sale;
         });
 

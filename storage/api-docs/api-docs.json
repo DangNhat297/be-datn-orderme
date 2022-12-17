@@ -1430,6 +1430,48 @@
                 }
             }
         },
+        "/admin/statistical/flash-sale": {
+            "get": {
+                "tags": [
+                    "Statistical"
+                ],
+                "summary": "Get list of statistical flash sale",
+                "description": "Returns list of statistical flash sale",
+                "operationId": "getStatisticalFlashSale",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "filter by day start_date ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "filter by day end_date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProgramResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/user": {
             "get": {
                 "tags": [
