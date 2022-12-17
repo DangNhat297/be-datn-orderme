@@ -76,7 +76,7 @@ class Order extends BaseModel
     public function dishes(): BelongsToMany
     {
         return $this->belongsToMany(Dishes::class, 'dish_order', 'order_id', 'dish_id')
-            ->withPivot(['quantity', 'price']);
+            ->withPivot(['quantity', 'price', 'price_sale']);
     }
 
 

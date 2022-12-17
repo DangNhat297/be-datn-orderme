@@ -198,6 +198,7 @@ class OrderController extends Controller
         $order->dishes->transform(function ($dish) {
             $dish->quantity = $dish->pivot->quantity;
             $dish->price = $dish->pivot->price;
+            $dish->price_sale = $dish->pivot->price_sale ?? 0;
 
             return $dish->only([
                 'id',
@@ -205,7 +206,8 @@ class OrderController extends Controller
                 'slug',
                 'image',
                 'price',
-                'quantity'
+                'quantity',
+                'price_sale'
             ]);
         });
 
