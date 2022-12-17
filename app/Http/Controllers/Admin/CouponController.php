@@ -186,20 +186,10 @@ class CouponController extends Controller
      */
     public function destroy(Coupon $coupon)
     {
-        $coupon->delete();
+        $coupon->update(['status' => DISABLE]);
 
         return $this->deleteSuccess();
     }
-
-    public function toggleStatus(Coupon $coupon)
-    {
-        $status = $coupon->status == ENABLE ? DISABLE : ENABLE;
-
-        $coupon->update(['status' => $status]);
-
-        return $this->updateSuccess($coupon);
-    }
-
     /**
      * @OA\Put(
      *      path="/admin/coupon/{id}",

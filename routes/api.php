@@ -111,11 +111,9 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         // coupon
         Route::apiResource('coupon', CouponController::class);
-        Route::put('/coupon/change-status/{coupon}', [CouponController::class, 'toggleStatus']);
 
         //program
         Route::apiResource('program', AdminProgramController::class);
-        Route::put('/program/change-status/{program}', [AdminProgramController::class, 'toggleStatus']);
 
         //statistical
         Route::apiResource('statistical', StatisticalController::class)->only('index');

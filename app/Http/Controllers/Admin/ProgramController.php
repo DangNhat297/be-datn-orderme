@@ -180,19 +180,14 @@ class ProgramController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        $this->program
+        $program = $this->program
             ->newQuery()
-            ->findOrFail($id)->delete();
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $program->update(['status' => DISABLE]);
+
         return $this->deleteSuccess();
-    }
-
-    public function toggleStatus(Program $program): JsonResponse
-    {
-        $status = $program->status == ENABLE ? DISABLE : ENABLE;
-
-        $program->update(['status' => $status]);
-
-        return $this->updateSuccess($program);
     }
 
     /**

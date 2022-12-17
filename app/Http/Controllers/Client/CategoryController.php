@@ -52,13 +52,13 @@ class CategoryController extends Controller
     {
         $data = $this->categoryModel
             ->newQuery()
-            ->where('is_deleted', 0)
+            ->where('status', ENABLE)
             ->findByName($request)
             ->findByStatus($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         $data->getCollection()->transform(function ($value) {
-            $value->makeHidden(['created_at', 'updated_at', 'is_deleted', 'status']);
+            $value->makeHidden(['created_at', 'updated_at', 'status']);
             return $value;
         });
 
