@@ -107,6 +107,24 @@ class DishesController extends Controller
             ->findOrderBy($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
+        $currentFlashSales = $this->program
+            ->newQuery()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->where('status', ENABLE)
+            ->with('dishes')
+            ->first();
+
+        $data->getCollection()->transform(function ($dish) use ($currentFlashSales) {
+            $dish->makeHidden(['created_at', 'updated_at', 'status']);
+
+            if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $dish->id)) {
+                $dish->price_sale = $dish->price - ($dish->price * ($currentFlashSales->discount_percent / 100));
+            }
+
+            return $dish;
+        });
+
         return $this->sendSuccess($data);
     }
 
@@ -174,10 +192,10 @@ class DishesController extends Controller
             ->with('dishes')
             ->first();
 
-        if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $id)) {
-            $item->in_flashsale = 1;
+        if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $item->id)) {
+            $item->price_sale = $item->price - ($item->price * ($currentFlashSales->discount_percent / 100));
         }
-        
+
         return $this->sendSuccess($item);
     }
 

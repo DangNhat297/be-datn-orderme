@@ -38,7 +38,7 @@ class ProgramRequest extends FormRequest
             'status' => 'required|integer|in:0,1',
             'title' => 'required',
             'description' => 'required',
-            'dish_ids' => 'array|min:1',
+            'dish_ids' => 'required|array|min:1',
             'dish_ids.*' => 'exists:dishes,id'
         ];
 
