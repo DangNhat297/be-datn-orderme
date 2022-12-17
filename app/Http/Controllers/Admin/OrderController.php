@@ -22,8 +22,9 @@ class OrderController extends Controller
         protected Dishes         $dish,
         protected Chat           $chatModel,
         protected PaymentService $paymentService,
-        protected Program           $program
-    ) {
+        protected Program        $program
+    )
+    {
     }
 
     /**
@@ -291,7 +292,29 @@ class OrderController extends Controller
         return $this->updateSuccess($order);
     }
 
-
+    /**
+     * @OA\Put(
+     *      path="/admin/order/refund/{id}",
+     *      operationId="refundMoneyVNP",
+     *      tags={"Order"},
+     *      summary="Refund money",
+     *      description="Returns data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderRefundResponse")
+     *       )
+     * )
+     */
     public function refundVNP($id)
     {
         $order = $this->order

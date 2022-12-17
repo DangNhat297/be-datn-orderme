@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": " http://localhost:8000/api/v1/",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -1005,6 +1005,39 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/order/refund/{id}": {
+            "put": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Refund money",
+                "description": "Returns data",
+                "operationId": "refundMoneyVNP",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderRefundResponse"
                                 }
                             }
                         }
@@ -3686,6 +3719,16 @@
                     },
                     "price": {
                         "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderRefundResponse": {
+                "title": "Order Request",
+                "description": "Order model",
+                "properties": {
+                    "message": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
