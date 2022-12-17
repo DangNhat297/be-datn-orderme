@@ -225,7 +225,7 @@ class AuthController extends Controller
             ->where('user_phone', $request->phone)
             ->first();
         if ($userExitsInRoom) {
-            $this->newQuery()
+            $this->roomModel->newQuery()
                 ->where('id', $userExitsInRoom->id)
                 ->update(['user_name', $request->name]);
         }
