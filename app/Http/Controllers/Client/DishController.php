@@ -99,6 +99,7 @@ class DishController extends Controller
             ->findbyName($request)
             ->findOrderBy($request)
             ->findByPriceRange($request)
+            ->where('status',ENABLE)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
         $currentFlashSales = $this->program
@@ -118,7 +119,7 @@ class DishController extends Controller
 
             return $dish;
         });
-        
+
         return $this->sendSuccess($data);
     }
 

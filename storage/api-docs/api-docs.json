@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000/api/v1",
+            "url": " http://localhost:8000/api/v1/",
             "description": "Order Me API"
         }
     ],
@@ -1341,6 +1341,26 @@
                 "summary": "Get list of statistical all table",
                 "description": "Returns list of statistical all table",
                 "operationId": "getStatisticalAllTable",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "filter by day start_date ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "filter by day end_date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",

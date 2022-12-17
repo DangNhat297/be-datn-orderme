@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Dishes extends BaseModel
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'slug',
@@ -17,7 +17,8 @@ class Dishes extends BaseModel
         'quantity',
         'category_id',
         'price',
-        'status'
+        'status',
+        'price_sale'
     ];
 
     function dishes_category()

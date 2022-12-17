@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DishesRequest;
 use App\Http\Requests\DishesUpdateRequest;
 use App\Models\Dishes;
-use App\Models\Program;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -126,6 +125,7 @@ class DishesController extends Controller
         });
 
         return $this->sendSuccess($data);
+
     }
 
     /**

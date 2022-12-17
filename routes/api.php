@@ -120,6 +120,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
         Route::group(['prefix' => 'statistical'], function () {
             Route::get('all-table', [StatisticalController::class, 'statistical_count_table']);
             Route::get('category-table', [StatisticalController::class, 'statistical_table_category']);
+            Route::get('flash-sale', [StatisticalController::class, 'flashSale_product_statistics']);
         });
 
 

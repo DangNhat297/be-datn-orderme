@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Dishes;
 use App\Models\Order;
+use App\Models\Program;
 use App\Models\User;
 use Carbon\Carbon;
+use Egulias\EmailValidator\Warning\CFWSNearAt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class StatisticalController extends Controller
 {
@@ -18,13 +19,15 @@ class StatisticalController extends Controller
     protected $dishes;
     protected $orders;
     protected $category;
+    protected $program;
 
-    function __construct(Dishes $dishes, User $users, Order $orders, Category $category)
+    function __construct(Dishes $dishes, User $users, Order $orders, Category $category, Program $program)
     {
         $this->user = $users;
         $this->dishes = $dishes;
         $this->orders = $orders;
         $this->category = $category;
+        $this->program = $program;
     }
 
 
@@ -145,7 +148,10 @@ class StatisticalController extends Controller
                 ->get();
             foreach ($Order as $row_orrder) {
                 $listDishes = $this->getProductStatistic($Order);
+//                return $this->sendSuccess($Order);
+
             }
+
             foreach ($listDishes as $list) {
                 $total_money += $list->total;
             }
@@ -167,13 +173,16 @@ class StatisticalController extends Controller
             ->unique('id')
             ->values();
 
+
         $products->transform(function ($product) use ($orders) {
+
             $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
                 return $init += $order->dishes
                     ->where('id', $product->id)
                     ->sum(fn($d) => $d->pivot->quantity);
             }, 0);
-            $product->total = $product->quantity_buy * $product->price;
+
+            $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
             return $product;
         });
         return $products;
@@ -260,7 +269,7 @@ class StatisticalController extends Controller
                     $dishes = $listDishes->filter(fn($val) => $dish->id == $val->id);
                     $dish->quantity_buy = $dishes->sum('quantity_buy');
                     $dish->price = $dishes->first()->price;
-                    $dish->total = $dish->quantity_buy * $dish->price;
+                    $dish->total = $dish->quantity_buy * ($dish->price - $dish->pivot->price_sale);
                     return $init->push($dish);
                 }
                 return $init;
@@ -284,6 +293,24 @@ class StatisticalController extends Controller
      *      tags={"Statistical"},
      *      summary="Get list of statistical all table",
      *      description="Returns list of statistical all table",
+     *      @OA\Parameter(
+     *          name="start_date",
+     *          description="filter by day start_date ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_date",
+     *          description="filter by day end_date",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -291,16 +318,15 @@ class StatisticalController extends Controller
      *       ),
      *     )
      */
-    function statistical_count_table()
+    function statistical_count_table(Request $request)
     {
-        $orders = $this->orders->newQuery()->with('dishes')->get();
+        $orders = $this->orders->newQuery()
+            ->findByDateRange($request)
+            ->with('dishes')->get();
         $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
             ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
             ->unique('id')
             ->values();
-
-
-
 
 //            start
         $products->transform(function ($product) use ($orders) {
@@ -309,19 +335,30 @@ class StatisticalController extends Controller
                     ->where('id', $product->id)
                     ->sum(fn($d) => $d->pivot->quantity);
             }, 0);
-            $product->total = $product->quantity_buy * $product->price;
+            $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
             return $product;
         }, collect([]));
 
-        $topList = $products->sortByDesc('quantity_buy');
-        $topNotSelling = $products->sortBy('quantity_buy');
+        $topList = $products->sortByDesc('quantity_buy'); // hight to low
+//        return $this->sendSuccess($topList);
 
-        $dish_order=DB::table('dish_order')->pluck('dish_id')->unique();
-        $noteSell=$this->dishes->newQuery()->whereNotIn('id',$dish_order)->paginate(5);
+        $topNotSelling = $products;
 
-        $noteSell= $noteSell->makeHidden(['created_at','updated_at','category_id','status','description']);
+        $allDishes = $this->dishes->newQuery()->get();
+
+        $allDishes->each(function ($dish) use ($topNotSelling) {
+            if (!$topNotSelling->contains('id', $dish->id)) {
+                $dish->quantity_buy = 0;
+                $dish->total = 0;
+                $dish->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']);
+                $topNotSelling->push($dish);
+            }
+        });
 
 
+        $topNotSelling = $topNotSelling->sortBy('quantity_buy')->values()->slice(0, 5); // loww to hight
+
+//        return $this->sendSuccess($topNotSelling);
 
 
         $data = [
@@ -330,11 +367,12 @@ class StatisticalController extends Controller
             'categories' => $this->category->newQuery()->count(),
             'orders' => $this->orders->newQuery()->count(),
             'topSelling' => $topList->values()->slice(0, 5),
-            'topNotSelling' => $topNotSelling->values()->slice(0, 5)
+            'topNotSelling' => $topNotSelling
         ];
 //            end  hiện thì dạng object
         return $this->sendSuccess($data);
     }
+
 
     /**
      * @OA\Get(
@@ -356,4 +394,45 @@ class StatisticalController extends Controller
         return $this->sendSuccess($category);
     }
 
+
+    function flashSale_product_statistics(Request $request)
+    {
+
+        $orders = $this->orders->newQuery()->with('dishes')->get();
+        $products = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
+            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
+            ->unique('id')
+            ->values();
+
+
+        $flashSales = $this->program->newQuery()
+                ->where('status', ENABLE)
+                ->with('dishes')->get();
+
+
+        $flashSales->transform(function($flash_sale) {
+            $flash_sale->makeHidden(['dishes','created_at','updated_at','description','banner']);
+
+            $orders = $this->orders
+                        ->newQuery()
+                        ->whereBetween('created_at', [$flash_sale->start_date, $flash_sale->end_date])
+                        ->with('dishes')
+                        ->get();
+
+            $dishes = $orders->reduce(fn ($init, $order) => $init->merge($order->dishes), collect([]))
+                            ->unique('id')
+                            ->values();
+
+            $flash_sale->dish_purchased_in_flashsale = $dishes->filter(fn ($dish) => $flash_sale->dishes->contains('id', $dish->id));// get product in flash sale & order
+            //  $flash_sale->total=
+            return $flash_sale;
+        });
+
+
+
+        return $this->sendSuccess($flashSales->values());
+
+    }
+
 }
+
