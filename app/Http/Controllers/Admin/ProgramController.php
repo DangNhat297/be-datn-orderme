@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProgramRequest;
 use App\Models\Program;
+use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
-    public function __construct(
-        protected Program $program
-    ) {
+    public function __construct(protected Program $program,protected Order $orders) {
     }
 
     /**
@@ -150,9 +149,36 @@ class ProgramController extends Controller
     {
         $program = $this->program
             ->newQuery()
-            ->with('dishes')
             ->findOrFail($id);
-        return $this->sendSuccess($program);
+
+        $orders = $this->orders
+            ->newQuery()
+            ->whereBetween('created_at', [$program->start_date, $program->end_date])
+            ->with('dishes')
+            ->get();
+
+        $dishes = $orders->reduce(fn ($init, $order) => $init->merge($order->dishes), collect([]))
+            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
+            ->unique('id')
+            ->values();
+
+        $dishes->transform(function ($product) use ($orders) {
+            $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
+                return $init += $order->dishes
+                    ->where('id', $product->id)
+                    ->sum(fn($d) => $d->pivot->quantity);
+            }, 0);
+            $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+            return $product;
+        }, collect([]));
+
+        return response()->json(
+            [
+                'data'=>$program,
+                'dishes_flashSale'=>$dishes,
+                'total_flashSale'=>$dishes->sum('total')
+            ]
+        );
     }
 
     /**

@@ -9,7 +9,6 @@ use App\Models\Order;
 use App\Models\Program;
 use App\Models\User;
 use Carbon\Carbon;
-use Egulias\EmailValidator\Warning\CFWSNearAt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -420,6 +419,15 @@ class StatisticalController extends Controller
      *              type="string"
      *          )
      *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="filter by limit page",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -466,9 +474,7 @@ class StatisticalController extends Controller
             return $flash_sale;
         });
 
-
-
-        return $this->sendSuccess($flashSales->values());
+        return $this->sendSuccess($flashSales->values()->slice(0,$request->limit??5));
 
     }
 
