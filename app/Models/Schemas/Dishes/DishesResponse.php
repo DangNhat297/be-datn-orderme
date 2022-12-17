@@ -30,6 +30,14 @@ class DishesResponse
      * @var number
      */
     public $price;
+
+    /**
+     * @OA\Property()
+     *
+     * @var number
+     */
+    public $price_sale;
+
     /**
      * @OA\Property()
      *

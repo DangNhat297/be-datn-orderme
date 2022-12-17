@@ -1456,6 +1456,24 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1464,7 +1482,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ProgramResponse"
+                                    "$ref": "#/components/schemas/StaticFlashsaleResponse"
                                 }
                             }
                         }
@@ -3384,6 +3402,9 @@
                     "price": {
                         "type": "number"
                     },
+                    "price_sale": {
+                        "type": "number"
+                    },
                     "description": {
                         "type": "string"
                     },
@@ -4042,6 +4063,61 @@
                     },
                     "id": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "DishItemFlashsale": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "quantity_buy": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "StaticFlashsaleResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "discount_percent": {
+                        "type": "integer"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    },
+                    "total_flashSale": {
+                        "type": "integer"
+                    },
+                    "dish_in_flashsale": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DishItemFlashsale"
+                        }
                     }
                 },
                 "type": "object"

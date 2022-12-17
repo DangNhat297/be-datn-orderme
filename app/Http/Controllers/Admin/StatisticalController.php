@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Program;
 use App\Models\User;
 use Carbon\Carbon;
+use Egulias\EmailValidator\Warning\CFWSNearAt;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -421,7 +422,16 @@ class StatisticalController extends Controller
      *      ),
      *      @OA\Parameter(
      *          name="limit",
-     *          description="filter by limit page",
+     *          description="limit size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page size ",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
@@ -431,50 +441,52 @@ class StatisticalController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/ProgramResponse"),
+     *          @OA\JsonContent(ref="#/components/schemas/StaticFlashsaleResponse"),
      *       ),
      *     )
      */
     function flashSale_product_statistics(Request $request)
     {
-
+        $pageSize = $request->page_size ?: PAGE_SIZE_DEFAULT;
         $flashSales = $this->program->newQuery()
-                ->where('status', ENABLE)
-                ->with('dishes')->get();
+            ->where('status', ENABLE)
+            ->with('dishes')
+            ->paginate($pageSize);
 
 
-        $flashSales->transform(function($flash_sale) {
-            $flash_sale->makeHidden(['dishes','created_at','updated_at','description','banner']);
+        $flashSales->transform(function ($flash_sale) {
+            $flash_sale->makeHidden(['dishes', 'created_at', 'updated_at', 'description', 'banner']);
 
             $orders = $this->orders
-                        ->newQuery()
-                        ->whereBetween('created_at', [$request->start_date??$flash_sale->start_date, $request->end_date??$flash_sale->end_date])
-                        ->with('dishes')
-                        ->get();
+                ->newQuery()
+                ->whereBetween('created_at', [$request->start_date ?? $flash_sale->start_date, $request->end_date ?? $flash_sale->end_date])
+                ->with('dishes')
+                ->get();
 
-            $dishes = $orders->reduce(fn ($init, $order) => $init->merge($order->dishes), collect([]))
+            $dishes = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
                 ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
-                            ->unique('id')
-                            ->values();
+                ->unique('id')
+                ->values();
 
 
-              $flash_sale->dish_in_flashsale =
-                  $dishes->transform(function ($product) use ($orders) {
-                $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
-                    return $init += $order->dishes
-                        ->where('id', $product->id)
-                        ->sum(fn($d) => $d->pivot->quantity);
-                }, 0);
-                $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
-                return $product;
-            }, collect([]));
+            $flash_sale->dish_in_flashsale =
+                $dishes->transform(function ($product) use ($orders) {
+                    $product->quantity_buy = $orders->reduce(function ($init, $order) use ($product) {
+                        return $init += $order->dishes
+                            ->where('id', $product->id)
+                            ->sum(fn($d) => $d->pivot->quantity);
+                    }, 0);
+                    $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+                    return $product;
+                }, collect([]));
 //                  $dishes->filter(fn ($dish) => $flash_sale->dishes->contains('id', $dish->id));
 
-               $flash_sale->total_flashSale=  $flash_sale->dish_in_flashsale->sum('total');
+            $flash_sale->total_flashSale = $flash_sale->dish_in_flashsale->sum('total');
             return $flash_sale;
         });
 
-        return $this->sendSuccess($flashSales->values()->slice(0,$request->limit??5));
+
+        return $this->sendSuccess($flashSales->values());
 
     }
 
