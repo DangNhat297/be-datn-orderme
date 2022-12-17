@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     protected $user;
+    protected $roomModel;
 
-    public function __construct(User $user, protected Room $roomModel)
+    public function __construct(User $user, Room $roomModel)
     {
         $this->user = $user;
+        $this->roomModel = $roomModel;
     }
 
     /**
@@ -202,6 +204,10 @@ class AuthController extends Controller
      *              @OA\Property(
      *                  format="string",
      *                  property="phone"
+     *              ),
+     *          @OA\Property(
+     *                  format="string",
+     *                  property="name"
      *              )
      *          ),
      *      ),
@@ -225,25 +231,19 @@ class AuthController extends Controller
             ->where('user_phone', $request->phone)
             ->first();
         if ($userExitsInRoom) {
-            $this->roomModel->newQuery()
-                ->where('id', $userExitsInRoom->id)
-                ->update(['user_name', $request->name]);
+            $userExitsInRoom->update(['user_name' => $request->name]);
+        } else {
+            $data = ['user_phone' => $request->phone, 'user_name' => $request->name];
+            $this->roomModel->newQuery()->create($data);
         }
-        $data = ['user_phone' => $request->phone, 'user_name' => $request->name];
-        $this->roomModel->newQuery()->create($data);
 
-        $user = $this->user
-            ->newQuery()
+        $user = $this->user->newQuery()
             ->where('phone', $request->phone)
             ->first();
         if (!$user) {
-            return response()->json([
-                'isExits' => false
-            ], 200);
+            return response()->json(['isExits' => false,], 200);
         } else {
-            return response()->json([
-                'isExits' => true
-            ], 200);
+            return response()->json(['isExits' => true,], 200);
         }
     }
 

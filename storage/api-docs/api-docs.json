@@ -1570,6 +1570,9 @@
                                 "properties": {
                                     "phone": {
                                         "format": "string"
+                                    },
+                                    "name": {
+                                        "format": "string"
                                     }
                                 },
                                 "type": "object"
@@ -3725,9 +3728,6 @@
                 "properties": {
                     "status": {
                         "type": "integer"
-                    },
-                    "phone": {
-                        "type": "string"
                     }
                 },
                 "type": "object"
