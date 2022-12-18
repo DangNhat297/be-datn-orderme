@@ -306,7 +306,7 @@ class OrderController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
+     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdateClient")
      *      ),
      *      @OA\Response(
      *          response=202,
@@ -323,7 +323,7 @@ class OrderController extends Controller
             'status' => 0,
             'change_by' => $request->phone
         ]);
-        $content = "Ôi thật là tiếc. Món ngon " . $order->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
+        $content = "Ôi thật là tiếc. Món ngon " . $request->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
         $this->newMessage(0, $request->phone, $content);
         return $this->updateSuccess($order);
     }
