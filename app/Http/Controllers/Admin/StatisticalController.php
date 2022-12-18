@@ -486,7 +486,7 @@ class StatisticalController extends Controller
         });
 
 
-        return $this->sendSuccess($flashSales->values());
+        return $this->sendSuccess($flashSales);
 
     }
 
