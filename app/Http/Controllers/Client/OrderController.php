@@ -324,7 +324,7 @@ class OrderController extends Controller
             'change_by' => $request->phone
         ]);
         $content = "Ôi thật là tiếc. Món ngon " . $request->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
-        $this->newMessage(0, $request->phone, $content);
+        $this->newMessage(0, $request->phone, $request, $content);
         return $this->updateSuccess($order);
     }
 }
