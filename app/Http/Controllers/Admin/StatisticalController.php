@@ -454,7 +454,7 @@ class StatisticalController extends Controller
             ->paginate($pageSize);
 
 
-        $flashSales->transform(function ($flash_sale) {
+        $flashSales->getCollection()->transform(function ($flash_sale) {
             $flash_sale->makeHidden(['dishes', 'created_at', 'updated_at', 'description', 'banner']);
 
             $orders = $this->orders

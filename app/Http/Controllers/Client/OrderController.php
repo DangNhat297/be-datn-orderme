@@ -246,7 +246,7 @@ class OrderController extends Controller
         if ($order->payment_status == 0) {
             if ($order->total == ($request->vnp_Amount / 100)) {
                 if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
-                    $order->update(['payment_status' => 1]);
+                    $order->update(['payment_status' => ORDER_PAYMENT_SUCCESS]);
                     $res = [
                         'RspCode' => '00',
                         'Message' => 'Thanh toán thành công'
