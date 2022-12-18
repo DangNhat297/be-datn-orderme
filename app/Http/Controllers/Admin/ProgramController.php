@@ -158,7 +158,11 @@ class ProgramController extends Controller
             ->get();
 
         $dishes = $orders->reduce(fn ($init, $order) => $init->merge($order->dishes), collect([]))
-            ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
+            ->transform(function($p){
+            $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']);
+            $p->price_sale = $p->pivot->price - $p->pivot->price_sale;
+                return $p;
+            })
             ->unique('id')
             ->values();
 
@@ -168,7 +172,7 @@ class ProgramController extends Controller
                     ->where('id', $product->id)
                     ->sum(fn($d) => $d->pivot->quantity);
             }, 0);
-            $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+            $product->total = $product->quantity_buy * $product->price_sale;
             return $product;
         }, collect([]));
 

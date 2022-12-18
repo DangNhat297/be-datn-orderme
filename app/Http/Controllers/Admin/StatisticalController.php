@@ -182,7 +182,7 @@ class StatisticalController extends Controller
                     ->sum(fn($d) => $d->pivot->quantity);
             }, 0);
 
-            $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+            $product->total = $product->quantity_buy * ($product->pivot->price - $product->pivot->price_sale);
             return $product;
         });
         return $products;
@@ -268,8 +268,8 @@ class StatisticalController extends Controller
                 if (!$init->contains('id', $dish->id)) {
                     $dishes = $listDishes->filter(fn($val) => $dish->id == $val->id);
                     $dish->quantity_buy = $dishes->sum('quantity_buy');
-                    $dish->price = $dishes->first()->price;
-                    $dish->total = $dish->quantity_buy * ($dish->price - $dish->pivot->price_sale);
+                    $dish->price = $dishes->first()->price ;
+                    $dish->total = $dish->quantity_buy * ($dish->pivot->price - $dish->pivot->price_sale);
                     return $init->push($dish);
                 }
                 return $init;
@@ -447,7 +447,7 @@ class StatisticalController extends Controller
      */
     function flashSale_product_statistics(Request $request)
     {
-        $pageSize = $request->page_size ?: PAGE_SIZE_DEFAULT;
+        $pageSize = $request->limit ?: PAGE_SIZE_DEFAULT;
         $flashSales = $this->program->newQuery()
             ->where('status', ENABLE)
             ->with('dishes')
@@ -459,15 +459,18 @@ class StatisticalController extends Controller
 
             $orders = $this->orders
                 ->newQuery()
-                ->whereBetween('created_at', [$request->start_date ?? $flash_sale->start_date, $request->end_date ?? $flash_sale->end_date])
+                ->whereBetween('created_at', [ $flash_sale->start_date,$flash_sale->end_date])
                 ->with('dishes')
                 ->get();
 
             $dishes = $orders->reduce(fn($init, $order) => $init->merge($order->dishes), collect([]))
-                ->transform(fn($p) => $p->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']))
+                ->transform(function($dish) {
+                    $dish->makeHidden(['pivot', 'created_at', 'updated_at', 'slug', "description", "content", 'quantity', 'category_id', 'status']);
+                    $dish->price = $dish->pivot->price - $dish->pivot->price_sale;
+                    return $dish;
+                })
                 ->unique('id')
                 ->values();
-
 
             $flash_sale->dish_in_flashsale =
                 $dishes->transform(function ($product) use ($orders) {
@@ -476,11 +479,11 @@ class StatisticalController extends Controller
                             ->where('id', $product->id)
                             ->sum(fn($d) => $d->pivot->quantity);
                     }, 0);
-                    $product->total = $product->quantity_buy * ($product->price - $product->pivot->price_sale);
+
+                    $product->total = $product->quantity_buy * $product->price ;
                     return $product;
                 }, collect([]));
 //                  $dishes->filter(fn ($dish) => $flash_sale->dishes->contains('id', $dish->id));
-
             $flash_sale->total_flashSale = $flash_sale->dish_in_flashsale->sum('total');
             return $flash_sale;
         });

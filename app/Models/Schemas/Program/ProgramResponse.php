@@ -91,4 +91,22 @@ class ProgramResponse
      * @var string
      */
     public $updated_at;
+
+    /**
+     * @OA\Property(
+     *     type="array",
+     *     @OA\Items(ref="#/components/schemas/DishItemFlashsale")
+     * )
+     *
+     * @var array
+     */
+    public $dishes_flashSale;
+
+
+    /**
+     * @OA\Property()
+     *
+     * @var integer
+     */
+    public $total_flashSale;
 }

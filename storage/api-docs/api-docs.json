@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000/api/v1",
+            "url": " http://localhost:8000/api/v1/",
             "description": "Order Me API"
         }
     ],
@@ -2641,7 +2641,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/OrderUpdate"
+                                "$ref": "#/components/schemas/OrderUpdateClient"
                             }
                         }
                     }
@@ -3858,6 +3858,19 @@
                 },
                 "type": "object"
             },
+            "OrderUpdateClient": {
+                "title": "Order Request",
+                "description": "Order model",
+                "properties": {
+                    "phone": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "ProgramCreate": {
                 "properties": {
                     "title": {
@@ -3927,6 +3940,15 @@
                     },
                     "updated_at": {
                         "type": "string"
+                    },
+                    "dishes_flashSale": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DishItemFlashsale"
+                        }
+                    },
+                    "total_flashSale": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -4076,6 +4098,9 @@
                         "type": "string"
                     },
                     "price": {
+                        "type": "integer"
+                    },
+                    "price_sale": {
                         "type": "integer"
                     },
                     "image": {
