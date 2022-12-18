@@ -149,6 +149,7 @@ class ProgramController extends Controller
     {
         $program = $this->program
             ->newQuery()
+            ->with('dishes')
             ->findOrFail($id);
 
         $orders = $this->orders
