@@ -56,6 +56,18 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFindByDate(Builder $query, Request $request): Builder
+    {
+        if (!$request->start_date && !$request->end_date) return $query;
+        $startDate = convert_date($request->start_date);
+        $endDate = convert_end_date($request->end_date);
+        $query->whereBetween('start_date', [$startDate, $endDate]);
+
+        return $query;
+    }
+
+
+
     public function scopeFindByStatus($query, $request): Builder
     {
         if ($status = $request->status) {

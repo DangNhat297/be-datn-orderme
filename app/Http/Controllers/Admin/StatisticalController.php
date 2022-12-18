@@ -450,7 +450,7 @@ class StatisticalController extends Controller
         $pageSize = $request->limit ?: PAGE_SIZE_DEFAULT;
         $flashSales = $this->program->newQuery()
             ->where('status', ENABLE)
-            ->findByDateRange($request)
+            ->findByDate($request)
             ->with('dishes')
             ->paginate($pageSize);
 
