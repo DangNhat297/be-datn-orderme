@@ -14,13 +14,12 @@ class Program extends BaseModel
         'banner',
         'description',
         'status',
-        'discount_percent',
         'start_date',
         'end_date',
     ];
 
     public function dishes(): BelongsToMany
     {
-        return $this->belongsToMany(Dishes::class, 'flash_sales', 'program_id', 'dish_id');
+        return $this->belongsToMany(Dishes::class, 'flash_sales', 'program_id', 'dish_id')->withPivot('discount_percent');
     }
 }

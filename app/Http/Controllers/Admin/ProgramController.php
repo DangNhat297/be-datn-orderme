@@ -94,12 +94,11 @@ class ProgramController extends Controller
             'banner',
             'description',
             'status',
-            'discount_percent',
             'start_date',
             'end_date',
         ]);
 
-        $dishesId = $request->dish_ids;
+        $dishesId = collect($request->dish_ids)->keyBy('dish_id');
 
         $program = $this->program
             ->newQuery()
@@ -111,7 +110,6 @@ class ProgramController extends Controller
 
         $program->dishes->transform(function ($dish) {
             $dish->makeHidden([
-                'pivot',
                 'created_at',
                 'updated_at'
             ]);
@@ -255,20 +253,18 @@ class ProgramController extends Controller
             'banner',
             'description',
             'status',
-            'discount_percent',
             'start_date',
             'end_date',
         ]);
 
         $program->update($data);
-        $dishIds = $request->dish_ids;
+        $dishIds = collect($request->dish_ids)->keyBy('dish_id');
         $program->dishes()->sync($dishIds);
 
         $program->load('dishes');
 
         $program->dishes->transform(function ($dish) {
             $dish->makeHidden([
-                'pivot',
                 'created_at',
                 'updated_at'
             ]);
