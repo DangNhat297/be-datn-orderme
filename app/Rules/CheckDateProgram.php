@@ -4,7 +4,6 @@ namespace App\Rules;
 
 use App\Models\Program;
 use Illuminate\Contracts\Validation\Rule;
-
 class CheckDateProgram implements Rule
 {
     /**
@@ -13,9 +12,9 @@ class CheckDateProgram implements Rule
      * @return void
      */
     public function __construct(
-    )
-    {
-        //
+        $id = null
+    ) {
+        $this->id = $id;
     }
 
     /**
@@ -28,9 +27,15 @@ class CheckDateProgram implements Rule
     public function passes($attribute, $value)
     {
         return !Program::query()
-                    ->where('start_date', '<=', $value)
+            ->when($this->id, function ($q) {
+                return $q->where('id', '<>', $this->id);
+            })
+            ->where(function ($q) use ($value, $attribute) {
+                return $q->where('start_date', '<=', $value)
                     ->where('end_date', '>=', $value)
-                    ->exists();
+                    ->orWhereBetween($attribute, [request('start_date'), request('end_date')]);
+            })
+            ->exists();
     }
 
     /**
