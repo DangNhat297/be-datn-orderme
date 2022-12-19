@@ -107,7 +107,7 @@ class DishesController extends Controller
             ->findOrderBy($request)
             ->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
 
-        $currentFlashSales = $this->program
+        $currentFlashSale = $this->program
             ->newQuery()
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -115,18 +115,18 @@ class DishesController extends Controller
             ->with('dishes')
             ->first();
 
-        $data->getCollection()->transform(function ($dish) use ($currentFlashSales) {
+        $data->getCollection()->transform(function ($dish) use ($currentFlashSale) {
             $dish->makeHidden(['created_at', 'updated_at', 'status']);
 
-            if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $dish->id)) {
-                $dish->price_sale = $dish->price - ($dish->price * ($currentFlashSales->discount_percent / 100));
+            if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $dish->id)) {
+                $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $dish->id)->first();
+                $dish->price_sale = $dish->price - ($dish->price * ($dishInFlashsale->pivot->discount_percent / 100));
             }
 
             return $dish;
         });
 
         return $this->sendSuccess($data);
-
     }
 
     /**
@@ -185,7 +185,7 @@ class DishesController extends Controller
             ->newQuery()
             ->findOrFail($id);
 
-        $currentFlashSales = $this->program
+        $currentFlashSale = $this->program
             ->newQuery()
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
@@ -193,8 +193,9 @@ class DishesController extends Controller
             ->with('dishes')
             ->first();
 
-        if (isset($currentFlashSales->dishes) && $currentFlashSales->dishes->contains('id', $item->id)) {
-            $item->price_sale = $item->price - ($item->price * ($currentFlashSales->discount_percent / 100));
+        if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $item->id)) {
+            $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $item->id)->first();
+            $item->price_sale = $item->price - ($item->price * ($dishInFlashsale->pivot->discount_percent / 100));
         }
 
         return $this->sendSuccess($item);
