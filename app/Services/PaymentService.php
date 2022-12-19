@@ -126,7 +126,10 @@ class PaymentService
                 $res['vnp_ResponseCode'] == '00'
                 && $res['vnp_TransactionStatus'] == '05'
             ) {
-                $order->update(['payment_status' => ORDER_PAYMENT_REFUND]);
+                $order->update([
+                    'payment_status' => ORDER_PAYMENT_REFUND,
+                    'status' => ORDER_CANCEL
+                ]);
                 return response()->json(['message' => 'Gửi yêu cầu hoàn tiền thành công']);
             }
 
