@@ -22,7 +22,8 @@ class OrderController extends Controller
         protected Dishes         $dish,
         protected Chat           $chatModel,
         protected PaymentService $paymentService,
-        protected Program        $program
+        protected Program        $program,
+        protected Room           $roomModel
     )
     {
     }
@@ -142,6 +143,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         $data = $request->only([
+            'name',
             'phone',
             'note',
             'location_id',
@@ -152,6 +154,16 @@ class OrderController extends Controller
             'payment_method',
             'payment_status'
         ]);
+
+        $userExitsInRoom = $this->roomModel->newQuery()
+            ->where('user_phone', $request->phone)
+            ->first();
+        if ($userExitsInRoom) {
+            $userExitsInRoom->update(['user_name' => $request->name]);
+        } else {
+            $data = ['user_phone' => $request->phone, 'user_name' => $request->name];
+            $this->roomModel->newQuery()->create($data);
+        }
 
         $dishOfOrder = collect($request->dishes)->keyBy('dish_id');
 
@@ -177,6 +189,48 @@ class OrderController extends Controller
         });
 
         return $res;
+    }
+
+    /**
+     * @OA\Put(
+     *      path="/admin/order/{id}",
+     *      operationId="updateOrderAdmin",
+     *      tags={"Order"},
+     *      summary="Update existing Order",
+     *      description="Returns updated location data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *       )
+     * )
+     */
+    public function update(Request $request, Order $order)
+    {
+        $order->update(['status' => $request->status]);
+
+
+        $order->logs()->create([
+            'status' => $request->status,
+            'change_by' => auth()->id ?? null
+        ]);
+
+        $this->newMessage($request->status, $order->phone, $order);
+
+        return $this->updateSuccess($order);
     }
 
     public function newMessage($status, $phoneUser, $order, $content = null)
@@ -248,48 +302,6 @@ class OrderController extends Controller
         });
 
         return $this->sendSuccess($order);
-    }
-
-    /**
-     * @OA\Put(
-     *      path="/admin/order/{id}",
-     *      operationId="updateOrderAdmin",
-     *      tags={"Order"},
-     *      summary="Update existing Order",
-     *      description="Returns updated location data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Order id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdate")
-     *      ),
-     *      @OA\Response(
-     *          response=202,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
-     *       )
-     * )
-     */
-    public function update(Request $request, Order $order)
-    {
-        $order->update(['status' => $request->status]);
-
-
-        $order->logs()->create([
-            'status' => $request->status,
-            'change_by' => auth()->id ?? null
-        ]);
-
-        $this->newMessage($request->status, $order->phone, $order);
-
-        return $this->updateSuccess($order);
     }
 
     /**

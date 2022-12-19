@@ -49,7 +49,7 @@ class ProgramCreate
     /**
      * @OA\Property(
      *     type="array",
-     *     @OA\Items(type="number")
+     *     @OA\Items(ref="#/components/schemas/ProgramDish")
      * )
      *
      * @var array

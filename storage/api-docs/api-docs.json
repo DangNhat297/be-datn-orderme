@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": " http://localhost:8000/api/v1/",
+            "url": "http://127.0.0.1:8000/api/v1",
             "description": "Order Me API"
         }
     ],
@@ -3891,7 +3891,7 @@
                     "dish_ids": {
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "$ref": "#/components/schemas/ProgramDish"
                         }
                     },
                     "banner": {
@@ -3899,6 +3899,17 @@
                     },
                     "status": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProgramDish": {
+                "properties": {
+                    "dish_id": {
+                        "type": "integer"
+                    },
+                    "discount_percent": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -3973,7 +3984,7 @@
                     "dish_ids": {
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "$ref": "#/components/schemas/ProgramDish"
                         }
                     },
                     "banner": {
@@ -4098,9 +4109,6 @@
                         "type": "string"
                     },
                     "price": {
-                        "type": "integer"
-                    },
-                    "price_sale": {
                         "type": "integer"
                     },
                     "image": {
