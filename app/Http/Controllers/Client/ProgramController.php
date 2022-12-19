@@ -41,6 +41,8 @@ class ProgramController extends Controller
                     'updated_at',
                     'created_at'
                 ]);
+
+                $dish->discount_percent = $dish->pivot->discount_percent;
                 
                 return $dish;
             });
@@ -79,6 +81,8 @@ class ProgramController extends Controller
                 'updated_at',
                 'created_at'
             ]);
+
+            $dish->discount_percent = $dish->pivot->discount_percent;
 
             return $dish;
         });
