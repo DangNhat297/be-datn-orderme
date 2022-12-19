@@ -48,5 +48,6 @@ class ProgramRequest extends FormRequest
         // }
 
         // return $rules;
+        return [];
     }
 }

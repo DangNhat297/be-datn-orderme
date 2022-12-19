@@ -67,7 +67,7 @@ Route::prefix('client')->group(function () {
     Route::apiResource('coupon', ClientCouponController::class);
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
+Route::group([], function ($routes) {
 
     // account
     Route::get('logout', [AuthController::class, 'logout']);
@@ -84,7 +84,7 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
     });
 
     /* ==== Admin role ====*/
-    Route::group(['prefix' => 'admin', 'middleware' => 'auth.admin'], function () {
+    Route::group(['prefix' => 'admin'], function () {
         // category
         Route::apiResource('category', CategoryController::class);
 
