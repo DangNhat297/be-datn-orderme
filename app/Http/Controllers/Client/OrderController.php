@@ -28,8 +28,7 @@ class OrderController extends Controller
         protected PaymentService $paymentService,
         protected Payment        $payment,
         protected Chat           $chatModel,
-    )
-    {
+    ) {
     }
 
     /**
@@ -126,6 +125,14 @@ class OrderController extends Controller
 
             $this->newMessage(1, $request->phone, $order);
 
+            collect($request->dishes)->each(function ($dish) use ($order){
+                $this->dish
+                    ->newQuery()
+                    ->where('id', $dish['dish_id'])
+                    ->first()
+                    ->decrement('quantity', $dish['quantity']);
+            });
+
             //log
             $order->logs()->create([
                 'status' => 1,
@@ -145,18 +152,18 @@ class OrderController extends Controller
 
     public function newMessage($status, $phoneUser, $order, $content = null)
     {
-        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
-        $phoneAdmin = '0987654321';
-        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
-        $msg = [
-            'content' => $content ?? $contentDefault,
-            'room_id' => $roomByCurrentUser->id,
-            'sender_phone' => $phoneAdmin,
-            'isSeen' => false
-        ];
-        $newMsg = $this->chatModel->newQuery()->create($msg);
-        event(new ChatMessageEvent($newMsg));
-        return true;
+        // $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        // $phoneAdmin = '0987654321';
+        // $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
+        // $msg = [
+        //     'content' => $content ?? $contentDefault,
+        //     'room_id' => $roomByCurrentUser->id,
+        //     'sender_phone' => $phoneAdmin,
+        //     'isSeen' => false
+        // ];
+        // $newMsg = $this->chatModel->newQuery()->create($msg);
+        // event(new ChatMessageEvent($newMsg));
+        // return true;
     }
 
     /**

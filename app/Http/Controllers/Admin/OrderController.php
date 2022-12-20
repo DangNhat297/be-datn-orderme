@@ -167,7 +167,7 @@ class OrderController extends Controller
 
         $dishOfOrder = collect($request->dishes)->keyBy('dish_id');
 
-        $res = DB::transaction(function () use ($data, $dishOfOrder) {
+        $res = DB::transaction(function () use ($data, $dishOfOrder, $request) {
             $order = $this->order
                 ->newQuery()
                 ->create($data);
@@ -182,6 +182,14 @@ class OrderController extends Controller
                 'status' => 1,
                 'change_by' => auth()->id ?? null
             ]);
+
+            collect($request->dishes)->each(function ($dish) use ($order){
+                $this->dish
+                    ->newQuery()
+                    ->where('id', $dish['dish_id'])
+                    ->first()
+                    ->decrement('quantity', $dish['quantity']);
+            });
 
             $order->coupon()->decrement('quantity');
 
