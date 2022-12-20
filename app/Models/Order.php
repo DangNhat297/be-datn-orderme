@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
 
 class Order extends BaseModel
 {
@@ -98,5 +100,15 @@ class Order extends BaseModel
     public function last_payment()
     {
         return $this->payments()->latest()->first();
+    }
+
+    public function scopeFindByCode(Builder $query, Request $request): Builder
+    {
+        if ($search = $request->keyword) {
+            return $query->where('code', 'like', '%' . $search . '%')
+                ->orWhere('phone', 'like', '%' . $search . '%');
+        }
+
+        return $query;
     }
 }
