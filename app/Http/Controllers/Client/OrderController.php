@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Events\Chat\ChatMessageEvent;
+use App\Events\Notification\OrderNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
 use App\Models\Chat;
 use App\Models\Dishes;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Payment;
-use App\Models\Room;
+use App\Models\User;
+use App\Models\UserNotification;
 use App\Services\PaymentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -21,14 +23,18 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     public function __construct(
-        protected Order          $order,
-        protected Dishes         $dish,
-        protected Cart           $cart,
-        protected UserService    $userService,
-        protected PaymentService $paymentService,
-        protected Payment        $payment,
-        protected Chat           $chatModel,
-    ) {
+        protected Order            $order,
+        protected Dishes           $dish,
+        protected Cart             $cart,
+        protected UserService      $userService,
+        protected PaymentService   $paymentService,
+        protected Payment          $payment,
+        protected Chat             $chatModel,
+        protected Notification     $notification,
+        protected User             $user,
+        protected UserNotification $userNotification,
+    )
+    {
     }
 
     /**
@@ -125,7 +131,26 @@ class OrderController extends Controller
 
             $this->newMessage(1, $request->phone, $order);
 
-            collect($request->dishes)->each(function ($dish) use ($order){
+
+            $newNotification = [
+                'user_phone' => $request->phone,
+                'message_template' => 'đã đặt hàng vào lúc',
+                'redirect_url' => env('ADMIN_URL') . '/order/' . $order->id,
+                'type' => 'order',
+            ];
+            $notice = $this->notification->newQuery()->create($newNotification);
+            $listAdmin = $this->user->newQuery()->where('role', 'admin')->get()->pluck('id');
+            $listAdmin->each(function ($item) use ($notice) {
+                $this->userNotification->newQuery()->create([
+                    'notification_id' => $notice->id,
+                    'recipient_id' => $item
+                ]);
+            });
+
+            event(new OrderNotification());
+
+
+            collect($request->dishes)->each(function ($dish) use ($order) {
                 $this->dish
                     ->newQuery()
                     ->where('id', $dish['dish_id'])
@@ -152,19 +177,20 @@ class OrderController extends Controller
 
     public function newMessage($status, $phoneUser, $order, $content = null)
     {
-        // $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
-        // $phoneAdmin = '0987654321';
-        // $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
-        // $msg = [
-        //     'content' => $content ?? $contentDefault,
-        //     'room_id' => $roomByCurrentUser->id,
-        //     'sender_phone' => $phoneAdmin,
-        //     'isSeen' => false
-        // ];
-        // $newMsg = $this->chatModel->newQuery()->create($msg);
-        // event(new ChatMessageEvent($newMsg));
-        // return true;
+//        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+//        $phoneAdmin = '0987654321';
+//        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
+//        $msg = [
+//            'content' => $content ?? $contentDefault,
+//            'room_id' => $roomByCurrentUser->id,
+//            'sender_phone' => $phoneAdmin,
+//            'isSeen' => false
+//        ];
+//        $newMsg = $this->chatModel->newQuery()->create($msg);
+//        event(new ChatMessageEvent($newMsg));
+//        return true;
     }
+
 
     /**
      * @OA\Get(

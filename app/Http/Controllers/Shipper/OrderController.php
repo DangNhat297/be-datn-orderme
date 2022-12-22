@@ -182,7 +182,9 @@ class OrderController extends Controller
 
     public function newMessage($status, $phoneUser, $order, $content = null)
     {
-        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        $time = $status == 4 && " trong " . $order->location()->distance . " phút nữa sẽ được giao đến bạn !";
+
+        $contentDefault = "Dự kiến, món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status] . $time;
         $phoneAdmin = '0987654321';
         $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
         $msg = [

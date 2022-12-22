@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DishesController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController as AdminOrder;
 use App\Http\Controllers\Admin\ProgramController as AdminProgramController;
 use App\Http\Controllers\Admin\SettingController;
@@ -123,7 +124,8 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
             Route::get('flash-sale', [StatisticalController::class, 'flashSale_product_statistics']);
         });
 
-
+        //notification
+        Route::apiResource('notification', NotificationController::class);
     });
 });
 

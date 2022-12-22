@@ -818,6 +818,28 @@
                 }
             }
         },
+        "/admin/notification": {
+            "get": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Get list of notification",
+                "description": "Returns list of notification",
+                "operationId": "getNotifies",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserNotificationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/order": {
             "get": {
                 "tags": [
@@ -3661,6 +3683,62 @@
                     },
                     "change_by": {
                         "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "NotificationResponse": {
+                "title": "Notification Request",
+                "description": "Notification model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "message_template": {
+                        "type": "string"
+                    },
+                    "redirect_url": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UserResponse"
+                        }
+                    },
+                    "actor": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserNotificationResponse": {
+                "title": "UserNotification Response",
+                "description": "Notification model",
+                "properties": {
+                    "isSeen": {
+                        "type": "boolean"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserResponse"
+                    },
+                    "notification": {
+                        "$ref": "#/components/schemas/NotificationResponse"
                     },
                     "created_at": {
                         "type": "string"
