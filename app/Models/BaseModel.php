@@ -184,4 +184,12 @@ class BaseModel extends Model
         return $query;
     }
 
+    public function scopeFetchTypeData(Builder $query, Request $request) 
+    {
+        if ($request->paginate) {
+            return $query->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
+        }
+
+        return $query->all();
+    }
 }
