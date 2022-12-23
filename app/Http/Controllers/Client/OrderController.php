@@ -262,9 +262,14 @@ class OrderController extends Controller
         //
     }
 
-    public function payment(Request $request, Order $order)
+    public function payment(Request $request, $order)
     {
-        return $this->paymentService->createVNP($order->code, $order->total);
+        $order = $this->order
+            ->newQuery()
+            ->where('code', $order)
+            ->firstOrFail();
+
+        return $this->paymentService->createVNP($order->code, $order->total, $request);
     }
 
     public function returnPaymentVNP(Request $request)
