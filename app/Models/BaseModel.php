@@ -190,6 +190,6 @@ class BaseModel extends Model
             return $query->paginate($request->limit ?? PAGE_SIZE_DEFAULT);
         }
 
-        return $query->all();
+        return $query->get();
     }
 }
