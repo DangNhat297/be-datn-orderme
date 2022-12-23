@@ -116,7 +116,7 @@ class DishesController extends Controller
             ->first();
 
         $data->getCollection()->transform(function ($dish) use ($currentFlashSale) {
-            $dish->makeHidden(['created_at', 'updated_at', 'status']);
+            $dish->makeHidden(['created_at', 'updated_at']);
 
             if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $dish->id)) {
                 $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $dish->id)->first();
