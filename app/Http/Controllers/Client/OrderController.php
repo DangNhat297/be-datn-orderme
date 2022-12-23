@@ -167,8 +167,15 @@ class OrderController extends Controller
             return $order;
         });
 
-        if (!is_null($res) && $request->payment_method == 2)
-            return $this->paymentService->createVNP($res->code, $res->total, $request);
+        if (!is_null($res) && $request->payment_method == 2) {
+            $vnpay = $this->paymentService->createVNP($res->code, $res->total, $request);
+
+            $res->update([
+                'payment_url' => $vnpay['vnp_url']
+            ]);
+
+            return $vnpay;
+        }
 
         return $res;
     }
@@ -282,7 +289,10 @@ class OrderController extends Controller
         if ($order->payment_status == 0) {
             if ($order->total == ($request->vnp_Amount / 100)) {
                 if ($request->vnp_ResponseCode == '00' || $request->vnp_TransactionStatus == '00') {
-                    $order->update(['payment_status' => ORDER_PAYMENT_SUCCESS]);
+                    $order->update([
+                        'payment_status' => ORDER_PAYMENT_SUCCESS,
+                        'payment_url' => null
+                    ]);
                     $res = [
                         'RspCode' => '00',
                         'Message' => 'Thanh toán thành công'
