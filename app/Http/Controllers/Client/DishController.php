@@ -110,16 +110,29 @@ class DishController extends Controller
             ->with('dishes')
             ->first();
 
-        $data->getCollection()->transform(function ($dish) use ($currentFlashSale) {
-            $dish->makeHidden(['created_at', 'updated_at', 'status']);
+        if ($request->paginate) {
+            $data->getCollection()->transform(function ($dish) use ($currentFlashSale) {
+                $dish->makeHidden(['created_at', 'updated_at', 'status']);
 
-            if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $dish->id)) {
-                $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $dish->id)->first();
-                $dish->price_sale = $dish->price - ($dish->price * ($dishInFlashsale->pivot->discount_percent / 100));
-            }
+                if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $dish->id)) {
+                    $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $dish->id)->first();
+                    $dish->price_sale = $dish->price - ($dish->price * ($dishInFlashsale->pivot->discount_percent / 100));
+                }
 
-            return $dish;
-        });
+                return $dish;
+            });
+        } else {
+            $data->transform(function ($dish) use ($currentFlashSale) {
+                $dish->makeHidden(['created_at', 'updated_at', 'status']);
+
+                if (isset($currentFlashSale->dishes) && $currentFlashSale->dishes->contains('id', $dish->id)) {
+                    $dishInFlashsale = $currentFlashSale->dishes()->where('dish_id', $dish->id)->first();
+                    $dish->price_sale = $dish->price - ($dish->price * ($dishInFlashsale->pivot->discount_percent / 100));
+                }
+
+                return $dish;
+            });
+        }
 
         return $this->sendSuccess($data);
     }
