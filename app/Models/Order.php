@@ -26,7 +26,8 @@ class Order extends BaseModel
         'price_none_sale',
         'coupon_id',
         'payment_method',
-        'payment_status'
+        'payment_status',
+        'payment_url'
     ];
 
     public static function booted()

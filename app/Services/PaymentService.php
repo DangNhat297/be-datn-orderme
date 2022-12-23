@@ -62,9 +62,11 @@ class PaymentService
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
 
-        $returnData = array(
-            'code' => '00', 'message' => 'success', 'vnp_url' => $vnp_Url
-        );
+        $returnData = [
+            'code' => '00',
+            'message' => 'success',
+            'vnp_url' => $vnp_Url
+        ];
 
         return $returnData;
     }
