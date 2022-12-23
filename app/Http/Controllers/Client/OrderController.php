@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Events\Notification\OrderNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
@@ -147,8 +146,7 @@ class OrderController extends Controller
                 ]);
             });
 
-            event(new OrderNotification());
-
+//            event(new OrderNotification());
 
             collect($request->dishes)->each(function ($dish) use ($order) {
                 $this->dish
