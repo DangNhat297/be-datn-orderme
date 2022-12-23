@@ -66,7 +66,7 @@ class PaymentService
             'code' => '00', 'message' => 'success', 'vnp_url' => $vnp_Url
         );
 
-        return response()->json($returnData);
+        return $returnData;
     }
 
     public function refundRequest($order)
