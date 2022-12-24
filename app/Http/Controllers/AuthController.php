@@ -59,7 +59,7 @@ class AuthController extends Controller
         $user = $this->user->newQuery()->where('phone', $request->phone)->first();
         if ($user) {
             return response()->json([
-                'message' => 'Phone number is ready exits'
+                'message' => 'Số điện thoại này đã tồn tại'
             ], 500);
         } else {
             $user = $this->user->fill($request->except('password'));
@@ -123,33 +123,39 @@ class AuthController extends Controller
             ->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Phone number or password incorrect !'
+                'message' => 'Số điện thoại hoặc mật khẩu sai !'
             ], 500);
         } else {
 //            $token = JWTAuth::fromUser($user);
 //            return $this->respondWithToken($token);
+            if ($user->status === 1) {
+                $user->tokens()->delete();
+                $token = $user->createToken('token')->plainTextToken;
 
-            $user->tokens()->delete();
-            $token = $user->createToken('token')->plainTextToken;
+                $cookie = cookie(
+                    env('AUTH_COOKIE_NAME'),
+                    $token,
+                    strtotime("+6 months"),
+                    '/',
+                    env('SESSION_DOMAIN'),
+                    true,
+                    true,
+                    '',
+                    'none',
+                );
 
-            $cookie = cookie(
-                env('AUTH_COOKIE_NAME'),
-                $token,
-                strtotime("+6 months"),
-                '/',
-                env('SESSION_DOMAIN'),
-                true,
-                true,
-                '',
-                'none',
-            );
+                $response = [
+                    'user' => $user,
+                    'token' => $token,
+                ];
 
-            $response = [
-                'user' => $user,
-                'token' => $token,
-            ];
+                return response($response, 201)->withCookie($cookie);
+            } else {
+                return response()->json([
+                    'message' => 'Tài khoản của bạn đã bị khóa !'
+                ], 500);
+            }
 
-            return response($response, 201)->withCookie($cookie);
         }
     }
 

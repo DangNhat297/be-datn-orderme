@@ -96,14 +96,35 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
+     * @OA\Get(
+     *      path="/admin/user/{id}",
+     *      operationId="getUserById",
+     *      tags={"User"},
+     *      summary="Get user information",
+     *      description="Returns user data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *       ),
+     * )
      */
     public function show($id)
     {
-        //
+        $item = $this->userModel
+            ->newQuery()
+            ->findOrFail($id);
+        return response()->json($item, 200);
+
     }
 
     /**
