@@ -108,6 +108,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         $data = $request->only([
+            'name',
             'phone',
             'note',
             'location_id',
