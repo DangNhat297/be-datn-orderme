@@ -13,6 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('users_notifications', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('recipient_id');
             $table->unsignedBigInteger('notification_id');
             $table->boolean('isSeen')->default(false);
@@ -27,6 +28,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('users_notifications');
     }
 };
