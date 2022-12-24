@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
@@ -11,6 +12,7 @@ use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Payment;
+use App\Models\Room;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Services\PaymentService;
@@ -182,18 +184,18 @@ class OrderController extends Controller
 
     public function newMessage($status, $phoneUser, $order, $content = null)
     {
-//        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
-//        $phoneAdmin = '0987654321';
-//        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
-//        $msg = [
-//            'content' => $content ?? $contentDefault,
-//            'room_id' => $roomByCurrentUser->id,
-//            'sender_phone' => $phoneAdmin,
-//            'isSeen' => false
-//        ];
-//        $newMsg = $this->chatModel->newQuery()->create($msg);
-//        event(new ChatMessageEvent($newMsg));
-//        return true;
+        $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
+        $phoneAdmin = '0987654321';
+        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
+        $msg = [
+            'content' => $content ?? $contentDefault,
+            'room_id' => $roomByCurrentUser->id,
+            'sender_phone' => $phoneAdmin,
+            'isSeen' => false
+        ];
+        $newMsg = $this->chatModel->newQuery()->create($msg);
+        event(new ChatMessageEvent($newMsg));
+        return true;
     }
 
     /**

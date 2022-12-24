@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Chief;
 
 use App\Events\Chat\ChatMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Chat;
 use App\Models\Order;
 use App\Models\OrderLog;
 use App\Models\Room;
@@ -15,6 +16,7 @@ class OrderController extends Controller
 {
     public function __construct(
         protected Order $order,
+        protected Chat  $chatModel,
     )
     {
     }
