@@ -36,6 +36,13 @@ class OrderResponse
      *
      * @var string
      */
+    public $name;
+
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $phone;
 
     /**

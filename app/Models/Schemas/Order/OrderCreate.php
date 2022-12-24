@@ -24,6 +24,12 @@ class OrderCreate
      *
      * @var string
      */
+    public $name;
+    /**
+     * @OA\Property()
+     *
+     * @var string
+     */
     public $note;
     /**
      * @OA\Property()

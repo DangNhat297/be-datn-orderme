@@ -3799,6 +3799,9 @@
                     "phone": {
                         "type": "string"
                     },
+                    "name": {
+                        "type": "string"
+                    },
                     "note": {
                         "type": "string"
                     },
@@ -3928,6 +3931,9 @@
                         "type": "integer"
                     },
                     "code": {
+                        "type": "string"
+                    },
+                    "name": {
                         "type": "string"
                     },
                     "phone": {
