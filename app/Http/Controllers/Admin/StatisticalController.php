@@ -118,14 +118,9 @@ class StatisticalController extends Controller
         $listDay = array();
         $listData = [];
 
-        $d = getdate();
-        $year = $request->year ?? $d['year'];
-        $month = $request->month ?? $d['mon'];
-        $day = $request->month ?? $d['mday'];
-        $today = "$year-$month-$day";
         //today
         if ($duration == 0) {
-            $d = date("Y-m-d", strtotime($today));
+            $d = date("Y-m-d", strtotime('today'));
             $listDay[] = $d;
         } else {
             for ($i = 0; $i <= $column; $i++) {
@@ -188,6 +183,7 @@ class StatisticalController extends Controller
         return $products;
     }
 
+
     function byWeek($request)
     {
         $duration = $request->duration ?? '-2';
@@ -195,14 +191,23 @@ class StatisticalController extends Controller
         $countColumn = $request->duration ? $column : 2;
         $listWeekday = array();
         $listData = [];
-        for ($i = 0; $i < $countColumn; $i++) {
-            $d = date("Y-m-d", strtotime("$duration week + $i week"));
-            $listWeekday[] = $d;
+
+        if($duration==0){
+                $d = date("Y-m-d", strtotime("this week"));
+                $listWeekday[] = $d;
+        }else{
+            for ($i = 0; $i < $countColumn; $i++) {
+                $d = date("Y-m-d", strtotime("$duration week + $i week"));
+                $listWeekday[] = $d;
+            }
         }
+
+
         foreach ($listWeekday as $week) {
             $totalWeek = 0;
             $listDishes = [];
             $datetime = date("Y-m-d", strtotime($week . " + 7 day"));
+
             $Order = $this->orders->newQuery()->with('dishes')->whereBetween('created_at', [$week, $datetime])->get();
             foreach ($Order as $row_orrder) {
                 $listDishes = $this->getProductStatistic($Order);
@@ -230,13 +235,13 @@ class StatisticalController extends Controller
         $listDay = array();
         $d = getdate();
         $year = $request->year ?? $d['year'];
-        $month = $request->month ?? $d['mon'];
-        $thisMonth = "$year-$month";
+//        $month = $request->month ?? $d['mon'];
+//        $thisMonth = "$year-$month";
         if ($duration == 0) {
-            $d = date('Y-m', strtotime($thisMonth));
+            $d = date('Y-m', strtotime('this months'));
             $listMonth[] = $d;
         } else {
-            for ($i = 0; $i < $countColumn; $i++) {
+            for ($i = 0; $i <= $countColumn; $i++) {
                 $d = date('Y-m', strtotime("$duration months + $i months "));
                 $listMonth[] = $d;
             }
