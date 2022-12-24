@@ -64,6 +64,7 @@ class AuthController extends Controller
         } else {
             $user = $this->user->fill($request->except('password'));
             $user->password = Hash::make($request->password);
+            $user->status = ENABLE;
             $user->save();
 
             $token = $user->createToken('token')->plainTextToken;
@@ -128,8 +129,8 @@ class AuthController extends Controller
         } else {
 //            $token = JWTAuth::fromUser($user);
 //            return $this->respondWithToken($token);
-            if ($user->status === 1) {
-                $user->tokens()->delete();
+            $user->tokens()->delete();
+            if ($user->status == ENABLE) {
                 $token = $user->createToken('token')->plainTextToken;
 
                 $cookie = cookie(
