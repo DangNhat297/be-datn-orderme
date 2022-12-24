@@ -77,7 +77,7 @@ class OrderResponse
      *
      * @var string
      */
-    public $vnp_url;
+    public $payment_url;
 
     /**
      * @OA\Property()

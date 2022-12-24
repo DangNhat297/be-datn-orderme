@@ -1575,6 +1575,49 @@
                 }
             }
         },
+        "/admin/user/{id}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update existing User",
+                "description": "Returns updated User data",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "tags": [
@@ -3902,7 +3945,7 @@
                     "user": {
                         "$ref": "#/components/schemas/UserResponse"
                     },
-                    "vnp_url": {
+                    "payment_url": {
                         "type": "string"
                     },
                     "location_detail": {
@@ -4376,6 +4419,22 @@
                         "type": "string"
                     },
                     "id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "UserUpdate": {
+                "title": "User Update Request",
+                "description": "User Update request body data",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "role": {
+                        "type": "string"
+                    },
+                    "status": {
                         "type": "integer"
                     }
                 },

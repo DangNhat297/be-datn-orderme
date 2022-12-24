@@ -86,6 +86,9 @@ class OrderController extends Controller
             ->findByMultiple($request)
             ->findByStatus($request)
             ->findOrderBy($request)
+            ->whereHas('location', function ($q) {
+                return $q->where('distance', '!=', 0);
+            })
             ->whereIn('status', [ORDER_WAIT_FOR_SHIPPING, ORDER_SHIPPING, ORDER_COMPLETE])
             ->paginate($pageSize);
 

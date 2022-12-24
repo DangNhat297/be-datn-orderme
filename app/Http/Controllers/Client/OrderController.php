@@ -146,7 +146,7 @@ class OrderController extends Controller
                 ]);
             });
 
-//            event(new OrderNotification());
+//          event(new OrderNotification());
 
             collect($request->dishes)->each(function ($dish) use ($order) {
                 $this->dish
@@ -196,6 +196,45 @@ class OrderController extends Controller
 //        return true;
     }
 
+    /**
+     * @OA\Put(
+     *      path="/client/order/{id}",
+     *      operationId="updateOrderClient",
+     *      tags={"Order Client"},
+     *      summary="Update existing Order",
+     *      description="Returns updated location data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Order id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdateClient")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
+     *       )
+     * )
+     */
+    public function update(Request $request, Order $order)
+    {
+        $order->update(['status' => 0]);
+
+        $order->logs()->create([
+            'status' => 0,
+            'change_by' => $request->phone
+        ]);
+        $content = "Ôi thật là tiếc. Món ngon " . $request->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
+        $this->newMessage(0, $request->phone, $request, $content);
+        return $this->updateSuccess($order);
+    }
 
     /**
      * @OA\Get(
@@ -279,6 +318,8 @@ class OrderController extends Controller
         return $this->paymentService->createVNP($order->code, $order->total, $request);
     }
 
+    // ipn url, after payment, save to db
+
     public function returnPaymentVNP(Request $request)
     {
         $order = $this->order
@@ -330,47 +371,5 @@ class OrderController extends Controller
         }
 
         return $res;
-    }
-
-    // ipn url, after payment, save to db
-
-    /**
-     * @OA\Put(
-     *      path="/client/order/{id}",
-     *      operationId="updateOrderClient",
-     *      tags={"Order Client"},
-     *      summary="Update existing Order",
-     *      description="Returns updated location data",
-     *      @OA\Parameter(
-     *          name="id",
-     *          description="Order id",
-     *          required=true,
-     *          in="path",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *      ),
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/OrderUpdateClient")
-     *      ),
-     *      @OA\Response(
-     *          response=202,
-     *          description="Successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/OrderResponse")
-     *       )
-     * )
-     */
-    public function update(Request $request, Order $order)
-    {
-        $order->update(['status' => 0]);
-
-        $order->logs()->create([
-            'status' => 0,
-            'change_by' => $request->phone
-        ]);
-        $content = "Ôi thật là tiếc. Món ngon " . $request->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
-        $this->newMessage(0, $request->phone, $request, $content);
-        return $this->updateSuccess($order);
     }
 }

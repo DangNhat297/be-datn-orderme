@@ -85,16 +85,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
@@ -128,13 +118,56 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *      path="/admin/user/{id}",
+     *      operationId="updateUser",
+     *      tags={"User"},
+     *      summary="Update existing User",
+     *      description="Returns updated User data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/UserUpdate")
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *       )
+     * )
+     */
+    public function update(Request $request, User $user)
+    {
+        $listRole = [ROLE_CHIEF, ROLE_SHIPPER, ROLE_USER];
+        $role = $request->role;
+        if ($role) {
+            if (in_array($role, $listRole)) {
+                $user->update(['role' => $role, 'status' => $request->status]);
+
+                return response()->json($user, 202);
+            }
+            return response()->json([
+                'message' => 'You can update role to chief, shipper and user'
+            ], 500);
+        }
+        $user->update(['status' => $request->status]);
+        return response()->json($user, 202);
+    }
+
+    /**
+     * Show the form for creating a new resource.
      *
-     * @param Request $request
-     * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function create()
     {
         //
     }

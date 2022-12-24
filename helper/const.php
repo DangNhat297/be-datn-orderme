@@ -5,7 +5,7 @@ const PAGE_SIZE_DEFAULT = 5;
 const ORDER_CANCEL = 0; // đơn hàng hủy
 
 const ORDER_PENDING = 1; // chờ xác nhận
- 
+
 const ORDER_COOKING = 2; // đang nấu
 
 const ORDER_WAIT_FOR_SHIPPING = 3; // đợi ship
@@ -31,3 +31,8 @@ const DISABLE = 0;
 const DISCOUNT_PERCENT = 1;
 
 const DISCOUNT_PRICE = 2;
+
+const ROLE_ADMIN = "admin";
+const ROLE_USER = "user";
+const ROLE_SHIPPER = "shipper";
+const ROLE_CHIEF = "chief";
