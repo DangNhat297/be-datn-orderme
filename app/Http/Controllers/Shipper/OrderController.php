@@ -99,6 +99,8 @@ class OrderController extends Controller
 
                 return $log;
             });
+
+            return $order;
         });
 
         return response()->json($orders, 200);
