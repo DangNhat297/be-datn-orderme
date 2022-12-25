@@ -33,11 +33,11 @@ class LocationCreateRequest extends FormRequest
 
     protected  function failedValidation(Validator $validator)
     {
-        $json = [
+
+        $response = response()->json([
             'result' => false,
             'message' => $validator->errors()->all()
-        ];
-        $response = response( $json );
+        ],402);
         throw new ValidationException($validator, $response);
     }
 
