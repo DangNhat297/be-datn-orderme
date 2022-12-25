@@ -85,12 +85,20 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'user', 'dishes'])
+            ->with(['location', 'user', 'dishes', 'logs'])
             ->findByMultiple($request)
             ->findByStatus($request)
             ->findOrderBy($request)
             ->whereIn('status', [ORDER_PENDING, ORDER_COOKING, ORDER_WAIT_FOR_SHIPPING])
             ->paginate($pageSize);
+
+        $orders->getCollection()->transform(function ($order) {
+            $order->logs->transform(function ($log) {
+                $log->title = OrderLog::textLog[$log->status];
+
+                return $log;
+            });
+        });
 
         return response()->json($orders, 200);
     }

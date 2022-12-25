@@ -16,8 +16,7 @@ class OrderController extends Controller
     public function __construct(
         protected Order $order,
         protected Chat  $chatModel,
-    )
-    {
+    ) {
     }
 
     /**
@@ -84,7 +83,7 @@ class OrderController extends Controller
 
         $orders = $this->order
             ->newQuery()
-            ->with(['location', 'user', 'dishes'])
+            ->with(['location', 'user', 'dishes', 'logs'])
             ->findByMultiple($request)
             ->findByStatus($request)
             ->findOrderBy($request)
@@ -93,6 +92,14 @@ class OrderController extends Controller
             })
             ->whereIn('status', [ORDER_WAIT_FOR_SHIPPING, ORDER_SHIPPING, ORDER_COMPLETE])
             ->paginate($pageSize);
+
+        $orders->getCollection()->transform(function ($order) {
+            $order->logs->transform(function ($log) {
+                $log->title = OrderLog::textLog[$log->status];
+
+                return $log;
+            });
+        });
 
         return response()->json($orders, 200);
     }
@@ -182,7 +189,6 @@ class OrderController extends Controller
         return response()->json([
             'message' => 'You can update status to shipping or complete'
         ], 500);
-
     }
 
     public function newMessage($status, $phoneUser, $order, $content = null)
