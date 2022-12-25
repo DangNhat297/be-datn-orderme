@@ -826,6 +826,44 @@
                 "summary": "Get list of notification",
                 "description": "Returns list of notification",
                 "operationId": "getNotifies",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "start date of order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "end date of order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page size ",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -833,6 +871,61 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserNotificationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/multiple-seen-notice": {
+            "put": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Update existing Notification",
+                "description": "Returns updated Notification data",
+                "operationId": "seenMultipleNotification",
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotificationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/notification/{id}": {
+            "put": {
+                "tags": [
+                    "Notification"
+                ],
+                "summary": "Update existing Notification",
+                "description": "Returns updated Notification data",
+                "operationId": "seenNotification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Notification id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotificationResponse"
                                 }
                             }
                         }
@@ -3763,6 +3856,19 @@
                     },
                     "updated_at": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "NotificationMultipleSeen": {
+                "title": "UserNotification Response",
+                "description": "Notification model",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
                     }
                 },
                 "type": "object"

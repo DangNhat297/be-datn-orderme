@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Events\Chat\ChatMessageEvent;
+use App\Events\Notification\OrderNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Cart;
@@ -133,23 +134,7 @@ class OrderController extends Controller
 
             $this->newMessage(1, $request->phone, $order);
 
-
-            $newNotification = [
-                'user_phone' => $request->phone,
-                'message_template' => 'đã đặt hàng vào lúc',
-                'redirect_url' => env('ADMIN_URL') . '/order/' . $order->id,
-                'type' => 'order',
-            ];
-            $notice = $this->notification->newQuery()->create($newNotification);
-            $listAdmin = $this->user->newQuery()->where('role', 'admin')->get()->pluck('id');
-            $listAdmin->each(function ($item) use ($notice) {
-                $this->userNotification->newQuery()->create([
-                    'notification_id' => $notice->id,
-                    'recipient_id' => $item
-                ]);
-            });
-
-//          event(new OrderNotification());
+            $this->newNotice($request->phone, $order->id);
 
             collect($request->dishes)->each(function ($dish) use ($order) {
                 $this->dish
@@ -199,6 +184,30 @@ class OrderController extends Controller
         return true;
     }
 
+    public function newNotice($actorPhone, $orderId, $msg = 'Đã đặt hàng vào lúc')
+    {
+        $newNotification = [
+            'user_phone' => $actorPhone,
+            'message_template' => $msg,
+            'redirect_url' => env('ADMIN_URL') . '/order/' . $orderId,
+            'type' => 'order',
+        ];
+        $notice = $this->notification->newQuery()->create($newNotification);
+        $listAdmin = $this->user->newQuery()->where('role', 'admin')->get()->pluck('id');
+        $listAdmin->each(function ($item) use ($notice, $newNotification) {
+            $newData = $this->userNotification->newQuery()->create([
+                'notification_id' => $notice->id,
+                'recipient_id' => $item
+            ]);
+            broadcast(new OrderNotification(
+                $newData,
+                $newData->load('user'),
+                $notice
+            ))->toOthers();
+        });
+        return true;
+    }
+
     /**
      * @OA\Put(
      *      path="/client/order/{id}",
@@ -236,6 +245,13 @@ class OrderController extends Controller
         ]);
         $content = "Ôi thật là tiếc. Món ngon " . $request->code . " không thể đến với bạn rồi: " . OrderLog::textLog[0] . " :((";
         $this->newMessage(0, $request->phone, $request, $content);
+
+        if ($order->payment_method == ORDER_PAYMENT_VNPAY && $order->payment_status == ORDER_PAYMENT_SUCCESS) {
+            $this->newNotice($request->phone, $order->id, 'Đã hủy hơn hàng và yêu cầu hoàn tiền vào lúc');
+        } else {
+            $this->newNotice($request->phone, $order->id, 'Đã hủy hơn hàng vào lúc');
+        }
+
         return $this->updateSuccess($order);
     }
 

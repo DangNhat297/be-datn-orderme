@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class NotificationController extends Controller
 {
@@ -21,6 +20,42 @@ class NotificationController extends Controller
      *      tags={"Notification"},
      *      summary="Get list of notification",
      *      description="Returns list of notification",
+     *      @OA\Parameter(
+     *          name="start_date",
+     *          description="start date of order",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="end_date",
+     *          description="end date of order",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="limit",
+     *          description="limit size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
+     *      @OA\Parameter(
+     *          name="page",
+     *          description="page size ",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *      ),
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
@@ -28,11 +63,14 @@ class NotificationController extends Controller
      *       ),
      *     )
      */
-    public function index()
+    public function index(Request $request)
     {
+        $limit = $request->limit ?: PAGE_SIZE_DEFAULT;
+
         $data = $this->notify->newQuery()
             ->with(['notification', 'user'])
             ->where('recipient_id', auth()->id())
+            ->findByDateRange($request)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -49,68 +87,56 @@ class NotificationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
+     * @OA\Put(
+     *      path="/admin/multiple-seen-notice",
+     *      operationId="seenMultipleNotification",
+     *      tags={"Notification"},
+     *      summary="Update existing Notification",
+     *      description="Returns updated Notification data",
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/NotificationResponse")
+     *       )
+     * )
      */
-    public function create()
+    public function multipleSeenNotice()
     {
-        //
+        $this->notify->newQuery()
+            ->where('recipient_id', auth()->id())
+            ->update(['isSeen' => true]);
+        return response()->json([], 200);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
+     * @OA\Put(
+     *      path="/admin/notification/{id}",
+     *      operationId="seenNotification",
+     *      tags={"Notification"},
+     *      summary="Update existing Notification",
+     *      description="Returns updated Notification data",
+     *      @OA\Parameter(
+     *          name="id",
+     *          description="Notification id",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=202,
+     *          description="Successful operation",
+     *          @OA\JsonContent(ref="#/components/schemas/NotificationResponse")
+     *       )
+     * )
      */
     public function update(Request $request, $id)
     {
-        //
+        $item = $this->notify->newQuery()->findOrFail($id);
+
+        $item->update(['isSeen' => true]);
+        return response()->json($item, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\Chat\ChatNotiEvent;
 use App\Models\Chat;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use function response;
 
 class RoomController extends Controller
 {
@@ -40,12 +40,22 @@ class RoomController extends Controller
     {
         $data = $this->roomModel
             ->newQuery()
+            ->with(['user', 'messages'])
             ->findByName($request)
             ->get();
 
-        event(new ChatNotiEvent($data));
-
-//        return \response()->json($data, 200);
+        $data->map(function ($item) {
+//            $item['user'] = User::where('phone', $item->user_phone)->first();
+            $item['message'] = Chat::with(['sender'])
+                ->where('room_id', $item->id)
+                ->orderBy('id', 'desc')->first();
+            $item['messageNotSeen'] = count(Chat::where('sender_phone', '=', $item->user_phone)
+                ->where('room_id', $item->id)
+                ->where('isSeen', false)
+                ->get());
+            return $item;
+        });
+        return response()->json($data, 200);
     }
 
 

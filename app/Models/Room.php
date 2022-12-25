@@ -26,7 +26,7 @@ class Room extends Model
      */
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'user_phone', 'phone');
+        return $this->hasOne(User::class, 'phone', 'user_phone');
     }
 
     /**

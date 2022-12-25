@@ -126,6 +126,8 @@ Route::group(['middleware' => 'auth:sanctum'], function ($routes) {
 
         //notification
         Route::apiResource('notification', NotificationController::class);
+        Route::put('/multiple-seen-notice', [NotificationController::class, 'multipleSeenNotice']);
+
     });
 });
 

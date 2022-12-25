@@ -13,9 +13,12 @@ class OrderNotification implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
-    public function __construct()
+    public function __construct(
+        protected $newData,
+        protected $user,
+        protected $notification
+    )
     {
-
     }
 
     /**
@@ -36,8 +39,16 @@ class OrderNotification implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'data' => $data,
-            'notifyNotSeen' => $notifyNotSeen
+            'id' => $this->newData->id,
+            'isSeen' => $this->newData->isSeen,
+            'notification_id' => $this->newData->notification_id,
+            'recipient_id' => $this->newData->recipient_id,
+            'created_at' => $this->newData->created_at,
+            'updated_at' => $this->newData->updated_at,
+            'user' => $this->user,
+            'notification' => $this->notification
         ];
     }
+
+
 }
