@@ -272,7 +272,8 @@ class OrderController extends Controller
 
         $order->load([
             'dishes',
-            'logs'
+            'logs',
+            'location'
         ]);
 
         $order->dishes->transform(function ($dish) {
