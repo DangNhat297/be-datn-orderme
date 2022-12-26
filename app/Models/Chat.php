@@ -10,7 +10,12 @@ class Chat extends Model
 {
     use HasFactory;
 
-    protected $touches = ['room'];
+    protected static function booted()
+    {
+        static::saved(function (Chat $chat) {
+            $chat->room()->update(['updated_at' => now()]);
+        });
+    }
 
     protected $fillable = [
         'sender_phone',
@@ -37,5 +42,4 @@ class Chat extends Model
     {
         return $this->belongsTo(Room::class, 'room_id', 'id');
     }
-
 }
