@@ -35,13 +35,6 @@ class DishesUpdateRequest extends FormRequest
         ];
     }
 
-    protected  function failedValidation(Validator $validator)
-    {
-        $response = response()->json([
-            'result' => false,
-            'message' => $validator->errors()->all()
-        ],402);
-        throw new ValidationException($validator, $response);
-    }
+
 
 }
