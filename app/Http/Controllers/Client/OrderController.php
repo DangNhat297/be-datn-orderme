@@ -172,7 +172,11 @@ class OrderController extends Controller
     {
         $contentDefault = "Cảm ơn bạn đã đặt hàng. Món ngon " . $order->code . " của bạn: " . OrderLog::textLog[$status];
         $phoneAdmin = '0987654321';
-        $roomByCurrentUser = Room::where('user_phone', $phoneUser)->first();
+        $roomByCurrentUser = Room::query()
+                                ->firstOrCreate(
+                                    ['user_phone' => $phoneUser],
+                                    ['user_name' => $order->name]
+                                );
         $msg = [
             'content' => $content ?? $contentDefault,
             'room_id' => $roomByCurrentUser->id,
