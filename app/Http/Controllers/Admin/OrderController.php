@@ -340,14 +340,10 @@ class OrderController extends Controller
         $order = $this->order
             ->newQuery()
             ->where('id', $id)
-            ->where('payment_status', ORDER_PAYMENT_SUCCESS)
-            ->where('payment_method', ORDER_PAYMENT_VNPAY)
-            ->whereHas('payments', function ($q) {
-                return $q->where('transaction_status', '00');
-            })
-            ->doesntHave('payments', 'and', function ($q) {
-                return $q->where('transaction_status', '05');
-            })
+            ->orWhere('code', $id)
+            ->where('payment_status', ORDER_PAYMENT_SUCCESS) // 1
+            ->where('payment_method', ORDER_PAYMENT_VNPAY) // 2
+            ->where('status', ORDER_CANCEL) // 0
             ->firstOrFail();
 
         return $this->paymentService->refundRequest($order);

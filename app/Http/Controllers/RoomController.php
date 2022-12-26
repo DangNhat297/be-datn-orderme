@@ -41,6 +41,7 @@ class RoomController extends Controller
         $data = $this->roomModel
             ->newQuery()
             ->with(['user', 'messages'])
+            ->latest('updated_at')
             ->findByName($request)
             ->get();
 
