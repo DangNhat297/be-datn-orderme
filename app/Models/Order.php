@@ -94,14 +94,14 @@ class Order extends BaseModel
         return $this->belongsTo(Coupon::class);
     }
 
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class, 'order_code', 'code');
-    }
-
     public function last_payment()
     {
         return $this->payments()->latest()->first();
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'order_code', 'code');
     }
 
     public function scopeFindByCode(Builder $query, Request $request): Builder
@@ -118,6 +118,8 @@ class Order extends BaseModel
     {
         if (isset($request->distance) && $request->distance == 0) {
             return $query->whereRelation('location', 'distance', 0);
+        } elseif (isset($request->distance) && $request->distance != 0) {
+            return $query->whereRelation('location', 'distance', '!=', 0);
         }
 
         return $query;

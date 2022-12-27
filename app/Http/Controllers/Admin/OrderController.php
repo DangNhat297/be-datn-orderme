@@ -45,6 +45,15 @@ class OrderController extends Controller
      *          )
      *      ),
      *      @OA\Parameter(
+     *          name="distance",
+     *          description="distance of order",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="number"
+     *          )
+     *      ),
+     *      @OA\Parameter(
      *          name="start_date",
      *          description="start date of order",
      *          required=false,
@@ -184,7 +193,7 @@ class OrderController extends Controller
                 'change_by' => auth()->id ?? null
             ]);
 
-            collect($request->dishes)->each(function ($dish) use ($order){
+            collect($request->dishes)->each(function ($dish) use ($order) {
                 $this->dish
                     ->newQuery()
                     ->where('id', $dish['dish_id'])
