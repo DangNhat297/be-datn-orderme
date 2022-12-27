@@ -115,6 +115,7 @@ class OrderController extends Controller
             ->findByStatus($request)
             ->findByDateRange($request)
             ->findOrderBy($request)
+            ->findByDistance($request)
             ->latest()
             ->paginate($pageSize);
 
