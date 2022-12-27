@@ -168,7 +168,7 @@ class OrderController extends Controller
                 'status' => ORDER_COMPLETE
             ]);
 
-            $order->log()->create([
+            $order->logs()->create([
                 'status' => ORDER_COMPLETE,
                 'change_by' => auth()->id ?? null
             ]);
