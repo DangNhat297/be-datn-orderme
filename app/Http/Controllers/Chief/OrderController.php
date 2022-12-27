@@ -17,8 +17,7 @@ class OrderController extends Controller
     public function __construct(
         protected Order $order,
         protected Chat  $chatModel,
-    )
-    {
+    ) {
     }
 
     /**
@@ -164,10 +163,23 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $order->update(['status' => 3]);
+        if ($order->location->distance == 0) {
+            $order->update([
+                'status' => ORDER_COMPLETE
+            ]);
+
+            $order->log()->create([
+                'status' => ORDER_COMPLETE,
+                'change_by' => auth()->id ?? null
+            ]);
+
+            return response()->json($order, 202);
+        }
+
+        $order->update(['status' => ORDER_WAIT_FOR_SHIPPING]);
 
         $order->logs()->create([
-            'status' => 3,
+            'status' => ORDER_WAIT_FOR_SHIPPING,
             'change_by' => auth()->id ?? null
         ]);
         $this->newMessage(3, $order->phone, $order);
@@ -189,5 +201,4 @@ class OrderController extends Controller
         event(new ChatMessageEvent($newMsg));
         return true;
     }
-
 }

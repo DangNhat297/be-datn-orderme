@@ -113,4 +113,13 @@ class Order extends BaseModel
 
         return $query;
     }
+
+    public function scopeFindByDistance(Builder $query, Request $request): Builder
+    {
+        if ($request->distance == 0) {
+            return $query->whereRelation('location', 'distance', 0);
+        }
+
+        return $query;
+    }
 }

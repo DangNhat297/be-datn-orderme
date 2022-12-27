@@ -152,7 +152,7 @@ class OrderController extends Controller
             'price_none_sale',
             'coupon_id',
             'payment_method',
-            'payment_status'
+            'payment_status',
         ]);
 
         $userExitsInRoom = $this->roomModel->newQuery()
