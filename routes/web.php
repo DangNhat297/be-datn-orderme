@@ -14,5 +14,5 @@
     */
 
     Route::get('/', function () {
-        return view('welcome');
+        return response()->json(['error' => 'data'], 204);
     });
